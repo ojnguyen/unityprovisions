@@ -1,0 +1,48 @@
+---
+import "@styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Unity Provisions",
+  description = "Creating opportunities and building stronger communities."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <meta name="description" content={description} />
+
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+
+  <body class="min-h-screen">
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>
+        &copy; {new Date().getFullYear()} Unity Provisions
+      </p>
+    </footer>
+  </body>
+</html>
