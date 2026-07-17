@@ -1,11 +1,13 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import { Icon } from 'astro-icon/components';
 ---
 
 <Layout>
 	<main class="min-h-screen flex items-center justify-center">
-		<div class="bg-red-500 text-white text-3xl font-bold p-10 rounded-lg">
-		Tailwind is working!
+		<div class="bg-primary text-white text-3xl font-bold p-10 rounded-lg flex items-center gap-4">
+			<Icon name="lucide:phone" class="w-8 h-8" />
+			Tailwind + Astro Icon is working!
 		</div>
 	</main>
 </Layout>
