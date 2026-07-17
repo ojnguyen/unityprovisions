@@ -1,1 +1,60 @@
 @import "tailwindcss";
+
+/* TODO: ADD LATER
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+*/
+
+@theme {
+  /* Color — 🔶 placeholders except --color-bg, see phase-2-design-system.md */
+  --color-bg: #f9f9e6;
+  --color-surface: #ffffff;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5c5c5c;
+  --color-primary: #6b7f3f;
+  --color-primary-hover: #59692f;
+  --color-accent: #c47a3d;
+  --color-border: #e0ddc9;
+  --color-success: #2f7d4f;
+  --color-error: #b3413b;
+
+  /* Typography — 🔶 placeholder fonts, confirm real ones via DevTools */
+  --font-display: system-ui, sans-serif;
+  --font-body: system-ui, sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Not part of Tailwind's theme namespace, so defined as a plain variable */
+:root {
+  --transition-default: 150ms ease;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
