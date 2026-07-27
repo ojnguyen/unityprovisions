@@ -5,56 +5,78 @@
 @plugin "@tailwindcss/forms";
 */
 
+/* src/styles/global.css
+ *
+ * 🔶 PLACEHOLDER TOKENS — see Phase 2 design system doc for reasoning.
+ * --color-bg is confirmed real (pulled from the live site's theme-color meta tag).
+ * Everything else marked 🔶 is a structural guess, NOT a real measurement.
+ * Do not build Phase 5 pages against these without a plan to swap them —
+ * search this file for 🔶 before pages ship.
+ */
+
 @theme {
-  /* Color — 🔶 placeholders except --color-bg, see phase-2-design-system.md */
-  --color-bg: #f9f9e6;
-  --color-surface: #ffffff;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #5c5c5c;
-  --color-primary: #6b7f3f;
-  --color-primary-hover: #59692f;
-  --color-accent: #c47a3d;
-  --color-border: #e0ddc9;
-  --color-success: #2f7d4f;
-  --color-error: #b3413b;
+  /* ---- Color ---- */
+  --color-bg: #f9f9e6;              /* real */
+  --color-surface: #ffffff;         /* 🔶 */
+  --color-text-primary: #1a1a1a;    /* 🔶 */
+  --color-text-secondary: #5c5c5c;  /* 🔶 */
+  --color-primary: #6b7f3f;         /* 🔶 placeholder olive */
+  --color-primary-hover: #59692f;   /* 🔶 */
+  --color-accent: #c47a3d;          /* 🔶 placeholder ochre */
+  --color-border: #e0ddc9;          /* 🔶 */
+  --color-success: #2f7d4f;         /* 🔶 */
+  --color-error: #b3413b;           /* 🔶 */
 
-  /* Typography — 🔶 placeholder fonts, confirm real ones via DevTools */
-  --font-display: system-ui, sans-serif;
-  --font-body: system-ui, sans-serif;
+  /* ---- Typography ---- */
+  --font-display: system-ui, sans-serif; /* 🔶 pending DevTools check */
+  --font-body: system-ui, sans-serif;    /* 🔶 pending DevTools check */
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 2rem;
-  --text-3xl: 2.75rem;
+  --text-xs: 0.75rem;   /* 12px — captions */
+  --text-sm: 0.875rem;  /* 14px — meta, labels */
+  --text-base: 1rem;    /* 16px — body */
+  --text-lg: 1.125rem;  /* 18px — lead paragraphs */
+  --text-xl: 1.5rem;    /* 24px — h3 / section labels */
+  --text-2xl: 2rem;     /* 32px — h2 */
+  --text-3xl: 2.75rem;  /* 44px — h1 / hero */
 
-  /* Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  /* ---- Radius ---- */
+  --radius-sm: 4px;   /* 🔶 inputs, small buttons */
+  --radius-md: 8px;   /* 🔶 cards */
+  --radius-lg: 16px;  /* 🔶 hero image, donate banner */
 
-  /* Shadow */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+  /* ---- Shadow ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);   /* 🔶 */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);  /* 🔶 */
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12); /* 🔶 */
+
+  /* Breakpoints & container width intentionally left at Tailwind defaults
+     (sm:640px md:768px lg:1024px xl:1280px) — no evidence yet the live
+     site needs anything nonstandard. Revisit if Phase 5 visual comparison
+     shows a mismatch, especially at the mobile nav collapse point. */
 }
 
-/* Not part of Tailwind's theme namespace, so defined as a plain variable */
-:root {
-  --transition-default: 150ms ease;
-}
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+  }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-}
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-display);
+  a {
+    color: var(--color-primary);
+    transition: color 150ms ease;
+  }
+
+  a:hover {
+    color: var(--color-primary-hover);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }

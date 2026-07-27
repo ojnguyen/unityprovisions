@@ -1,0 +1,39 @@
+---
+import { cn } from '@utils/cn';
+import type { ButtonVariant, ButtonSize } from '../../types';
+
+interface Props {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  href?: string;
+  type?: 'button' | 'submit';
+}
+
+const { variant = 'primary', size = 'md', href, type = 'button' } = Astro.props;
+
+const base = 'inline-flex items-center justify-center font-medium rounded-sm transition-colors duration-150';
+
+const variants: Record<ButtonVariant, string> = {
+  primary: 'bg-primary text-white hover:bg-primary-hover',
+  secondary: 'border border-primary text-primary bg-transparent hover:bg-primary hover:text-white',
+  accent: 'bg-accent text-white hover:opacity-90',
+};
+
+const sizes: Record<ButtonSize, string> = {
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-4 py-2 text-base',
+  lg: 'px-6 py-3 text-lg',
+};
+
+// Falsy filtering (good practice but not strictly necessary here)
+const classes = cn(base, variants[variant], sizes[size]);
+---
+{href ? (
+  <a href={href} class={classes}>
+    <slot />
+  </a>
+) : (
+  <button type={type} class={classes}>
+    <slot />
+  </button>
+)}

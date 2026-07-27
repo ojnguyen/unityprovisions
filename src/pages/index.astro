@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
 import { Icon } from 'astro-icon/components';
+import Button from '@components/ui/Button.astro';
 ---
 
 <Layout>
@@ -8,6 +9,12 @@ import { Icon } from 'astro-icon/components';
 		<div class="bg-primary text-white text-3xl font-bold p-10 rounded-lg flex items-center gap-4">
 			<Icon name="lucide:phone" class="w-8 h-8" />
 			Tailwind + Astro Icon is working!
+		</div>
+		<div>
+			<Button variant="secondary" size="sm" href="/about">
+				<Icon name="lucide:arrow-down" class="w-6 h-6" />
+				Click Me
+			</Button>
 		</div>
 	</main>
 </Layout>
