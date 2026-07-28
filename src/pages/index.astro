@@ -2,6 +2,7 @@
 import Layout from '@layouts/Layout.astro';
 import { Icon } from 'astro-icon/components';
 import Button from '@components/ui/Button.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
 ---
 
 <Layout>
@@ -11,10 +12,19 @@ import Button from '@components/ui/Button.astro';
 			Tailwind + Astro Icon is working!
 		</div>
 		<div>
-			<Button variant="secondary" size="sm" href="/about">
+			<Button variant="secondary" size="sm">
 				<Icon name="lucide:arrow-down" class="w-6 h-6" />
 				Click Me
 			</Button>
+		</div>
+		<div>
+			<SectionHeading
+				as="h1"
+				eyebrow="Eyebrow Text"
+				title="Title (h1 right now)"
+				subtext="subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext"
+				align="center"
+			/>
 		</div>
 	</main>
 </Layout>

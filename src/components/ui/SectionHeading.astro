@@ -1,0 +1,42 @@
+---
+import { cn } from '@utils/cn';
+
+interface Props {
+  as?: 'h1' | 'h2' | 'h3';
+  eyebrow?: string;
+  title: string;
+  subtext?: string;
+  align?: 'left' | 'center';
+}
+
+// as: HeadingTag renames the "as" prop to "HeadingTag" for clarity; <HeadingTag> will be used in the JSX below to render the appropriate heading level.
+const { 
+    as: HeadingTag = 'h2',
+    eyebrow,
+    title,
+    subtext,
+    align = 'left'
+} = Astro.props as Props;
+
+const headingSizes: Record<'h1' | 'h2' | 'h3', string> = {
+  h1: 'text-3xl',
+  h2: 'text-2xl',
+  h3: 'text-xl',
+};
+
+const wrapperClasses = cn(
+  'flex flex-col gap-2',
+  align === 'center' ? 'items-center text-center' : 'items-start text-left'
+);
+
+const headingClasses = cn('font-bold text-text-primary', headingSizes[HeadingTag]);
+---
+<div class={wrapperClasses}>
+  {eyebrow && (
+    <p class="text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>
+  )}
+  <HeadingTag class={headingClasses}>{title}</HeadingTag>
+  {subtext && (
+    <p class="text-lg text-text-secondary max-w-2xl">{subtext}</p>
+  )}
+</div>

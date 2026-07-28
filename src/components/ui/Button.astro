@@ -1,6 +1,6 @@
 ---
 import { cn } from '@utils/cn';
-import type { ButtonVariant, ButtonSize } from '../../types';
+import type { ButtonVariant, ButtonSize } from '@/types';
 
 interface Props {
   variant?: ButtonVariant;
@@ -9,7 +9,12 @@ interface Props {
   type?: 'button' | 'submit';
 }
 
-const { variant = 'primary', size = 'md', href, type = 'button' } = Astro.props;
+const {
+    variant = 'primary',
+    size = 'md',
+    href,
+    type = 'button'
+} = Astro.props as Props;
 
 const base = 'inline-flex items-center justify-center font-medium rounded-sm transition-colors duration-150';
 
