@@ -1,0 +1,23 @@
+---
+import { cn } from '@utils/cn';
+
+interface Props {
+  padding?: 'sm' | 'md' | 'lg';
+}
+
+const { padding = 'md' } = Astro.props as Props;
+
+const paddingSizes: Record<'sm' | 'md' | 'lg', string> = {
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8',
+};
+
+const classes = cn(
+  'bg-surface rounded-md shadow-sm',
+  paddingSizes[padding]
+);
+---
+<div class={classes}>
+  <slot />
+</div>

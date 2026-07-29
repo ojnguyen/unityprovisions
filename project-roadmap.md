@@ -34,11 +34,11 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.4 — build `Card` next (see Component Library
-§7 for its spec, Implementation Phases §9 for the full remaining order,
-and §5 for the current file tree). **Update this line every time a step
-is completed, so it always names the actual next thing to build — not
-the thing that was just finished.**
+**Continue here:** Phase 4.4 — build `ResponsiveImage` next (see
+Component Library §7 for its spec, Implementation Phases §9 for the full
+remaining order, and §5 for the current file tree). **Update this line
+every time a step is completed, so it always names the actual next thing
+to build — not the thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
@@ -115,8 +115,8 @@ src/
 │   ├── ui/                       — generic, content-agnostic primitives
 │   │   ├── Button.astro                ✅ built
 │   │   ├── SectionHeading.astro        ✅ built
-│   │   ├── Card.astro                  📋 next
-│   │   ├── ResponsiveImage.astro       📋 planned
+│   │   ├── Card.astro                  ✅ built
+│   │   ├── ResponsiveImage.astro       📋 next
 │   │   ├── Container.astro             📋 planned
 │   │   └── ExternalLinkCTA.astro       📋 planned
 │   │
@@ -278,16 +278,18 @@ Status: ✅ Built · 📋 Planned
 - Structure: `flex flex-col gap-2`; absent optional children render nothing.
 - Example: `<SectionHeading as="h1" title="Our Team" subtext="The people behind Unity Provisions" />`
 
-**Card** — 📋 Planned (next to build)
+**Card** — ✅ Built
 - Purpose: a bounded surface (background, radius, shadow, padding) for
   grouped content.
 - Use when: team member cards, project sections, any content needing
   visual separation from the page background.
-- Props: default slot; optional `padding?: 'sm'|'md'|'lg'`.
-- Design constraints: `--color-surface` bg, `--radius-md`, `--shadow-sm`,
-  `1.5rem` padding.
+- Props: default slot; optional `padding?: 'sm'|'md'|'lg'` (default `md`).
+- Structure: single `<div>`; `bg-surface rounded-md shadow-sm` plus a
+  padding utility (`p-4`/`p-6`/`p-8`) selected via a `Record` lookup keyed
+  on `padding`. `md` (`p-6` = 1.5rem) matches the design system's spec
+  exactly and is the default.
 
-**ResponsiveImage** — 📋 Planned
+**ResponsiveImage** — 📋 Planned (next to build)
 - Purpose: wraps `astro:assets`'s `<Image />` with the site's design
   tokens, enforcing accessible/performant defaults.
 - Use when: any real content image (team photos, project imagery).
@@ -505,8 +507,8 @@ Sections, in order:
 - [ ] 4.4 UI Primitives:
     - [x] Button
     - [x] SectionHeading
-    - [ ] Card — next
-    - [ ] ResponsiveImage
+    - [x] Card
+    - [ ] ResponsiveImage — next
     - [ ] Container
     - [ ] ExternalLinkCTA
 - [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)

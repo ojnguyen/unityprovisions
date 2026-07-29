@@ -3,10 +3,11 @@ import Layout from '@layouts/Layout.astro';
 import { Icon } from 'astro-icon/components';
 import Button from '@components/ui/Button.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
+import Card from '@components/ui/Card.astro';
 ---
 
 <Layout>
-	<main class="min-h-screen flex items-center justify-center">
+	<main class="min-h-screen flex flex-col gap-8 items-center justify-center">
 		<div class="bg-primary text-white text-3xl font-bold p-10 rounded-lg flex items-center gap-4">
 			<Icon name="lucide:phone" class="w-8 h-8" />
 			Tailwind + Astro Icon is working!
@@ -25,6 +26,11 @@ import SectionHeading from '@components/ui/SectionHeading.astro';
 				subtext="subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext"
 				align="center"
 			/>
+		</div>
+		<div>
+			<Card padding="sm">
+				<p>This is a card with small padding.</p>
+			</Card>
 		</div>
 	</main>
 </Layout>
