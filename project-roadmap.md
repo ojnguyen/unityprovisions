@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.4 — build `ResponsiveImage` next (see
+**Continue here:** Phase 4.4 — build `Container` next (see
 Component Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
@@ -116,8 +116,8 @@ src/
 │   │   ├── Button.astro                ✅ built
 │   │   ├── SectionHeading.astro        ✅ built
 │   │   ├── Card.astro                  ✅ built
-│   │   ├── ResponsiveImage.astro       📋 next
-│   │   ├── Container.astro             📋 planned
+│   │   ├── ResponsiveImage.astro       ✅ built
+│   │   ├── Container.astro             📋 next
 │   │   └── ExternalLinkCTA.astro       📋 planned
 │   │
 │   ├── layout/                   — site-wide chrome, mounted once in Layout.astro
@@ -289,7 +289,7 @@ Status: ✅ Built · 📋 Planned
   on `padding`. `md` (`p-6` = 1.5rem) matches the design system's spec
   exactly and is the default.
 
-**ResponsiveImage** — 📋 Planned (next to build)
+**ResponsiveImage** — ✅ Built
 - Purpose: wraps `astro:assets`'s `<Image />` with the site's design
   tokens, enforcing accessible/performant defaults.
 - Use when: any real content image (team photos, project imagery).
@@ -297,7 +297,7 @@ Status: ✅ Built · 📋 Planned
   `width`/`height` (required), `radius?: 'sm'|'md'|'lg'|'none'`
   (default `md`), `loading?: 'eager'|'lazy'` (default `lazy`).
 
-**Container** — 📋 Planned
+**Container** — 📋 Planned (next to build)
 - Purpose: shared max-width + horizontal-padding wrapper.
 - Use when: wrapping section-level content that should sit within the
   standard content width.
@@ -508,8 +508,8 @@ Sections, in order:
     - [x] Button
     - [x] SectionHeading
     - [x] Card
-    - [ ] ResponsiveImage — next
-    - [ ] Container
+    - [x] ResponsiveImage
+    - [ ] Container — next
     - [ ] ExternalLinkCTA
 - [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
 - [ ] 4.6 Navbar & Footer Components:

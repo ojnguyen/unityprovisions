@@ -4,6 +4,8 @@ import { Icon } from 'astro-icon/components';
 import Button from '@components/ui/Button.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
 import Card from '@components/ui/Card.astro';
+import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
+import testImage from '@assets/test-image.jpg';
 ---
 
 <Layout>
@@ -31,6 +33,16 @@ import Card from '@components/ui/Card.astro';
 			<Card padding="sm">
 				<p>This is a card with small padding.</p>
 			</Card>
+		</div>
+		<div>
+			<ResponsiveImage
+				src={testImage}
+				alt="Test Image"
+				width={800}
+				height={600}
+				radius="md"
+				loading="lazy"
+			/>	
 		</div>
 	</main>
 </Layout>

@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { cn } from '@utils/cn';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  width: number;
+  height: number;
+  radius?: 'sm' | 'md' | 'lg' | 'none';
+  loading?: 'eager' | 'lazy';
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  radius = 'md',
+  loading = 'lazy',
+} = Astro.props as Props;
+
+const radiusSizes: Record<'sm' | 'md' | 'lg' | 'none', string> = {
+  sm: 'rounded-sm',
+  md: 'rounded-md',
+  lg: 'rounded-lg',
+  none: '',
+};
+
+const classes = cn(radiusSizes[radius]);
+
+// Below, the duplicated-looking JSX in each branch is intentional and not actually redundant:
+// TypeScript treats them as two separate call sites, each satisfying a different half of <Image />'s union type.
+---
+{typeof src === 'string' ? (
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    class={classes}
+  />
+) : (
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    class={classes}
+  />
+)}
