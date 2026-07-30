@@ -1,0 +1,15 @@
+---
+import { cn } from '@utils/cn';
+
+interface Props {
+  as?: keyof HTMLElementTagNameMap;
+  maxWidth?: string;
+}
+ 
+const { as: Tag = 'div', maxWidth = 'max-w-7xl' } = Astro.props as Props;
+
+const classes = cn(maxWidth, 'mx-auto px-4 sm:px-6 lg:px-8');
+---
+<Tag class={classes}>
+  <slot />
+</Tag> 

@@ -6,6 +6,7 @@ import SectionHeading from '@components/ui/SectionHeading.astro';
 import Card from '@components/ui/Card.astro';
 import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
 import testImage from '@assets/test-image.jpg';
+import Container from '@components/ui/Container.astro';
 ---
 
 <Layout>
@@ -44,5 +45,10 @@ import testImage from '@assets/test-image.jpg';
 				loading="lazy"
 			/>	
 		</div>
+		<Container>
+			<p class="text-center">
+				This is a container (as a div) with a maximum width of default 7xl. It is centered and has padding on the sides. text text text text text text text text text text text text text text text text text text text text 
+			</p>
+		</Container>
 	</main>
 </Layout>

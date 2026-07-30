@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.4 — build `Container` next (see
+**Continue here:** Phase 4.4 — build `ExternalLinkCTA` next (see
 Component Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
@@ -117,8 +117,8 @@ src/
 │   │   ├── SectionHeading.astro        ✅ built
 │   │   ├── Card.astro                  ✅ built
 │   │   ├── ResponsiveImage.astro       ✅ built
-│   │   ├── Container.astro             📋 next
-│   │   └── ExternalLinkCTA.astro       📋 planned
+│   │   ├── Container.astro             ✅ built
+│   │   └── ExternalLinkCTA.astro       📋 next
 │   │
 │   ├── layout/                   — site-wide chrome, mounted once in Layout.astro
 │   │   ├── Navbar.astro                📋 planned
@@ -297,13 +297,16 @@ Status: ✅ Built · 📋 Planned
   `width`/`height` (required), `radius?: 'sm'|'md'|'lg'|'none'`
   (default `md`), `loading?: 'eager'|'lazy'` (default `lazy`).
 
-**Container** — 📋 Planned (next to build)
+**Container** — ✅ Built
 - Purpose: shared max-width + horizontal-padding wrapper.
 - Use when: wrapping section-level content that should sit within the
   standard content width.
-- Props: `as?: string`, `maxWidth?: string` (default ~1280px). Slot: children.
+- Props: `as?: keyof HTMLElementTagNameMap` (default `'div'`) — typed as
+  a real HTML tag-name union rather than a bare `string`, so the dynamic
+  `<Tag>` render in the template type-checks correctly (see §11);
+  `maxWidth?: string` (default `'max-w-7xl'`, ~1280px). Slot: children.
 
-**ExternalLinkCTA** — 📋 Planned
+**ExternalLinkCTA** — 📋 Planned (next to build)
 - Purpose: the single component for every off-site link (Volunteer,
   Branch Founder application, Zeffy donation, Linktree, social).
 - Props: `label: string`, `href: string`, `icon?: string`.
@@ -509,8 +512,8 @@ Sections, in order:
     - [x] SectionHeading
     - [x] Card
     - [x] ResponsiveImage
-    - [ ] Container — next
-    - [ ] ExternalLinkCTA
+    - [x] Container
+    - [ ] ExternalLinkCTA — next
 - [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
 - [ ] 4.6 Navbar & Footer Components:
     - [ ] Navbar
@@ -614,3 +617,13 @@ Build order; components per page in build order; each page ends with an assembly
 - Real content (team roster, impact numbers, project descriptions, page
   copy) lives in typed data files or directly in page templates — use it
   as captured here rather than re-researching it.
+- Dynamic tag props (commonly named `as`) are typed as
+  `keyof HTMLElementTagNameMap`, or a narrower literal union when only
+  specific tags make sense (e.g. `SectionHeading`'s `'h1'|'h2'|'h3'`) —
+  never a bare `string`. A bare `string` doesn't satisfy Astro's
+  type-checking when the prop is used to render a dynamic element
+  (`<Tag>`), so this is a correctness rule, not a style preference.
+- Whenever an implementation deviates from what §7 specifies (a prop
+  type, a default, a structural choice), the §7 entry is updated to
+  match the real implementation in the same edit — the roadmap describes
+  what was actually built, not what was originally planned.
