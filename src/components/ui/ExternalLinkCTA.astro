@@ -1,0 +1,13 @@
+---
+import Button from '@components/ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import type { ExternalLink } from '@/types';
+
+type Props = ExternalLink;
+
+const { label, href, icon } = Astro.props as Props;
+---
+<Button href={href} target="_blank" rel="noopener noreferrer">
+  {label}
+  {icon && <Icon name={icon} class="w-4 h-4 ml-2" />}
+</Button>

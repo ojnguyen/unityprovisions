@@ -7,13 +7,17 @@ interface Props {
   size?: ButtonSize;
   href?: string;
   type?: 'button' | 'submit';
+  target?: '_self' | '_blank' | '_parent' | '_top';
+  rel?: string;
 }
 
 const {
     variant = 'primary',
     size = 'md',
     href,
-    type = 'button'
+    type = 'button',
+    target,
+    rel
 } = Astro.props as Props;
 
 const base = 'inline-flex items-center justify-center font-medium rounded-sm transition-colors duration-150';
@@ -34,7 +38,7 @@ const sizes: Record<ButtonSize, string> = {
 const classes = cn(base, variants[variant], sizes[size]);
 ---
 {href ? (
-  <a href={href} class={classes}>
+  <a href={href} class={classes} target={target} rel={rel}>
     <slot />
   </a>
 ) : (

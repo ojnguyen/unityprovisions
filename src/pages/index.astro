@@ -7,6 +7,7 @@ import Card from '@components/ui/Card.astro';
 import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
 import testImage from '@assets/test-image.jpg';
 import Container from '@components/ui/Container.astro';
+import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 ---
 
 <Layout>
@@ -50,5 +51,10 @@ import Container from '@components/ui/Container.astro';
 				This is a container (as a div) with a maximum width of default 7xl. It is centered and has padding on the sides. text text text text text text text text text text text text text text text text text text text text 
 			</p>
 		</Container>
+		<ExternalLinkCTA
+			label="Volunteer"
+			href="https://forms.gle/7JFDkKPdzYv1LfCP6"
+			icon="lucide:external-link">
+		</ExternalLinkCTA>
 	</main>
 </Layout>
