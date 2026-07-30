@@ -1,9 +1,14 @@
 import type { ExternalLink } from '@/types';
-import { navigation } from './navigation';
+import { navigation, orgName } from './navigation';
 
 // Reuses navigation.ts rather than duplicating the list — the footer's
 // nav column and the Navbar always stay in sync automatically.
 export const footerNav = navigation;
+
+// Re-exported so Footer.astro can import everything it needs (nav,
+// external links, social, phone, org name) from this one file, rather
+// than also reaching into navigation.ts directly for just this one value.
+export { orgName };
 
 // The Google Form behind this URL is a general contact-list signup
 // (name/email/phone/state) with no volunteer-specific question — see
@@ -33,5 +38,3 @@ export const phone: ExternalLink = {
   label: '(857) 777-8811',
   href: 'tel:8577778811',
 };
-
-export const orgName = 'Unity Provisions';

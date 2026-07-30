@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.6 — build `Navbar` next (see Component
+**Continue here:** Phase 4.6 — build `Footer` next (see Component
 Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
@@ -89,7 +89,7 @@ to build — not the thing that was just finished.**
 - **Astro integrations configured:** `sitemap()`, `mdx()`, `astro-icon()`.
 - **Icon set:** Lucide (UI icons) + Simple Icons (brand/social icons), via
   `astro-icon`. Packages `@iconify-json/lucide` and
-  `@iconify-json/simple-icons` still need installing.
+  `@iconify-json/simple-icons` are installed.
 - **Path aliases** (`tsconfig.json`): `@components/*`, `@layouts/*`,
   `@content/*`, `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, and
   `@/types` for the single root `src/types.ts` file. No `baseUrl` —
@@ -121,8 +121,8 @@ src/
 │   │   └── ExternalLinkCTA.astro       ✅ built
 │   │
 │   ├── layout/                   — site-wide chrome, mounted once in Layout.astro
-│   │   ├── Navbar.astro                📋 planned
-│   │   └── Footer.astro                📋 planned
+│   │   ├── Navbar.astro                ✅ built
+│   │   └── Footer.astro                📋 next
 │   │
 │   ├── sections/                 — page-specific composed sections
 │   │   ├── Hero.astro                  📋 planned — Home
@@ -152,7 +152,7 @@ src/
 │                                     directly — no content collections needed.
 │
 ├── data/                          — typed content, kept separate from component code
-│   ├── navigation.ts                   ✅ built — flat 6-item nav
+│   ├── navigation.ts                   ✅ built — flat 6-item nav + orgName
 │   ├── footer.ts                       ✅ built
 │   ├── staff.ts                        📋 planned — the 8 real team members
 │   ├── stats.ts                        📋 planned — the 4 impact numbers
@@ -311,6 +311,17 @@ Status: ✅ Built · 📋 Planned
   a real HTML tag-name union rather than a bare `string`, so the dynamic
   `<Tag>` render in the template type-checks correctly (see §11);
   `maxWidth?: string` (default `'max-w-7xl'`, ~1280px). Slot: children.
+- Usage convention: use `as` to render `Container` directly as the
+  semantic element (e.g. `<Container as="section">`) only when that
+  element needs no independent full-width visual treatment of its own —
+  its background then just matches the page. When the element needs a
+  full-bleed background, color, or shadow distinct from the page (e.g.
+  `Navbar`'s `<header>`, likely `DonateBanner` too), wrap a separate
+  plain element around `<Container>` instead, so the background spans
+  edge-to-edge while only the inner content is constrained and centered.
+  Collapsing the two in that case would squeeze the background itself
+  down to the container's max-width — a real visual regression, not
+  just a style preference.
 
 **ExternalLinkCTA** — ✅ Built
 - Purpose: the single component for every off-site link (Volunteer,
@@ -327,13 +338,42 @@ Status: ✅ Built · 📋 Planned
 
 ### Layout — `src/components/layout/`
 
-**Navbar** — 📋 Planned
-- Purpose: persistent site navigation.
+**Navbar** — ✅ Built
+- Purpose: persistent site navigation (present on every page — "persistent"
+  refers to appearing site-wide via `Layout.astro`, not scroll-sticky
+  positioning, which isn't currently implemented).
 - Data: `src/data/navigation.ts` — flat list, no dropdowns: Home, About,
-  Team, Projects, Get Involved, Donate.
-- Structure: logo/site name, flat link row, hamburger collapse on mobile.
+  Team, Projects, Get Involved, Donate. Also imports `orgName` from the
+  same file for the site name/logo text (no logo image asset exists yet
+  — see §5 `assets/` — so this renders as text).
+- Structure: two separate `<ul>` link lists, not one shared list — a
+  desktop row (`hidden md:flex`, pure CSS breakpoint toggle) and a
+  mobile list (`#mobile-menu`, JavaScript-toggled via the native `hidden`
+  attribute). They're kept separate because mixing a JS-toggled native
+  `hidden` attribute with an unconditional Tailwind layout class on the
+  same element causes the class to always win the cascade, silently
+  breaking the JS toggle — see the component's own inline comments.
 - Design constraints: full keyboard operability and correct focus
-  management on the mobile menu.
+  management on the mobile menu — implemented via the disclosure pattern
+  (not a full focus trap, which is the modal-dialog pattern, not this
+  one): `aria-expanded`/`aria-controls` on the toggle button, focus moves
+  to the first link on open, Escape closes and returns focus to the
+  toggle button. Active page gets `aria-current="page"` via a
+  `Astro.url.pathname` comparison against each nav item's `href` — except
+  Donate (see below), which doesn't receive this treatment since it
+  isn't a plain `<a>`.
+- Donate is rendered as an accent `Button` (`variant="accent" size="sm"`),
+  not a plain text link like the other five items — a deliberate visual
+  distinction to draw the eye toward giving, matching common nonprofit-
+  site convention. Reuses the existing `Button` component rather than
+  duplicating button styling inline. Known gap: `Button` doesn't accept
+  `aria-current`, so the Donate button doesn't get the active-page
+  treatment the plain links do when a visitor is on `/donate` — accepted
+  as minor, since its accent color already visually distinguishes it
+  regardless, but noted here rather than left silent.
+- Outer structure is `<header class="bg-surface shadow-sm">` wrapping
+  `<Container>`, not `<Container as="header">` — see Container's own
+  entry above for why these two stay separate.
 
 **Footer** — 📋 Planned
 - Purpose: persistent footer.
@@ -533,8 +573,8 @@ Sections, in order:
     - [x] ExternalLinkCTA
 - [x] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
 - [ ] 4.6 Navbar & Footer Components:
-    - [ ] Navbar — next
-    - [ ] Footer
+    - [x] Navbar
+    - [ ] Footer — next
 - [ ] 4.7 Layout.astro
 
 ### Phase 5 — Build Pages

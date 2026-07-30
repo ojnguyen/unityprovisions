@@ -1,0 +1,22 @@
+---
+import '@styles/global.css';
+import Navbar from '@components/layout/Navbar.astro';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Navbar Test</title>
+  </head>
+  <body>
+    <Navbar />
+    <main class="p-8">
+      <p>Test content below the navbar — resize the browser and try the mobile menu.</p>
+      <p class="mt-400">
+        Some extra height here so you can also confirm the header doesn't
+        scroll away oddly, if that ever matters.
+      </p>
+    </main>
+  </body>
+</html>
