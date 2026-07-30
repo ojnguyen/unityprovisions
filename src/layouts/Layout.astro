@@ -1,5 +1,6 @@
 ---
 import "@styles/global.css";
+import Navbar from '@components/layout/Navbar.astro';
 
 interface Props {
   title?: string;
@@ -28,12 +29,7 @@ const {
   </head>
 
   <body class="min-h-screen">
-    <header>
-      <nav>
-        <a href="/">Home</a>  
-        <a href="/about">About</a>
-      </nav>
-    </header>
+    <Navbar />
 
     <main>
       <slot />
