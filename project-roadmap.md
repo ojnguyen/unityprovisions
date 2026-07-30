@@ -34,9 +34,8 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.5 — create the navigation and footer data
-files (`src/data/navigation.ts`, `src/data/footer.ts`) next (see Data /
-Content Integrations §10, Implementation Phases §9 for the full
+**Continue here:** Phase 4.6 — build `Navbar` next (see Component
+Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
 to build — not the thing that was just finished.**
@@ -153,8 +152,8 @@ src/
 │                                     directly — no content collections needed.
 │
 ├── data/                          — typed content, kept separate from component code
-│   ├── navigation.ts                   📋 next — flat 6-item nav
-│   ├── footer.ts                       📋 next
+│   ├── navigation.ts                   ✅ built — flat 6-item nav
+│   ├── footer.ts                       ✅ built
 │   ├── staff.ts                        📋 planned — the 8 real team members
 │   ├── stats.ts                        📋 planned — the 4 impact numbers
 │   ├── partners.ts                     📋 planned — partners + supporters
@@ -338,9 +337,12 @@ Status: ✅ Built · 📋 Planned
 
 **Footer** — 📋 Planned
 - Purpose: persistent footer.
-- Data: `src/data/footer.ts` — main nav links, plus Volunteer / Email List
-  / Linktree as external links, social icons (Instagram, TikTok), phone,
-  copyright.
+- Data: `src/data/footer.ts` — main nav links, plus Email List / Linktree
+  as external links, social icons (Instagram, TikTok), phone, copyright.
+  (No separate "Volunteer" footer link — the real form behind it turned
+  out to be a general contact-list signup with no volunteer-specific
+  question, so showing it under two adjacent labels read as a mistake
+  rather than two real options. See §10.)
 - Design constraints: icon-only social links need `aria-label`.
 
 ### Page Sections — `src/components/sections/`
@@ -495,7 +497,10 @@ partnership, ready-to-use promotional materials and planning tools,
 opportunities for funding to grow your ideas); a "global network"
 paragraph (35+ branches across 6 countries); CTA "Apply" →
 `https://forms.gle/qfwhsPP61RrAd1cW7`. Volunteer CTA →
-`https://forms.gle/7JFDkKPdzYv1LfCP6`.
+`https://forms.gle/7JFDkKPdzYv1LfCP6` — the same general
+contact-list form now used for the footer's Email List link (§7
+Footer); whether this CTA's "Volunteer" framing still fits is an open
+question (§10).
 
 ### Donate (`/donate`)
 Purpose: the site's one page for both giving and transparency — a
@@ -526,9 +531,9 @@ Sections, in order:
     - [x] ResponsiveImage
     - [x] Container
     - [x] ExternalLinkCTA
-- [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`) — next
+- [x] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
 - [ ] 4.6 Navbar & Footer Components:
-    - [ ] Navbar
+    - [ ] Navbar — next
     - [ ] Footer
 - [ ] 4.7 Layout.astro
 
@@ -596,16 +601,24 @@ Build order; components per page in build order; each page ends with an assembly
 - `projects.ts` — Relief Route + AgriScan content
 
 **External destinations (CTAs, not pages):**
-- Volunteer — `https://forms.gle/7JFDkKPdzYv1LfCP6`
+- Email List (Footer) — `https://forms.gle/7JFDkKPdzYv1LfCP6`
+- Volunteer (Get Involved page CTA) — `https://forms.gle/7JFDkKPdzYv1LfCP6` — same form as
+  Email List above; whether this CTA's "Volunteer" framing still fits
+  is an open question (see below)
 - Become a Branch Founder application — `https://forms.gle/qfwhsPP61RrAd1cW7`
 - Donate (Zeffy) — `https://www.zeffy.com/fundraising/ending-hunger-through-youth-leadership`
 - Social — Instagram (`instagram.com/unityprovisions`), TikTok
   (`tiktok.com/@unityprovisionsboston`), Linktree (`linktr.ee/UnityProvisions`)
+- Phone — `(857) 777-8811` (`tel:8577778811`)
 
 **Open integration decisions:**
 - ContactForm submission backend: Formspree vs. Cloudflare Function.
-- Email List signup destination/backend.
 - Donation tracker embed on the Donate page: pending visual inspection.
+- Get Involved page's "Volunteer CTA": the Google Form behind it is a
+  general contact-list signup (name/email/phone/state), not volunteer-
+  specific — decide before building `get-involved.astro` whether the
+  "Volunteer" framing/copy still makes sense, gets adjusted, or the CTA
+  is merged with the Email List concept entirely.
 
 ---
 
