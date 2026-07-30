@@ -34,8 +34,9 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.4 — build `ExternalLinkCTA` next (see
-Component Library §7 for its spec, Implementation Phases §9 for the full
+**Continue here:** Phase 4.5 — create the navigation and footer data
+files (`src/data/navigation.ts`, `src/data/footer.ts`) next (see Data /
+Content Integrations §10, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
 to build — not the thing that was just finished.**
@@ -118,7 +119,7 @@ src/
 │   │   ├── Card.astro                  ✅ built
 │   │   ├── ResponsiveImage.astro       ✅ built
 │   │   ├── Container.astro             ✅ built
-│   │   └── ExternalLinkCTA.astro       📋 next
+│   │   └── ExternalLinkCTA.astro       ✅ built
 │   │
 │   ├── layout/                   — site-wide chrome, mounted once in Layout.astro
 │   │   ├── Navbar.astro                📋 planned
@@ -152,8 +153,8 @@ src/
 │                                     directly — no content collections needed.
 │
 ├── data/                          — typed content, kept separate from component code
-│   ├── navigation.ts                   📋 planned — flat 6-item nav
-│   ├── footer.ts                       📋 planned
+│   ├── navigation.ts                   📋 next — flat 6-item nav
+│   ├── footer.ts                       📋 next
 │   ├── staff.ts                        📋 planned — the 8 real team members
 │   ├── stats.ts                        📋 planned — the 4 impact numbers
 │   ├── partners.ts                     📋 planned — partners + supporters
@@ -260,10 +261,16 @@ Status: ✅ Built · 📋 Planned
 - Purpose: the single styled clickable element site-wide — actions,
   submits, button-styled navigation.
 - Use when: any action or link needing the site's button treatment. Not
-  for off-site links — use `ExternalLinkCTA`.
+  for off-site links — use `ExternalLinkCTA`, which wraps this component.
 - Props: `variant?: 'primary'|'secondary'|'accent'` (default `primary`),
   `size?: 'sm'|'md'|'lg'` (default `md`), `href?: string`,
-  `type?: 'button'|'submit'` (default `button`). Slot: label/content.
+  `type?: 'button'|'submit'` (default `button`),
+  `target?: '_self'|'_blank'|'_parent'|'_top'`, `rel?: string` — the last
+  two apply only on the `<a>` branch (when `href` is set) and were added
+  so `ExternalLinkCTA` can pass through `target="_blank"`/
+  `rel="noopener noreferrer"` without duplicating Button's anchor/button
+  branching logic. Both are optional with no default, so existing calls
+  without them are unaffected. Slot: label/content.
 - Structure: single inline-flex element; `<a>` if `href` is set, else `<button>`.
 - Example: `<Button variant="accent" href="https://zeffy.com/...">Donate Now</Button>`
 
@@ -306,12 +313,17 @@ Status: ✅ Built · 📋 Planned
   `<Tag>` render in the template type-checks correctly (see §11);
   `maxWidth?: string` (default `'max-w-7xl'`, ~1280px). Slot: children.
 
-**ExternalLinkCTA** — 📋 Planned (next to build)
+**ExternalLinkCTA** — ✅ Built
 - Purpose: the single component for every off-site link (Volunteer,
   Branch Founder application, Zeffy donation, Linktree, social).
-- Props: `label: string`, `href: string`, `icon?: string`.
-- Structure: wraps `Button`; always sets `target="_blank"` and
-  `rel="noopener noreferrer"`.
+- Props: reuses the shared `ExternalLink` type from `src/types.ts`
+  (`type Props = ExternalLink`) rather than redeclaring an identical
+  interface — `label: string`, `href: string`, `icon?: string`.
+- Structure: wraps `Button`, passing `target="_blank"` and
+  `rel="noopener noreferrer"` through as hardcoded literals (not exposed
+  as `ExternalLinkCTA`'s own props) via Button's new pass-through support
+  (see Button's entry above). Renders `icon` (an Iconify name) after the
+  label only when provided.
 - Example: `<ExternalLinkCTA label="Volunteer" href="https://forms.gle/7JFDkKPdzYv1LfCP6" icon="lucide:external-link" />`
 
 ### Layout — `src/components/layout/`
@@ -507,14 +519,14 @@ Sections, in order:
 - [x] 4.1 Design Tokens
 - [~] 4.2 Global Styles & Fonts (base styles shipped; real font-family still pending)
 - [x] 4.3 Utility Helpers
-- [ ] 4.4 UI Primitives:
+- [x] 4.4 UI Primitives:
     - [x] Button
     - [x] SectionHeading
     - [x] Card
     - [x] ResponsiveImage
     - [x] Container
-    - [ ] ExternalLinkCTA — next
-- [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
+    - [x] ExternalLinkCTA
+- [ ] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`) — next
 - [ ] 4.6 Navbar & Footer Components:
     - [ ] Navbar
     - [ ] Footer
