@@ -9,6 +9,8 @@ import testImage from '@assets/test-image.jpg';
 import Container from '@components/ui/Container.astro';
 import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 import Hero from '@components/sections/Hero.astro';
+import ImpactStats from '@components/sections/ImpactStats.astro';
+import { stats } from '@data/stats';
 ---
 
 <Layout>
@@ -63,5 +65,6 @@ import Hero from '@components/sections/Hero.astro';
 			ctaLabel="Donate"
 			ctaHref="/donate"
 		/>
+		<ImpactStats stats={stats} />
 	</main>
 </Layout>

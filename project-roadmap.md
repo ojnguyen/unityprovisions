@@ -34,11 +34,11 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `ImpactStats.astro` next
-(see Component Library §7 for its spec, Implementation Phases §9 for the
-full remaining order, and §5 for the current file tree). **Update this
-line every time a step is completed, so it always names the actual next
-thing to build — not the thing that was just finished.**
+**Continue here:** Phase 5, Step 1 (Home) — build `MissionStatement.astro`
+next (see Component Library §7 for its spec, Implementation Phases §9
+for the full remaining order, and §5 for the current file tree).
+**Update this line every time a step is completed, so it always names
+the actual next thing to build — not the thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
@@ -127,7 +127,7 @@ src/
 │   │
 │   ├── sections/                 — page-specific composed sections
 │   │   ├── Hero.astro                  ✅ built — Home
-│   │   ├── ImpactStats.astro           📋 planned — Home, About
+│   │   ├── ImpactStats.astro           ✅ built — Home, About
 │   │   ├── MissionStatement.astro      📋 planned — Home
 │   │   ├── YouTubeEmbed.astro          📋 planned — Home
 │   │   ├── PartnersAndSupporters.astro 📋 planned — Home, About
@@ -151,7 +151,7 @@ src/
 │   ├── navigation.ts                   ✅ built — flat 6-item nav + orgName
 │   ├── footer.ts                       ✅ built
 │   ├── staff.ts                        📋 planned — the 8 real team members
-│   ├── stats.ts                        📋 planned — the 4 impact numbers
+│   ├── stats.ts                        ✅ built — the 4 impact numbers
 │   ├── partners.ts                     📋 planned — partners + supporters
 │   └── projects.ts                     📋 planned — Relief Route + AgriScan content
 │
@@ -459,13 +459,31 @@ Status: ✅ Built · 📋 Planned
   that comment as describing a possible future use of the token, not a
   current requirement. Flagging here in case that assumption changes.
 
-**ImpactStats** — 📋 Planned
+**ImpactStats** — ✅ Built
 - Purpose: presents the organization's real impact numbers as a
   scannable stat grid.
-- Use when: Home (brief) and About (fuller).
-- Props: array of `{ value: string, label: string }`, from `src/data/stats.ts`.
-- Data: 6,180+ lbs of food/clothing collected · $21,376+ raised ·
-  35+ branches · 8 countries.
+- Use when: Home (brief) and About (fuller) — see implementation note
+  below for how that distinction is actually drawn.
+- Props: `stats: Stat[]`, where `Stat` (`src/types.ts`) is
+  `{ value: string, label: string }`. Passed in by the page rather than
+  imported from `src/data/stats.ts` directly, so Home and About can each
+  supply their own subset/order without the component knowing which
+  page it's on.
+- Data (`src/data/stats.ts`): `6,180+` lbs of food/clothing collected ·
+  `$21,376+` raised · `35+` branches · `8` countries — pre-formatted
+  display strings, not raw numbers.
+- Structure: `<Container as="section">` wrapping a `<dl>` grid
+  (`grid-cols-2` mobile, `md:grid-cols-4` desktop). Each stat is a
+  `<dt>` (the large value, `text-3xl font-bold text-primary`) + `<dd>`
+  (the label, `text-sm text-text-secondary`), grouped in their own
+  `<div>` per HTML5's `dl` content model.
+- Implementation note: the component itself carries no heading or
+  "brief vs. fuller" prop — §7's original spec didn't define one, and
+  the only prop is the stats array. The brief/fuller distinction is left
+  to the assembling page: Home can render `<ImpactStats />` with no
+  surrounding copy, while About can wrap it in its own `SectionHeading`
+  and additional paragraph text. This keeps the component reusable
+  rather than page-aware.
 
 **MissionStatement** — 📋 Planned
 - Purpose: the organization's mission, in its own words.
@@ -649,8 +667,8 @@ Build order; components per page in build order; each page ends with an assembly
 
 - [ ] **1. Home** (`index.astro`):
     - [x] Hero
-    - [ ] ImpactStats — next
-    - [ ] MissionStatement
+    - [x] ImpactStats
+    - [ ] MissionStatement — next
     - [ ] YouTubeEmbed
     - [ ] PartnersAndSupporters
     - [ ] GetInvolvedTeaser

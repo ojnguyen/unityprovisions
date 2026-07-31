@@ -1,0 +1,20 @@
+---
+import Container from '@components/ui/Container.astro';
+import type { Stat } from '@/types';
+
+interface Props {
+  stats: Stat[];
+}
+
+const { stats } = Astro.props as Props;
+---
+<Container as="section">
+  <dl class="grid grid-cols-2 gap-8 py-8 text-center md:grid-cols-4 md:py-12">
+    {stats.map((stat) => (
+      <div class="flex flex-col items-center gap-1">
+        <dt class="text-3xl font-bold text-primary">{stat.value}</dt>
+        <dd class="text-sm text-text-secondary">{stat.label}</dd>
+      </div>
+    ))}
+  </dl>
+</Container>

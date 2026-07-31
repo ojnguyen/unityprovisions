@@ -29,3 +29,15 @@ export interface NavItem {
   label: string;
   href: string;
 }
+
+/**
+ * Shared shape for a single impact number — used by stats.ts (the data
+ * source) and ImpactStats.astro (which accepts an array of these as a
+ * `stats` prop rather than importing stats.ts directly, so Home and
+ * About can each pass their own subset/order without the component
+ * needing to know which page it's on).
+ */
+export interface Stat {
+  value: string;
+  label: string;
+}
