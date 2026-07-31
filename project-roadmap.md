@@ -34,11 +34,11 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `Hero.astro` next (see
-Component Library §7 for its spec, Implementation Phases §9 for the full
-remaining order, and §5 for the current file tree). **Update this line
-every time a step is completed, so it always names the actual next thing
-to build — not the thing that was just finished.**
+**Continue here:** Phase 5, Step 1 (Home) — build `ImpactStats.astro` next
+(see Component Library §7 for its spec, Implementation Phases §9 for the
+full remaining order, and §5 for the current file tree). **Update this
+line every time a step is completed, so it always names the actual next
+thing to build — not the thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
@@ -126,7 +126,7 @@ src/
 │   │   └── Footer.astro                ✅ built
 │   │
 │   ├── sections/                 — page-specific composed sections
-│   │   ├── Hero.astro                  📋 planned — Home
+│   │   ├── Hero.astro                  ✅ built — Home
 │   │   ├── ImpactStats.astro           📋 planned — Home, About
 │   │   ├── MissionStatement.astro      📋 planned — Home
 │   │   ├── YouTubeEmbed.astro          📋 planned — Home
@@ -436,10 +436,28 @@ Status: ✅ Built · 📋 Planned
 
 ### Page Sections — `src/components/sections/`
 
-**Hero** — 📋 Planned
-- Purpose: Home's opening statement.
-- Props: `headline`, `tagline` ("Students Ending Hunger"),
-  `ctaLabel`/`ctaHref` (Donate).
+**Hero** — ✅ Built
+- Purpose: Home's opening statement — the first section a visitor sees.
+- Props: `headline: string`, `tagline: string`, `ctaLabel: string`,
+  `ctaHref: string` — all required, no defaults, matching the pattern of
+  the other Home section components (they're pure content components;
+  real copy is supplied by `index.astro` at assembly time, not baked in
+  here). `tagline` holds the org's actual slogan ("Students Ending
+  Hunger"); `ctaLabel`/`ctaHref` point at Donate.
+- Structure: `<Container as="section">` (no distinct background of its
+  own, so it renders directly as the section per Container's usage
+  convention) wrapping a centered flex column: tagline (styled as an
+  eyebrow — small, uppercase, bold, `text-primary` — by hand, not via
+  `SectionHeading`, which is explicitly excluded from Hero per its own
+  entry above) → `headline` as this page's one `<h1>` → CTA.
+- CTA uses plain `Button` (`variant="accent" size="lg"`), not
+  `ExternalLinkCTA` — the Donate destination (`/donate`) is an internal
+  route, not an off-site link, so `target="_blank"` would be wrong here.
+- Implementation note: no image prop. `global.css` has a `--radius-lg`
+  comment mentioning "hero image," but there's no `assets/hero/` folder
+  in §5 and §7's original spec never listed an image prop — treating
+  that comment as describing a possible future use of the token, not a
+  current requirement. Flagging here in case that assumption changes.
 
 **ImpactStats** — 📋 Planned
 - Purpose: presents the organization's real impact numbers as a
@@ -630,8 +648,8 @@ Sections, in order:
 Build order; components per page in build order; each page ends with an assembly step.
 
 - [ ] **1. Home** (`index.astro`):
-    - [ ] Hero — next
-    - [ ] ImpactStats
+    - [x] Hero
+    - [ ] ImpactStats — next
     - [ ] MissionStatement
     - [ ] YouTubeEmbed
     - [ ] PartnersAndSupporters

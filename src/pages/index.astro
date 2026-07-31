@@ -8,6 +8,7 @@ import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
 import testImage from '@assets/test-image.jpg';
 import Container from '@components/ui/Container.astro';
 import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
+import Hero from '@components/sections/Hero.astro';
 ---
 
 <Layout>
@@ -52,9 +53,15 @@ import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 			</p>
 		</Container>
 		<ExternalLinkCTA
-			label="Volunteer"
+			label="Email List"
 			href="https://forms.gle/7JFDkKPdzYv1LfCP6"
 			icon="lucide:external-link">
 		</ExternalLinkCTA>
+		<Hero
+			headline="Creating opportunities and building stronger communities."
+			tagline="Unity Provisions"
+			ctaLabel="Donate"
+			ctaHref="/donate"
+		/>
 	</main>
 </Layout>

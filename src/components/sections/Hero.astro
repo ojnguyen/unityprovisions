@@ -1,0 +1,26 @@
+---
+import Container from '@components/ui/Container.astro';
+import Button from '@components/ui/Button.astro';
+
+interface Props {
+  headline: string;
+  tagline: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+
+const { headline, tagline, ctaLabel, ctaHref } = Astro.props as Props;
+---
+<Container as="section">
+  <div class="flex flex-col items-center gap-6 py-16 text-center md:py-24">
+    <p class="text-sm font-semibold uppercase tracking-wide text-primary">
+      {tagline}
+    </p>
+    <h1 class="max-w-3xl text-3xl font-bold text-text-primary">
+      {headline}
+    </h1>
+    <Button href={ctaHref} variant="accent" size="lg">
+      {ctaLabel}
+    </Button>
+  </div>
+</Container>
