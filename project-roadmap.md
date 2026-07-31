@@ -25,8 +25,8 @@ multi-step flows or logins.
 
 ## 2. How to Resume This Project
 
-**Current phase: Phase 4 — Shared Infrastructure.** Reusable UI
-primitives are being built before any page is assembled.
+**Current phase: Phase 5 — Build Pages.** Shared infrastructure (Phase 4)
+is complete; page assembly starts with Home.
 
 **What's built and what isn't:** don't maintain a separate list here —
 the project tree in §5 is the single source of truth for every file in
@@ -34,8 +34,8 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.7 — build `Layout.astro` next (see Component
-Library §7 for its spec, Implementation Phases §9 for the full
+**Continue here:** Phase 5, Step 1 (Home) — build `Hero.astro` next (see
+Component Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
 to build — not the thing that was just finished.**
@@ -91,10 +91,11 @@ to build — not the thing that was just finished.**
   `astro-icon`. Packages `@iconify-json/lucide` and
   `@iconify-json/simple-icons` are installed.
 - **Path aliases** (`tsconfig.json`): `@components/*`, `@layouts/*`,
-  `@content/*`, `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, and
-  `@/types` for the single root `src/types.ts` file. No `baseUrl` —
-  deprecated in TypeScript 6.0; every alias carries its own explicit
-  `./src/...` prefix instead.
+  `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, and `@/types` for the
+  single root `src/types.ts` file. No `baseUrl` — deprecated in
+  TypeScript 6.0; every alias carries its own explicit `./src/...` prefix
+  instead. (There is no `@content/*` alias — see §5; a `src/content/`
+  folder was never needed for this project and has been removed.)
 - No CSS-in-JS and no component library dependency. `cn()` is a
   zero-dependency class-composition helper — add `tailwind-merge` only if
   a component needs to accept a `class` override prop that could
@@ -146,11 +147,6 @@ src/
 │       ├── QRCodeDonate.astro          📋 planned
 │       └── DocumentEmbed.astro         📋 planned
 │
-├── content/                       — not used in this project. All real content
-│                                     (team roster, stats, project copy) is short
-│                                     enough to live in data/ or page templates
-│                                     directly — no content collections needed.
-│
 ├── data/                          — typed content, kept separate from component code
 │   ├── navigation.ts                   ✅ built — flat 6-item nav + orgName
 │   ├── footer.ts                       ✅ built
@@ -160,7 +156,7 @@ src/
 │   └── projects.ts                     📋 planned — Relief Route + AgriScan content
 │
 ├── layouts/
-│   └── Layout.astro                    📋 planned — base shell: head boilerplate,
+│   └── Layout.astro                    ✅ built — base shell: head boilerplate,
 │                                          mounts Navbar / <slot /> / Footer
 │
 ├── pages/
@@ -247,6 +243,11 @@ elevation.
 - `<a>` and `<button>` are never substituted for each other — tag choice
   always matches real behavior.
 - Full keyboard operability and correct focus management on the mobile nav.
+- Viewport meta tag includes `initial-scale=1` (set in `Layout.astro`) so
+  mobile browsers render at true device width rather than a zoomed-out
+  desktop simulation — required for the `md:` breakpoint behavior used
+  throughout Navbar and other components to actually take effect on
+  phones.
 
 ---
 
@@ -403,6 +404,35 @@ Status: ✅ Built · 📋 Planned
 - A second `<nav aria-label="Footer">` landmark, distinct from Navbar's
   `aria-label="Primary"`, so landmark-based screen reader navigation can
   tell the two apart.
+
+### Root Layout — `src/layouts/`
+
+**Layout** — ✅ Built
+- Purpose: the single base HTML shell for every page — owns the
+  `<html>`/`<head>`/`<body>` boilerplate and mounts the persistent chrome
+  (`Navbar`, `Footer`) exactly once around each page's own content.
+  Unlike everything else in this section, this isn't a reusable content
+  component so much as the required Astro pattern for sharing page
+  structure — its existence isn't a "does this deserve its own file?"
+  judgment call the way a section component is.
+- Use when: every page (`index.astro`, `about.astro`, etc.) wraps its
+  content in `<Layout>...</Layout>`.
+- Props: `title?: string` (default `"Unity Provisions"`),
+  `description?: string` (default `"Creating opportunities and building
+  stronger communities."`) — both optional so a page can render with no
+  props at all during early scaffolding, and both feed the `<title>` tag
+  and the `description` meta tag respectively.
+- Structure: `<meta charset>`, a responsive `viewport` meta
+  (`width=device-width, initial-scale=1`), the `description` meta,
+  `Astro.generator` meta, `<title>`, and the favicon link, followed by
+  `<body class="min-h-screen"><Navbar /><main><slot /></main><Footer /></body>`.
+  `<slot />` is where each page's real markup is injected.
+- Implementation note: the viewport meta's `initial-scale=1` was added
+  during review — the first draft only had `width=device-width`, which
+  is enough to prevent desktop-simulation zoom but not to guarantee a
+  1:1 initial scale on all mobile browsers. Also brought the props
+  destructuring in line with the site-wide `Astro.props as Props`
+  convention (§11), which the first draft omitted.
 
 ### Page Sections — `src/components/sections/`
 
@@ -579,7 +609,7 @@ Sections, in order:
 
 ## 9. Implementation Phases
 
-### Phase 4 — Shared Infrastructure (current)
+### Phase 4 — Shared Infrastructure (complete)
 - [x] 4.1 Design Tokens
 - [~] 4.2 Global Styles & Fonts (base styles shipped; real font-family still pending)
 - [x] 4.3 Utility Helpers
@@ -594,13 +624,13 @@ Sections, in order:
 - [x] 4.6 Navbar & Footer Components:
     - [x] Navbar
     - [x] Footer
-- [ ] 4.7 Layout.astro — next
+- [x] 4.7 Layout.astro
 
-### Phase 5 — Build Pages
+### Phase 5 — Build Pages (current)
 Build order; components per page in build order; each page ends with an assembly step.
 
 - [ ] **1. Home** (`index.astro`):
-    - [ ] Hero
+    - [ ] Hero — next
     - [ ] ImpactStats
     - [ ] MissionStatement
     - [ ] YouTubeEmbed
@@ -711,3 +741,12 @@ Build order; components per page in build order; each page ends with an assembly
   type, a default, a structural choice), the §7 entry is updated to
   match the real implementation in the same edit — the roadmap describes
   what was actually built, not what was originally planned.
+- **Empty placeholder files are intentional.** Files/folders for planned
+  work (e.g. `src/components/sections/Hero.astro`,
+  `src/data/stats.ts`, the not-yet-built pages) are often created ahead
+  of time as blank files, purely for repo organization — this happens
+  before any real content or code goes in them. A file's mere existence
+  on disk (even an empty one at the correct path) is not a signal that
+  it's been started or built. §5's ✅/📋 markers are the only source of
+  truth for build status — always trust those over what's present in the
+  file tree.
