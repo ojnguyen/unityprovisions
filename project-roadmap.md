@@ -100,6 +100,20 @@ the actual next thing to build — not the thing that was just finished.**
   zero-dependency class-composition helper — add `tailwind-merge` only if
   a component needs to accept a `class` override prop that could
   genuinely conflict with its own internal classes.
+- **Live content:** `ImpactStats` (Home, About) live-updates two of its
+  four numbers — total lbs collected and money raised — client-side from
+  the "Donations Overview" tab of a public Google Sheet, read via
+  Google's own Visualization API (`gviz/tq`, the same mechanism behind
+  charts embedded from Sheets on other sites) requested through a JSONP
+  `<script>` tag rather than `fetch()`, since that endpoint doesn't
+  support cross-origin `fetch()`/XHR. This keeps the site fully static
+  (no SSR, no API keys, no third-party proxy dependency) while letting
+  whoever edits the sheet update those two numbers without a redeploy.
+  Falls back to the build-time values in `src/data/stats.ts` if the
+  sheet is unreachable, not yet public, or its shape changes
+  unexpectedly; branches and countries are permanently static and never
+  touched by this mechanism. See §7 (ImpactStats) and §10 (Open
+  integration decisions) for setup requirements and what's still pending.
 
 ---
 
@@ -459,24 +473,37 @@ Status: ✅ Built · 📋 Planned
   that comment as describing a possible future use of the token, not a
   current requirement. Flagging here in case that assumption changes.
 
-**ImpactStats** — ✅ Built
+**ImpactStats** — ✅ Built (🔶 live data pending sheet sharing — see §10)
 - Purpose: presents the organization's real impact numbers as a
   scannable stat grid.
 - Use when: Home (brief) and About (fuller) — see implementation note
   below for how that distinction is actually drawn.
 - Props: `stats: Stat[]`, where `Stat` (`src/types.ts`) is
-  `{ value: string, label: string }`. Passed in by the page rather than
-  imported from `src/data/stats.ts` directly, so Home and About can each
-  supply their own subset/order without the component knowing which
-  page it's on.
-- Data (`src/data/stats.ts`): `6,180+` lbs of food/clothing collected ·
-  `$21,376+` raised · `35+` branches · `8` countries — pre-formatted
-  display strings, not raw numbers.
+  `{ value: string, label: string, liveSheetLabel?: string }`. Passed in
+  by the page rather than imported from `src/data/stats.ts` directly, so
+  Home and About can each supply their own subset/order without the
+  component knowing which page it's on.
+- Data (`src/data/stats.ts`): total lbs collected and money raised are
+  live-sourced (see below); `35+` branches and `8` countries are
+  permanently static, pre-formatted display strings.
 - Structure: `<Container as="section">` wrapping a `<dl>` grid
   (`grid-cols-2` mobile, `md:grid-cols-4` desktop). Each stat is a
   `<dt>` (the large value, `text-3xl font-bold text-primary`) + `<dd>`
   (the label, `text-sm text-text-secondary`), grouped in their own
   `<div>` per HTML5's `dl` content model.
+- **Live data:** stats whose `Stat` entry sets `liveSheetLabel` (in
+  `src/data/stats.ts`) render their build-time fallback value first,
+  then get overwritten client-side if a row in the "Donations Overview"
+  Google Sheet tab (spreadsheet ID
+  `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, `gid=638911803`) has
+  that exact text in column B — that row's column C value replaces the
+  stat's `<dt>`. Stats without `liveSheetLabel` (branches, countries)
+  are never touched. Fetched via Google's `gviz/tq` endpoint through a
+  JSONP `<script>` tag (not `fetch()`, which gviz blocks via CORS) — see
+  §4 for why this approach was chosen over SSR or a third-party proxy.
+  Requirement on the sheet: "Anyone with the link – Viewer" sharing —
+  currently not the case (a request returned a permissions error); see
+  §10 for what's still needed.
 - Implementation note: the component itself carries no heading or
   "brief vs. fuller" prop — §7's original spec didn't define one, and
   the only prop is the stats array. The brief/fuller distinction is left
@@ -744,6 +771,34 @@ Build order; components per page in build order; each page ends with an assembly
   specific — decide before building `get-involved.astro` whether the
   "Volunteer" framing/copy still makes sense, gets adjusted, or the CTA
   is merged with the Email List concept entirely.
+- **ImpactStats live sheet (🔶 pending — one item left):** `ImpactStats.astro`
+  is fully wired to Google Sheet ID
+  `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, tab `gid=638911803`
+  ("Donations Overview"), via Google's own `gviz/tq` endpoint (see §4,
+  §7) — only two stats are live-sourced (total lbs, money raised);
+  branches and countries are permanently static. The only remaining
+  blocker: **the sheet's sharing needs to be set to "Anyone with the
+  link – Viewer"** (currently not the case — a request returned a
+  permissions error). Until that's done, the component silently shows
+  the static fallback from `src/data/stats.ts` and logs a console
+  warning — it does not break the page.
+  - Fragility to know about:
+    1. The live match works by looking for the exact text
+       `"Total (lbs)"` and `"Money Collected ($)"` in column B of that
+       tab. If those cells' wording ever changes, that stat quietly
+       reverts to its static fallback rather than erroring.
+    2. `ImpactStats.astro`'s `SHEET_RANGE` constant (`'B1:C6'`) is
+       intentionally scoped to just the summary block, and must stay
+       that way — the tab has an unrelated donation log starting
+       immediately at row 7, no buffer row in between. Google's query
+       engine infers each column's type from the *majority* of values
+       within whatever range it's given; if `SHEET_RANGE` were ever
+       widened to include the log (mostly dates), column B would get
+       typed as non-string overall, and the label match would silently
+       find nothing — this is exactly what happened during development
+       and cost real debugging time, so it's worth understanding before
+       touching that constant. If rows are added to or removed from the
+       summary block, `SHEET_RANGE` needs to be updated to match.
 
 ---
 

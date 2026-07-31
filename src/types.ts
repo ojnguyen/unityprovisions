@@ -40,4 +40,15 @@ export interface NavItem {
 export interface Stat {
   value: string;
   label: string;
+  /**
+   * Optional. When set, ImpactStats.astro's client-side script looks
+   * for a row in the "Donations Overview" Google Sheet tab whose
+   * column B text matches this string *exactly*, and replaces this
+   * stat's displayed value with that row's column C value if found.
+   * Leave unset to keep a stat permanently static — it will never be
+   * touched by the live-fetch script. See src/data/stats.ts for which
+   * stats currently use this, and project-roadmap.md §7/§10 for the
+   * live-data mechanism and setup requirements.
+   */
+  liveSheetLabel?: string;
 }
