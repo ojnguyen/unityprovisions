@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 4.6 — build `Footer` next (see Component
+**Continue here:** Phase 4.7 — build `Layout.astro` next (see Component
 Library §7 for its spec, Implementation Phases §9 for the full
 remaining order, and §5 for the current file tree). **Update this line
 every time a step is completed, so it always names the actual next thing
@@ -122,7 +122,7 @@ src/
 │   │
 │   ├── layout/                   — site-wide chrome, mounted once in Layout.astro
 │   │   ├── Navbar.astro                ✅ built
-│   │   └── Footer.astro                📋 next
+│   │   └── Footer.astro                ✅ built
 │   │
 │   ├── sections/                 — page-specific composed sections
 │   │   ├── Hero.astro                  📋 planned — Home
@@ -324,8 +324,9 @@ Status: ✅ Built · 📋 Planned
   just a style preference.
 
 **ExternalLinkCTA** — ✅ Built
-- Purpose: the single component for every off-site link (Volunteer,
-  Branch Founder application, Zeffy donation, Linktree, social).
+- Purpose: the component for standalone, prominent off-site
+  calls-to-action — e.g. the Get Involved page's Volunteer and Branch
+  Founder CTAs, and the Donate page's Zeffy link.
 - Props: reuses the shared `ExternalLink` type from `src/types.ts`
   (`type Props = ExternalLink`) rather than redeclaring an identical
   interface — `label: string`, `href: string`, `icon?: string`.
@@ -334,6 +335,11 @@ Status: ✅ Built · 📋 Planned
   as `ExternalLinkCTA`'s own props) via Button's new pass-through support
   (see Button's entry above). Renders `icon` (an Iconify name) after the
   label only when provided.
+- Usage convention: reserved for isolated, prominent CTAs — not for
+  dense rows of small utility links sitting close together (e.g. a
+  footer's link columns, or social icons), where Button's solid styling
+  reads as too heavy. See Footer's entry below for the concrete case
+  this came up against.
 - Example: `<ExternalLinkCTA label="Volunteer" href="https://forms.gle/7JFDkKPdzYv1LfCP6" icon="lucide:external-link" />`
 
 ### Layout — `src/components/layout/`
@@ -375,7 +381,7 @@ Status: ✅ Built · 📋 Planned
   `<Container>`, not `<Container as="header">` — see Container's own
   entry above for why these two stay separate.
 
-**Footer** — 📋 Planned
+**Footer** — ✅ Built
 - Purpose: persistent footer.
 - Data: `src/data/footer.ts` — main nav links, plus Email List / Linktree
   as external links, social icons (Instagram, TikTok), phone, copyright.
@@ -383,7 +389,20 @@ Status: ✅ Built · 📋 Planned
   out to be a general contact-list signup with no volunteer-specific
   question, so showing it under two adjacent labels read as a mistake
   rather than two real options. See §10.)
-- Design constraints: icon-only social links need `aria-label`.
+- Structure: plain hand-styled `<a>` tags throughout (nav links,
+  external links, social icons), not `ExternalLinkCTA` — see that
+  component's entry above for why. Cost of this choice: `target="_blank"`
+  and `rel="noopener noreferrer"` have to be set by hand on each external
+  `<a>` here, rather than centralized in one component.
+- Design constraints: icon-only social links get `aria-label` on the
+  link itself (the link's real accessible name); the icon inside is
+  `aria-hidden="true"` so it isn't announced a second time, redundantly,
+  on top of that label. Copyright year computed via
+  `new Date().getFullYear()` at build time, not per-visitor — it updates
+  on the next deploy, not automatically at midnight on Jan 1.
+- A second `<nav aria-label="Footer">` landmark, distinct from Navbar's
+  `aria-label="Primary"`, so landmark-based screen reader navigation can
+  tell the two apart.
 
 ### Page Sections — `src/components/sections/`
 
@@ -572,10 +591,10 @@ Sections, in order:
     - [x] Container
     - [x] ExternalLinkCTA
 - [x] 4.5 Navigation & Footer Data (`src/data/navigation.ts`, `src/data/footer.ts`)
-- [ ] 4.6 Navbar & Footer Components:
+- [x] 4.6 Navbar & Footer Components:
     - [x] Navbar
-    - [ ] Footer — next
-- [ ] 4.7 Layout.astro
+    - [x] Footer
+- [ ] 4.7 Layout.astro — next
 
 ### Phase 5 — Build Pages
 Build order; components per page in build order; each page ends with an assembly step.
