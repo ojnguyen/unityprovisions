@@ -1,0 +1,19 @@
+---
+import Container from '@components/ui/Container.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+
+interface Props {
+  heading: string;
+  body: string;
+}
+
+const { heading, body } = Astro.props as Props;
+---
+<Container as="section">
+  <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+    <SectionHeading title={heading} align="center" />
+    <p class="max-w-3xl text-lg text-text-secondary">
+      {body}
+    </p>
+  </div>
+</Container>

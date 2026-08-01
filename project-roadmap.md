@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `MissionStatement.astro`
+**Continue here:** Phase 5, Step 1 (Home) — build `YouTubeEmbed.astro`
 next (see Component Library §7 for its spec, Implementation Phases §9
 for the full remaining order, and §5 for the current file tree).
 **Update this line every time a step is completed, so it always names
@@ -142,7 +142,7 @@ src/
 │   ├── sections/                 — page-specific composed sections
 │   │   ├── Hero.astro                  ✅ built — Home
 │   │   ├── ImpactStats.astro           ✅ built — Home, About
-│   │   ├── MissionStatement.astro      📋 planned — Home
+│   │   ├── MissionStatement.astro      ✅ built — Home
 │   │   ├── YouTubeEmbed.astro          📋 planned — Home
 │   │   ├── PartnersAndSupporters.astro 📋 planned — Home, About
 │   │   ├── GetInvolvedTeaser.astro     📋 planned — Home
@@ -512,8 +512,11 @@ Status: ✅ Built · 📋 Planned
   and additional paragraph text. This keeps the component reusable
   rather than page-aware.
 
-**MissionStatement** — 📋 Planned
+**MissionStatement** — ✅ Built
 - Purpose: the organization's mission, in its own words.
+- Props: `heading: string`, `body: string` — both required, no defaults,
+  matching the pattern of the other Home section components; real copy
+  (see Content below) is supplied by `index.astro` at assembly time.
 - Content: "At Unity Provisions, we believe that no one should go hungry
   in a world of abundance. As a student-led movement, we empower young
   leaders to create sustainable food collection programs in schools and
@@ -521,6 +524,16 @@ Status: ✅ Built · 📋 Planned
   fight the stigma around food insecurity and transform surplus into
   sustenance. Together, we are building a future where access to food is
   a right, not a privilege."
+- Structure: `<Container as="section">` (no distinct background, same
+  reasoning as Hero/ImpactStats) wrapping a centered flex column:
+  `SectionHeading` (`title={heading}`, `align="center"`, rendering as
+  this page's `<h2>` since Hero already owns the one `<h1>`) followed by
+  a `<p>` at `text-lg` — the design system's "lead paragraph" size —
+  constrained to `max-w-3xl` for readable line length.
+- Implementation note: unlike Hero, this component *does* use
+  `SectionHeading` — nothing in §7 excludes it here, and a plain title
+  (no eyebrow/subtext) was enough since the real substance is the body
+  paragraph, not the heading.
 
 **YouTubeEmbed** — 📋 Planned
 - Purpose: embeds "Watch Our Story" without a hand-written iframe or
@@ -695,8 +708,8 @@ Build order; components per page in build order; each page ends with an assembly
 - [ ] **1. Home** (`index.astro`):
     - [x] Hero
     - [x] ImpactStats
-    - [ ] MissionStatement — next
-    - [ ] YouTubeEmbed
+    - [x] MissionStatement
+    - [ ] YouTubeEmbed — next
     - [ ] PartnersAndSupporters
     - [ ] GetInvolvedTeaser
     - [ ] ContactForm

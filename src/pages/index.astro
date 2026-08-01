@@ -11,6 +11,7 @@ import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 import Hero from '@components/sections/Hero.astro';
 import ImpactStats from '@components/sections/ImpactStats.astro';
 import { stats } from '@data/stats';
+import MissionStatement from '@components/sections/MissionStatement.astro';
 ---
 
 <Layout>
@@ -57,8 +58,8 @@ import { stats } from '@data/stats';
 		<ExternalLinkCTA
 			label="Email List"
 			href="https://forms.gle/7JFDkKPdzYv1LfCP6"
-			icon="lucide:external-link">
-		</ExternalLinkCTA>
+			icon="lucide:external-link" 
+		/>
 		<Hero
 			headline="Creating opportunities and building stronger communities."
 			tagline="Unity Provisions"
@@ -66,5 +67,9 @@ import { stats } from '@data/stats';
 			ctaHref="/donate"
 		/>
 		<ImpactStats stats={stats} />
+		<MissionStatement
+			heading="Our Mission"
+			body="Our mission is to create opportunities and build stronger communities through our programs and initiatives. We strive to empower individuals and foster a sense of unity and collaboration."
+		/>
 	</main>
 </Layout>
