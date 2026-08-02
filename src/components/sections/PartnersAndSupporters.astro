@@ -1,0 +1,45 @@
+---
+import Container from '@components/ui/Container.astro';
+import type { Partner } from '@/types';
+
+interface Props {
+  partners: Partner[];
+}
+
+const { partners } = Astro.props as Props;
+
+// An entry with no `type` set is treated as a partner by default.
+const partnerOrgs = partners.filter((org) => org.type !== 'supporter');
+const supporterOrgs = partners.filter((org) => org.type === 'supporter');
+
+// Grouped into one array so the markup below only needs to loop once,
+// instead of repeating the same badge/logo rendering twice. A group is
+// skipped entirely if the page passed in zero orgs of that type (e.g.
+// a "brief" Home version that only supplies partners).
+const groups = [
+  { label: 'Partners', orgs: partnerOrgs },
+  { label: 'Supporters', orgs: supporterOrgs },
+].filter((group) => group.orgs.length > 0);
+---
+<Container as="section">
+  <div class="flex flex-col gap-10 py-12 md:py-16">
+    {groups.map((group) => (
+      <div class="flex flex-col items-center gap-4 text-center">
+        <h3 class="text-sm font-semibold uppercase tracking-wide text-primary">
+          {group.label}
+        </h3>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          {group.orgs.map((org) => (
+            org.logo ? (
+              <img src={org.logo} alt={org.name} class="h-10 object-contain" />
+            ) : (
+              <span class="rounded-sm border border-border px-3 py-1.5 text-sm text-text-secondary">
+                {org.name}
+              </span>
+            )
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</Container>

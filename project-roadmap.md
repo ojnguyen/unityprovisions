@@ -34,12 +34,11 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build
-`PartnersAndSupporters.astro` next (see Component Library §7 for its
-spec, Implementation Phases §9 for the full remaining order, and §5 for
-the current file tree). **Update this line every time a step is
-completed, so it always names the actual next thing to build — not the
-thing that was just finished.**
+**Continue here:** Phase 5, Step 1 (Home) — build `GetInvolvedTeaser.astro`
+next (see Component Library §7 for its spec, Implementation Phases §9
+for the full remaining order, and §5 for the current file tree).
+**Update this line every time a step is completed, so it always names
+the actual next thing to build — not the thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
@@ -145,7 +144,7 @@ src/
 │   │   ├── ImpactStats.astro           ✅ built — Home, About
 │   │   ├── MissionStatement.astro      ✅ built — Home
 │   │   ├── YouTubeEmbed.astro          ✅ built — Home
-│   │   ├── PartnersAndSupporters.astro 📋 planned — Home, About
+│   │   ├── PartnersAndSupporters.astro ✅ built — Home, About
 │   │   ├── GetInvolvedTeaser.astro     📋 planned — Home
 │   │   ├── ContactForm.astro           📋 planned — Home
 │   │   ├── EmailSignup.astro           📋 planned — Home, Get Involved
@@ -167,7 +166,7 @@ src/
 │   ├── footer.ts                       ✅ built
 │   ├── staff.ts                        📋 planned — the 8 real team members
 │   ├── stats.ts                        ✅ built — the 4 impact numbers
-│   ├── partners.ts                     📋 planned — partners + supporters
+│   ├── partners.ts                     ✅ built — partners + supporters
 │   └── projects.ts                     📋 planned — Relief Route + AgriScan content
 │
 ├── layouts/
@@ -577,13 +576,32 @@ Status: ✅ Built · 📋 Planned
      clicking play — a small head start on §11's still-deferred cookie
      banner decision, not a full solution to it.
 
-**PartnersAndSupporters** — 📋 Planned
+**PartnersAndSupporters** — ✅ Built
 - Purpose: presents the organizations that partner with or fund Unity Provisions.
-- Props: array of `{ name, type?: 'partner'|'supporter', logo? }`, from
-  `src/data/partners.ts`.
-- Data: Partners — Wang YMCA, Mystic Valley YMCA, Food4Philly.
-  Supporters — Esther R. Sanger Center for Compassion, Stephen J. Brady
-  Stop Hunger, YMCA, Sodexo, Walmart Spark Good, Google.
+- Use when: Home (brief) and About (fuller) — same brief/fuller pattern
+  as `ImpactStats`: the component has no internal toggle for this, only
+  a `partners` array prop; the assembling page decides what subset (and
+  what surrounding heading/copy) to supply.
+- Props: `partners: Partner[]`, where `Partner` (`src/types.ts`) is
+  `{ name: string, type?: 'partner' | 'supporter', logo?: string }`. An
+  entry with no `type` set is grouped as a partner by default.
+- Data (`src/data/partners.ts`): Partners — Wang YMCA, Mystic Valley
+  YMCA, Food4Philly. Supporters — Esther R. Sanger Center for
+  Compassion, Stephen J. Brady Stop Hunger, YMCA, Sodexo, Walmart Spark
+  Good, Google.
+- Structure: `<Container as="section">` wrapping one loop over up to two
+  groups ("Partners" / "Supporters," each skipped entirely if empty),
+  each rendering a small `<h3>` label (assumes the assembling page
+  supplies its own `<h2>` above this component, e.g. via
+  `SectionHeading`, so this nests correctly one level below it) followed
+  by a wrapped row of badges.
+- Logo support: `logo` is optional and forward-looking — no logo assets
+  exist yet (see §5's `assets/` tree), so every organization currently
+  renders as a plain text badge (`rounded-sm border border-border ...`).
+  The moment any entry in `partners.ts` gets a real `logo` path, that
+  one organization automatically switches to rendering as an `<img>`
+  (`object-contain`, fixed height) instead — no component changes
+  needed.
 
 **GetInvolvedTeaser** — 📋 Planned
 - Purpose: a short Home band pointing to the full Get Involved page.
@@ -746,8 +764,8 @@ Build order; components per page in build order; each page ends with an assembly
     - [x] ImpactStats
     - [x] MissionStatement
     - [x] YouTubeEmbed
-    - [ ] PartnersAndSupporters — next
-    - [ ] GetInvolvedTeaser
+    - [x] PartnersAndSupporters
+    - [ ] GetInvolvedTeaser — next
     - [ ] ContactForm
     - [ ] EmailSignup
     - [ ] DonateBanner

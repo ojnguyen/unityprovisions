@@ -52,3 +52,21 @@ export interface Stat {
    */
   liveSheetLabel?: string;
 }
+
+/**
+ * Shared shape for a single partner or supporter organization — used by
+ * partners.ts (the data source) and PartnersAndSupporters.astro (which
+ * accepts an array of these as a `partners` prop, then splits it into
+ * a "Partners" group and a "Supporters" group for display; an entry
+ * with no `type` set is treated as a partner).
+ */
+export interface Partner {
+  name: string;
+  type?: 'partner' | 'supporter';
+  /**
+   * Optional path/URL to a logo image. No logo assets exist yet for
+   * this project (see §5's assets/ tree) — until one is supplied here,
+   * this organization renders as a plain text badge instead.
+   */
+  logo?: string;
+}

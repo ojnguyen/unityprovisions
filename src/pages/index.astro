@@ -13,6 +13,8 @@ import ImpactStats from '@components/sections/ImpactStats.astro';
 import { stats } from '@data/stats';
 import MissionStatement from '@components/sections/MissionStatement.astro';
 import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
+import PartnerAndSupporters from '@components/sections/PartnersAndSupporters.astro';
+import { partners } from '@data/partners';
 ---
 
 <Layout>
@@ -76,5 +78,6 @@ import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
 			videoId="dQw4w9WgXcQ"
 			title="Rick Astley - Never Gonna Give You Up (Video)"
 		/>
+		<PartnerAndSupporters partners={partners} />
 	</main>
 </Layout>
