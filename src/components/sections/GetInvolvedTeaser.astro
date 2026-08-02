@@ -1,0 +1,21 @@
+---
+import Container from '@components/ui/Container.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import Button from '@components/ui/Button.astro';
+
+interface Props {
+  heading: string;
+  subtext: string;
+  ctaLabel: string;
+}
+
+const { heading, subtext, ctaLabel } = Astro.props as Props;
+---
+<Container as="section">
+  <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+    <SectionHeading title={heading} subtext={subtext} align="center" />
+    <Button href="/get-involved" variant="primary" size="md">
+      {ctaLabel}
+    </Button>
+  </div>
+</Container>

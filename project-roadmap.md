@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `GetInvolvedTeaser.astro`
+**Continue here:** Phase 5, Step 1 (Home) — build `ContactForm.astro`
 next (see Component Library §7 for its spec, Implementation Phases §9
 for the full remaining order, and §5 for the current file tree).
 **Update this line every time a step is completed, so it always names
@@ -145,7 +145,7 @@ src/
 │   │   ├── MissionStatement.astro      ✅ built — Home
 │   │   ├── YouTubeEmbed.astro          ✅ built — Home
 │   │   ├── PartnersAndSupporters.astro ✅ built — Home, About
-│   │   ├── GetInvolvedTeaser.astro     📋 planned — Home
+│   │   ├── GetInvolvedTeaser.astro     ✅ built — Home
 │   │   ├── ContactForm.astro           📋 planned — Home
 │   │   ├── EmailSignup.astro           📋 planned — Home, Get Involved
 │   │   └── DonateBanner.astro          📋 planned — Home, Donate
@@ -603,9 +603,27 @@ Status: ✅ Built · 📋 Planned
   (`object-contain`, fixed height) instead — no component changes
   needed.
 
-**GetInvolvedTeaser** — 📋 Planned
+**GetInvolvedTeaser** — ✅ Built
 - Purpose: a short Home band pointing to the full Get Involved page.
-- Props: heading/subtext + a single `Button` linking to `/get-involved`.
+- Props: `heading: string`, `subtext: string`, `ctaLabel: string` — all
+  required, no defaults, matching the pattern of the other Home section
+  components. Notably *not* a prop: the destination href.
+- Structure: `<Container as="section">` wrapping a centered
+  `SectionHeading` (using its built-in `subtext` slot rather than a
+  separate hand-written paragraph — nothing in §7 excludes
+  `SectionHeading` here, unlike Hero) followed by a `Button`.
+- The CTA's `href="/get-involved"` is hardcoded inside the component,
+  not exposed as a prop like Hero's `ctaHref` is. This component's whole
+  identity is "the teaser that links to Get Involved" — hardcoding the
+  destination keeps that permanently true and makes it structurally
+  impossible to misuse this component to link elsewhere.
+- Uses `variant="primary" size="md"` on the `Button`, not
+  `variant="accent"` like Hero's Donate CTA. `accent` has so far been
+  reserved specifically for "give money" asks (Navbar's Donate, Hero's
+  Donate); keeping this teaser on the ordinary `primary` color preserves
+  that distinction rather than competing with Donate for visual weight.
+  `md` (not Hero's `lg`) since this sits further down the page after
+  several other sections have already made their case.
 
 **ContactForm** — 📋 Planned
 - Purpose: the site's one native form.
@@ -765,8 +783,8 @@ Build order; components per page in build order; each page ends with an assembly
     - [x] MissionStatement
     - [x] YouTubeEmbed
     - [x] PartnersAndSupporters
-    - [ ] GetInvolvedTeaser — next
-    - [ ] ContactForm
+    - [x] GetInvolvedTeaser
+    - [ ] ContactForm — next
     - [ ] EmailSignup
     - [ ] DonateBanner
     - [ ] Assemble `index.astro`

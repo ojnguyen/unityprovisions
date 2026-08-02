@@ -15,6 +15,7 @@ import MissionStatement from '@components/sections/MissionStatement.astro';
 import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
 import PartnerAndSupporters from '@components/sections/PartnersAndSupporters.astro';
 import { partners } from '@data/partners';
+import GetInvolvedTeaser from '@components/sections/GetInvolvedTeaser.astro';
 ---
 
 <Layout>
@@ -79,5 +80,6 @@ import { partners } from '@data/partners';
 			title="Rick Astley - Never Gonna Give You Up (Video)"
 		/>
 		<PartnerAndSupporters partners={partners} />
+		<GetInvolvedTeaser heading="Get Involved" subtext="Learn how you can make a difference in your community." ctaLabel="Learn More"/>
 	</main>
 </Layout>
