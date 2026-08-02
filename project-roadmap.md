@@ -34,11 +34,12 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `YouTubeEmbed.astro`
-next (see Component Library §7 for its spec, Implementation Phases §9
-for the full remaining order, and §5 for the current file tree).
-**Update this line every time a step is completed, so it always names
-the actual next thing to build — not the thing that was just finished.**
+**Continue here:** Phase 5, Step 1 (Home) — build
+`PartnersAndSupporters.astro` next (see Component Library §7 for its
+spec, Implementation Phases §9 for the full remaining order, and §5 for
+the current file tree). **Update this line every time a step is
+completed, so it always names the actual next thing to build — not the
+thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
@@ -143,7 +144,7 @@ src/
 │   │   ├── Hero.astro                  ✅ built — Home
 │   │   ├── ImpactStats.astro           ✅ built — Home, About
 │   │   ├── MissionStatement.astro      ✅ built — Home
-│   │   ├── YouTubeEmbed.astro          📋 planned — Home
+│   │   ├── YouTubeEmbed.astro          ✅ built — Home
 │   │   ├── PartnersAndSupporters.astro 📋 planned — Home, About
 │   │   ├── GetInvolvedTeaser.astro     📋 planned — Home
 │   │   ├── ContactForm.astro           📋 planned — Home
@@ -251,7 +252,14 @@ elevation.
 - Focus ring via `:focus-visible` only — `2px solid var(--color-primary)`,
   `2px` offset (meets WCAG 2.4.11), applied globally.
 - Exactly one `<h1>` per page.
-- Every image requires real `alt` text — no default/empty value permitted.
+- Every image requires real `alt` text — no default/empty value
+  permitted — **except** a purely decorative image nested inside a
+  control that already carries its own complete accessible name (e.g.
+  `YouTubeEmbed`'s thumbnail sits inside a `<button aria-label="...">`).
+  In that specific case, `alt=""` is correct: giving the image real alt
+  text too would make screen readers announce the same information
+  twice back-to-back. This is a narrow, documented exception — not a
+  general license to leave alt text empty elsewhere.
 - Every form input has a real `<label>`.
 - Icon-only links/buttons require `aria-label`.
 - `<a>` and `<button>` are never substituted for each other — tag choice
@@ -535,11 +543,39 @@ Status: ✅ Built · 📋 Planned
   (no eyebrow/subtext) was enough since the real substance is the body
   paragraph, not the heading.
 
-**YouTubeEmbed** — 📋 Planned
+**YouTubeEmbed** — ✅ Built
 - Purpose: embeds "Watch Our Story" without a hand-written iframe or
   eager script load.
-- Props: `videoId` (`QsL7OpKv2Qg`), `title` (required for accessibility).
-- Structure: responsive 16:9, ideally a click-to-load facade.
+- Props: `videoId: string`, `title: string` — both required. `title`
+  does double duty: it's the visible heading above the video (via
+  `SectionHeading`) *and* the accessible name used for the play button's
+  `aria-label` and the eventual iframe's `title` — one prop, no
+  redundant second field.
+- Structure: `<Container as="section">` wrapping a centered
+  `SectionHeading` + a `data-youtube-facade` div locked to `aspect-video`
+  (Tailwind's built-in 16:9 utility), `max-w-3xl` to match
+  `MissionStatement`'s paragraph width above it. Inside: a `<button>`
+  (not a link — clicking runs JS, not navigation) showing a `hqdefault`
+  thumbnail with a play-icon overlay.
+- Click-to-load mechanism: a `<script>` (using `querySelectorAll`, safe
+  for multiple instances) listens for a click on the facade, then builds
+  a real `<iframe>` — pointed at `youtube-nocookie.com` with
+  `autoplay=1` — and swaps it in via `replaceChildren`, entirely
+  replacing the button/thumbnail. Nothing from YouTube loads until that
+  click happens.
+- Implementation notes / deviations from a strict reading of §6:
+  1. The thumbnail's `<img>` uses `alt=""` — see §6's accessibility
+     rules for the narrow exception this falls under (decorative image
+     nested inside an already-labeled control).
+  2. Not using `ResponsiveImage` for the thumbnail — that component
+     relies on `astro:assets`, which only optimizes local or
+     explicitly-allowlisted remote images, and `i.ytimg.com` isn't in
+     `astro.config.mjs`. A plain `<img>` avoids needing to touch that
+     config for one external thumbnail.
+  3. `youtube-nocookie.com` (not the standard `youtube.com/embed`
+     domain) delays most tracking cookies until the visitor opts in by
+     clicking play — a small head start on §11's still-deferred cookie
+     banner decision, not a full solution to it.
 
 **PartnersAndSupporters** — 📋 Planned
 - Purpose: presents the organizations that partner with or fund Unity Provisions.
@@ -709,8 +745,8 @@ Build order; components per page in build order; each page ends with an assembly
     - [x] Hero
     - [x] ImpactStats
     - [x] MissionStatement
-    - [ ] YouTubeEmbed — next
-    - [ ] PartnersAndSupporters
+    - [x] YouTubeEmbed
+    - [ ] PartnersAndSupporters — next
     - [ ] GetInvolvedTeaser
     - [ ] ContactForm
     - [ ] EmailSignup

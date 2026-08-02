@@ -12,6 +12,7 @@ import Hero from '@components/sections/Hero.astro';
 import ImpactStats from '@components/sections/ImpactStats.astro';
 import { stats } from '@data/stats';
 import MissionStatement from '@components/sections/MissionStatement.astro';
+import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
 ---
 
 <Layout>
@@ -70,6 +71,10 @@ import MissionStatement from '@components/sections/MissionStatement.astro';
 		<MissionStatement
 			heading="Our Mission"
 			body="Our mission is to create opportunities and build stronger communities through our programs and initiatives. We strive to empower individuals and foster a sense of unity and collaboration."
+		/>
+		<YouTubeEmbed
+			videoId="dQw4w9WgXcQ"
+			title="Rick Astley - Never Gonna Give You Up (Video)"
 		/>
 	</main>
 </Layout>
