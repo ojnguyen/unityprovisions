@@ -16,6 +16,7 @@ import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
 import PartnerAndSupporters from '@components/sections/PartnersAndSupporters.astro';
 import { partners } from '@data/partners';
 import GetInvolvedTeaser from '@components/sections/GetInvolvedTeaser.astro';
+import ContactForm from '@components/sections/ContactForm.astro';
 ---
 
 <Layout>
@@ -81,5 +82,6 @@ import GetInvolvedTeaser from '@components/sections/GetInvolvedTeaser.astro';
 		/>
 		<PartnerAndSupporters partners={partners} />
 		<GetInvolvedTeaser heading="Get Involved" subtext="Learn how you can make a difference in your community." ctaLabel="Learn More"/>
+		<ContactForm heading="Contact Us" subtext="We would love to hear from you! Please fill out the form below and we will get back to you as soon as possible." />
 	</main>
 </Layout>

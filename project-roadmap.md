@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `ContactForm.astro`
+**Continue here:** Phase 5, Step 1 (Home) — build `DonateBanner.astro`
 next (see Component Library §7 for its spec, Implementation Phases §9
 for the full remaining order, and §5 for the current file tree).
 **Update this line every time a step is completed, so it always names
@@ -42,7 +42,22 @@ the actual next thing to build — not the thing that was just finished.**
 
 **Process for every new component or page:**
 1. Confirm it should exist as its own component — a genuinely distinct,
-   reusable piece of UI, not a one-off bit of markup.
+   reusable piece of UI, not a one-off bit of markup. As part of this
+   confirmation, check the real live site (unityprovisions.org) for
+   whether the content/section actually exists there and where — this is
+   real signal for the decision, not a mandate to copy it exactly. This
+   project is a remake, not a clone: content and structure can and does
+   change from what's live (see §3), so a live-site finding is one input
+   into the judgment call, not an override of it. When live copy,
+   layout, or visual treatment falls short of a professional standard,
+   improve it — rewrite wording, adjust placement, restyle — rather than
+   reproducing it as-is (see §3's higher-standard principle). Also check
+   this site's *own* existing components and data — if the need is
+   already fully served by something already built (an existing link,
+   an existing form, an existing page), that's a reason to reuse or
+   extend it rather than add a parallel one, even if the live site has
+   a dedicated widget for it (see `EmailSignup`'s removal in §7 for a
+   worked example of this going the other way after it was built).
 2. Explain what it is, where it appears on the site, and why it earns its
    own file, before writing any code.
 3. Build it.
@@ -61,8 +76,12 @@ the actual next thing to build — not the thing that was just finished.**
 
 ## 3. Goals and Design Principles
 
-- Preserve Unity Provisions' real mission, voice, branding, and content —
-  this is a specific organization's site, not a generic template.
+- Preserve Unity Provisions' real mission, voice, branding, and factual
+  content — who they are, what they do, their real numbers, partners,
+  and story — this is a specific organization's site, not a generic
+  template. "Preserve" means preserve the substance, not transcribe the
+  live site's exact sentences verbatim — see the higher-standard
+  principle below.
 - No account creation, sign-in, or authentication features anywhere.
   Every page is public.
 - Fewer, stronger pages rather than many thin ones — related content
@@ -74,8 +93,32 @@ the actual next thing to build — not the thing that was just finished.**
 - Ways to participate (volunteering, founding a branch, joining the
   mailing list) are external calls-to-action, not native in-house flows.
 - A component exists because it's genuinely reused or genuinely isolates
-  a real concern — never by default.
+  a real concern — never by default. This also means not building a
+  parallel mechanism (a native form, a custom widget) for something an
+  existing, already-working link or integration already covers — see
+  `EmailSignup`'s removal in §7 for a concrete case where this applied.
 - Accessible, performant, responsive, and SEO-sound from the start.
+- **This is a remake to a higher standard, not a verbatim copy.** The
+  live site (unityprovisions.org) is a real, valuable reference for the
+  organization's actual facts, mission, voice, and structure — but it
+  was built with a drag-and-drop site builder, not this project's design
+  system, and its exact wording, layout, and visual polish reflect that.
+  Don't just transcribe its content. If live copy is unclear,
+  grammatically rough, or reads as a lower bar than the rest of this
+  rebuild, rewrite it — clearer, correct, more professional — while
+  keeping the underlying facts and organizational voice intact. The same
+  applies to placement and visual presentation: a section can be
+  reorganized, restyled, merged, dropped, or given a more polished
+  treatment than its live-site counterpart, if that serves the visitor
+  better. This cuts both ways: something the live site includes "for
+  free" via its site-builder platform (a bundled widget, a duplicate
+  CTA) may cost real engineering effort to replicate natively here, and
+  isn't automatically worth building just because it's live — see
+  `EmailSignup`'s entry in §7 for the concrete case this came up
+  against. Every such change should still be a deliberate, documented
+  call (see §2's per-component process, and §7's entries for further
+  examples: `YouTubeEmbed`'s click-to-load facade is a deliberate
+  improvement over the live site's plain eager iframe).
 
 ---
 
@@ -146,8 +189,7 @@ src/
 │   │   ├── YouTubeEmbed.astro          ✅ built — Home
 │   │   ├── PartnersAndSupporters.astro ✅ built — Home, About
 │   │   ├── GetInvolvedTeaser.astro     ✅ built — Home
-│   │   ├── ContactForm.astro           📋 planned — Home
-│   │   ├── EmailSignup.astro           📋 planned — Home, Get Involved
+│   │   ├── ContactForm.astro           ✅ built — Home
 │   │   └── DonateBanner.astro          📋 planned — Home, Donate
 │   │
 │   ├── staff/                     — Team page composites
@@ -190,6 +232,12 @@ src/
 └── types.ts                            ✅ built — shared cross-component types
                                            (deliberately at src root, not inside utils/)
 ```
+
+**Note:** `EmailSignup.astro` was built in an earlier pass of this
+project, then removed after reconsideration — see §7's "Considered and
+Removed" note under Page Sections for the full reasoning. If the file
+still exists on disk in the actual repo, delete it; it should not be
+recreated without revisiting that note first.
 
 ---
 
@@ -294,6 +342,10 @@ Status: ✅ Built · 📋 Planned
   without them are unaffected. Slot: label/content.
 - Structure: single inline-flex element; `<a>` if `href` is set, else `<button>`.
 - Example: `<Button variant="accent" href="https://zeffy.com/...">Donate Now</Button>`
+- Note: still doesn't accept `type="reset"` or an `id` prop. `ContactForm`
+  needed a way to identify its Cancel button without either, and solved
+  it with event delegation on the form rather than extending Button
+  again — see ContactForm's entry for why.
 
 **SectionHeading** — ✅ Built
 - Purpose: consistent section-intro block — optional eyebrow, required
@@ -310,12 +362,20 @@ Status: ✅ Built · 📋 Planned
 - Purpose: a bounded surface (background, radius, shadow, padding) for
   grouped content.
 - Use when: team member cards, project sections, any content needing
-  visual separation from the page background.
+  visual separation from the page background. Not yet used by any page
+  section — the one candidate use case so far (an elevated box for a
+  native `EmailSignup`) was reconsidered and removed along with that
+  component; see the "Considered and Removed" note under Page Sections
+  below.
 - Props: default slot; optional `padding?: 'sm'|'md'|'lg'` (default `md`).
 - Structure: single `<div>`; `bg-surface rounded-md shadow-sm` plus a
   padding utility (`p-4`/`p-6`/`p-8`) selected via a `Record` lookup keyed
   on `padding`. `md` (`p-6` = 1.5rem) matches the design system's spec
   exactly and is the default.
+- Known gap: no `class` pass-through prop — a future consumer that needs
+  to additionally constrain Card's width (e.g. `max-w-2xl`) will need to
+  wrap it in its own outer `<div>` rather than passing a class straight
+  in.
 
 **ResponsiveImage** — ✅ Built
 - Purpose: wraps `astro:assets`'s `<Image />` with the site's design
@@ -363,6 +423,12 @@ Status: ✅ Built · 📋 Planned
   reads as too heavy. See Footer's entry below for the concrete case
   this came up against.
 - Example: `<ExternalLinkCTA label="Volunteer" href="https://forms.gle/7JFDkKPdzYv1LfCP6" icon="lucide:external-link" />`
+- If a contextual "join our email list" prompt is ever wanted on Home or
+  Get Involved (see `EmailSignup`'s removal below), this is the
+  component to use for it — a single `<ExternalLinkCTA>` pointed at
+  `contactListFormUrl` (from `@data/footer.ts`), inlined directly into
+  the page. That's a one-line addition when assembling the page, not a
+  reason to build a dedicated wrapper component.
 
 ### Layout — `src/components/layout/`
 
@@ -402,6 +468,10 @@ Status: ✅ Built · 📋 Planned
 - Outer structure is `<header class="bg-surface shadow-sm">` wrapping
   `<Container>`, not `<Container as="header">` — see Container's own
   entry above for why these two stay separate.
+- Note: this rebuild's nav deliberately doesn't include an "Email List"
+  item the way the live site's does — that destination is reachable via
+  Footer instead (see Footer's entry below, and `EmailSignup`'s removal
+  under Page Sections for the fuller reasoning on this destination).
 
 **Footer** — ✅ Built
 - Purpose: persistent footer.
@@ -425,6 +495,19 @@ Status: ✅ Built · 📋 Planned
 - A second `<nav aria-label="Footer">` landmark, distinct from Navbar's
   `aria-label="Primary"`, so landmark-based screen reader navigation can
   tell the two apart.
+- **Verified against the live site, revisited:** `unityprovisions.org`
+  also shows a native inline "Join our email list" widget on its
+  homepage, in addition to this Footer link and the nav's own "Email
+  List" item — both already pointing at the same underlying signup. A
+  native version of that widget (`EmailSignup`) was built for this
+  rebuild, then removed after reconsideration: on a GoDaddy Website
+  Builder site, adding a second, redundant entry point costs the
+  organization nothing, so the live site keeps both; on this hand-built
+  site, a native version means designing and maintaining a real form and
+  a real backend, for a need this Footer link (and, on Get Involved, the
+  Volunteer CTA — the same form) already fully covers. See §7's
+  "Considered and Removed" note under Page Sections for the full
+  reasoning.
 
 ### Root Layout — `src/layouts/`
 
@@ -518,6 +601,14 @@ Status: ✅ Built · 📋 Planned
   surrounding copy, while About can wrap it in its own `SectionHeading`
   and additional paragraph text. This keeps the component reusable
   rather than page-aware.
+- **Verified against the live site:** the current homepage reports
+  6,180+ lbs collected, $21,376+ raised, 35+ branches across 8 countries
+  (naming the US, Canada, India, UAE, Puerto Rico, Pakistan, Morocco, and
+  England) — slightly ahead of the numbers currently in
+  `src/data/stats.ts`. Not updating the data file from this alone, since
+  the live-sheet mechanism above is the intended source of truth for the
+  two dynamic numbers once its sharing is fixed — noting the gap here so
+  it isn't mistaken for a bug later.
 
 **MissionStatement** — ✅ Built
 - Purpose: the organization's mission, in its own words.
@@ -541,6 +632,9 @@ Status: ✅ Built · 📋 Planned
   `SectionHeading` — nothing in §7 excludes it here, and a plain title
   (no eyebrow/subtext) was enough since the real substance is the body
   paragraph, not the heading.
+- Verified word-for-word against the live homepage's "Our Mission"
+  section — matches exactly, and reads well as-is; no rewrite needed
+  here under §3's higher-standard principle.
 
 **YouTubeEmbed** — ✅ Built
 - Purpose: embeds "Watch Our Story" without a hand-written iframe or
@@ -575,6 +669,11 @@ Status: ✅ Built · 📋 Planned
      domain) delays most tracking cookies until the visitor opts in by
      clicking play — a small head start on §11's still-deferred cookie
      banner decision, not a full solution to it.
+- The real site embeds the same video via a plain `youtube.com/embed`
+  iframe with no facade — this component's click-to-load approach is a
+  deliberate improvement (defers third-party load/cookies until a real
+  click) under §3's higher-standard principle, not something the live
+  site already does.
 
 **PartnersAndSupporters** — ✅ Built
 - Purpose: presents the organizations that partner with or fund Unity Provisions.
@@ -602,6 +701,9 @@ Status: ✅ Built · 📋 Planned
   one organization automatically switches to rendering as an `<img>`
   (`object-contain`, fixed height) instead — no component changes
   needed.
+- Verified against the live site: both the partner list ("Wang YMCA of
+  Chinatown," Mystic Valley YMCA, Food4Philly) and the supporter list
+  match what's in `partners.ts` today.
 
 **GetInvolvedTeaser** — ✅ Built
 - Purpose: a short Home band pointing to the full Get Involved page.
@@ -624,22 +726,164 @@ Status: ✅ Built · 📋 Planned
   that distinction rather than competing with Donate for visual weight.
   `md` (not Hero's `lg`) since this sits further down the page after
   several other sections have already made their case.
+- Note: this exact teaser band doesn't exist on the live site — the
+  real homepage links to "Relief Route" and "Open a branch" instead (see
+  ProjectSection and Become a Branch Founder content, still planned).
+  Keeping this component as already built is a deliberate structural
+  choice for the rebuild's Home page under §3's higher-standard/remake
+  principle, not a live-site match. Unlike `EmailSignup` (see below),
+  this teaser's destination (`/get-involved`) is a whole page of
+  additional context, not a link that's already reachable elsewhere in
+  one click — that distinction is why this component earns its keep
+  while `EmailSignup` didn't.
 
-**ContactForm** — 📋 Planned
-- Purpose: the site's one native form.
-- Fields: Name, Email (required), "Where did you hear about us?", file
-  attachment, reCAPTCHA, Send/Cancel.
-- Open decision: submission backend (Formspree vs. Cloudflare Function) —
-  build the markup now, wire submission once decided.
+**ContactForm** — ✅ Built
+- Purpose: the site's one native form — a way for visitors to reach
+  Unity Provisions directly, distinct from every other CTA on the site
+  (which is an off-site Google Form/Zeffy link, not an in-house form).
+- Use when: Home only, per §8.
+- Props: `heading: string`, `subtext?: string` — matching the pattern of
+  the other Home section components (real copy supplied by `index.astro`
+  at assembly time, not baked in here). Current placeholder copy used
+  during development: heading "Contact Us," a one-line subtext inviting
+  questions — both are stand-ins pending real copy, same status as
+  Hero's headline/tagline before real content was supplied.
+- Fields, in the order §7 originally specified: Name, Email, "Where did
+  you hear about us?", file attachment, a reCAPTCHA placeholder, then
+  Send/Cancel.
+  - **Only Email is `required`** (`type="email"`, with a visible `*` and
+    a "* required field" legend) — §7's spec explicitly wrote
+    "Email (required)" and nothing else, so Name, the referral field,
+    and the attachment are left optional, following that literally.
+  - **"Where did you hear about us?" is a plain text input, not a
+    dropdown.** §7 never specified a fixed set of referral-source
+    options, and inventing one (Instagram/TikTok/etc.) would be adding
+    content that wasn't actually decided. Free text captures any answer
+    without that guesswork.
+  - **File attachment** is a plain `<input type="file">`, styled via
+    Tailwind's `file:` variant (targeting the input's native
+    `::file-selector-button`) rather than a custom drag-and-drop widget
+    — §7 just says "file attachment," and a plain file input is the
+    simplest thing that satisfies that.
+  - **reCAPTCHA** is a visibly-marked placeholder `<div>`
+    (`data-recaptcha-placeholder`, dashed border, explanatory text) —
+    not a real widget. A real one needs a site key tied to whichever
+    submission backend is chosen (see below), so it can't be wired up
+    until that decision is made.
+- Structure: `<Container as="section">` (no distinct background, same
+  reasoning as the other Home sections) wrapping a centered
+  `SectionHeading` and a `max-w-xl` `<form>`. Every field is a `<label>`
+  wrapping its `<input>` (both an implicit association via nesting *and*
+  an explicit `for`/`id` pair, for maximum assistive-tech compatibility)
+  in a `flex flex-col` layout, so the label text always sits above the
+  field per §6's forms spec. Inputs share one `inputClasses` constant
+  (surface background, `border-border`, `rounded-sm`) built with `cn()`,
+  so the "1px border, radius-sm" spec only has to be written once.
+- Submission and Cancel behavior (both handled in one inline `<script>`):
+  - The Cancel button is `Button` with `type="button"` — `Button.astro`
+    doesn't support `type="reset"`, and rather than extend it again
+    (it was already extended once for `target`/`rel`, see Button's own
+    entry above), the script listens for clicks anywhere in the form and
+    checks whether the click landed on (or inside) a
+    `button[type="button"]`; if so it calls `form.reset()`. This finds
+    the Cancel button without needing an `id` prop that `Button.astro`
+    doesn't currently expose, and would also correctly reset the form
+    for any future secondary button added inside it.
+  - The Send button is `Button` with `type="submit"`. Its native submit
+    is intercepted with `event.preventDefault()` and a `console.warn`
+    reminder — since no backend is wired yet (see below), letting the
+    browser's default submit through would just reload the page with
+    nowhere for the data to go.
+- **Open decision carried over from §10:** the actual submission
+  backend — Formspree vs. a Cloudflare Function — is still undecided.
+  Per that section's guidance, the markup and client-side behavior
+  (validation via HTML5 `required`, Cancel-reset, the submit
+  interception) are complete now; only the real submit handler (a
+  `fetch()` call to Formspree, or a POST to a Cloudflare Function) and
+  the real reCAPTCHA widget are deferred until that's chosen.
+- **Why this one stays native, unlike `EmailSignup` (see below):** this
+  form collects a real message plus an optional file attachment — there
+  is no existing external form on this site that does that. The Google
+  Form behind "Email List"/"Volunteer" only asks for name/email/phone/
+  state, a different, simpler shape. ContactForm fills a genuine gap
+  rather than duplicating something that already works.
+- **Verified against the live site:** the real homepage's "Contact Us"
+  section has exactly this field set — Name, Email (marked with `*`),
+  "Where did you hear about us?", "Attach Files," a reCAPTCHA notice,
+  Send/Cancel — confirming §7's original spec matched the live site
+  closely already. The one difference: the live site shows a contact
+  email (`contact@unityprovisions.org`) above the form, which isn't
+  reproduced here; worth deciding whether to add it as static text
+  alongside the heading/subtext once real copy is finalized.
 
-**EmailSignup** — 📋 Planned
-- Purpose: lets visitors join the mailing list inline.
-- Use when: Home; referenced from Get Involved.
+**~~EmailSignup~~ — Considered, built, then removed**
+- What it was: a native inline mailing-list signup form (heading, an
+  Email input, a Sign Up button), planned for Home and Get Involved, and
+  at one point fully built — including a revised, professionally-rewritten
+  version of its copy and a `Card`-based elevated layout.
+- **Why it was removed:** on review, the actual destination for "join
+  the email list" is an external Google Form
+  (`contactListFormUrl` in `src/data/footer.ts`) that Google already
+  hosts, processes, and stores submissions for, at zero engineering or
+  maintenance cost. That destination already has two live entry points
+  on this site: the Footer's "Email List" link (present on every page
+  via `Layout.astro`), and — on the page `EmailSignup` was also planned
+  for — the Get Involved page's Volunteer CTA, which (per §10) resolves
+  to the *exact same form URL*. Building a third, native version meant
+  designing, wiring, and maintaining a real backend (Formspree, a
+  Cloudflare Function, or a newsletter provider) purely to re-solve a
+  problem that already has a working solution — and on Get Involved
+  specifically, it would have sat directly beside a CTA pointing at the
+  identical destination.
+- **Why the live site has this, and why that didn't transfer:**
+  unityprovisions.org's version is a GoDaddy Website Builder built-in
+  widget — adding it costs the organization nothing there, no code, no
+  backend, so a redundant entry point is essentially free for them. In a
+  hand-built Astro site, the same redundancy isn't free: it's a real
+  form, a real submission handler, and a real backend decision to build
+  and maintain. §3's higher-standard principle — a remake, not a
+  verbatim copy — cuts against replicating this specific pattern once
+  the cost/benefit no longer matches; this is the concrete case that
+  principle's own text now points to.
+- **What removing it cleaned up:** the "EmailSignup submission backend"
+  line that was in §10 is gone entirely, not just deferred — there's
+  nothing left to wire up, since the existing Google Form already
+  handles it. A field-label consistency flag that once compared this
+  component's "Email Address" wording against `ContactForm`'s "Email" is
+  also moot now that there's only one native form on the site.
+- **If a persuasive nudge is still wanted later:** see `ExternalLinkCTA`'s
+  entry above — a single instance of that component, pointed at
+  `contactListFormUrl` and inlined directly into a page, covers this
+  without a dedicated wrapper file. That's a one-line addition at
+  assembly time, not a reason to keep (or rebuild) a dedicated
+  component.
+- Contrast with `GetInvolvedTeaser` (kept) and `ContactForm` (kept): both
+  of those route to something genuinely not available in one click
+  elsewhere (a full page of context, or a richer form respectively) —
+  see their own entries above for the specific distinction in each case.
 
 **DonateBanner** — 📋 Planned
 - Purpose: the prominent donate prompt.
 - Use when: Home and the Donate page only.
 - Props: promo image, heading, `ctaLabel`/`ctaHref` (Zeffy).
+- 🔎 Live-site note (found while verifying `EmailSignup`, not yet acted
+  on): `unityprovisions.org`'s real donate promo ("We Launched Our
+  Zeffy") is not actually scoped to Home/Donate — it renders as a
+  floating widget present on every page checked (Home,
+  `/become-a-branch-founder`, even a dead-end login page). Worth an
+  explicit decision when this component is actually built: keep it
+  page-scoped as currently planned, or make it a persistent, site-wide
+  element (closer to what's live) — either is a legitimate choice, not
+  yet made. Whatever the real site does, remember §3's higher-standard
+  principle applies here too — the live version's copy ("We Launched Our
+  Zeffy") reads like an internal-update announcement rather than a
+  donor-facing call to action, and is a candidate for a rewrite rather
+  than a straight copy. Unlike `EmailSignup`, though, this section's
+  underlying action (donating via Zeffy) doesn't already have a
+  dedicated, redundant entry point elsewhere on Home beyond Hero's own
+  CTA and the Navbar's — worth keeping that in mind too when deciding
+  scope, so this doesn't end up triple-counted the way `EmailSignup`
+  would have been.
 
 ### Domain Composites
 
@@ -693,7 +937,8 @@ Purpose: a concise landing page — who Unity Provisions is, and clear
 paths to every other page.
 Sections, in order: Hero → ImpactStats → MissionStatement → YouTubeEmbed
 → PartnersAndSupporters (brief) → GetInvolvedTeaser → ContactForm →
-EmailSignup → DonateBanner.
+DonateBanner. (`EmailSignup` was planned here, then removed — see §7's
+"Considered and Removed" note.)
 
 ### About (`/about`)
 Purpose: the organization's full story.
@@ -726,7 +971,11 @@ Sections: two `ProjectSection`s — Relief Route, then AgriScan (data in §7).
 
 ### Get Involved (`/get-involved`)
 Purpose: the single, clear answer to "how do I participate."
-Sections: Branch Founder content → Volunteer CTA (external) → EmailSignup.
+Sections: Branch Founder content → Volunteer CTA (external). (`EmailSignup`
+was planned here too, then removed — its destination is the same form
+URL as the Volunteer CTA immediately above it, which would have made it
+a literal duplicate on this specific page; see §7's "Considered and
+Removed" note.)
 Branch Founder content: intro "Turn your passion into impact"; support
 list (getting approval from your school or community, guidance for
 planning and running events, access to reimbursements through the YMCA
@@ -784,9 +1033,8 @@ Build order; components per page in build order; each page ends with an assembly
     - [x] YouTubeEmbed
     - [x] PartnersAndSupporters
     - [x] GetInvolvedTeaser
-    - [ ] ContactForm — next
-    - [ ] EmailSignup
-    - [ ] DonateBanner
+    - [x] ContactForm
+    - [ ] DonateBanner — next
     - [ ] Assemble `index.astro`
 - [ ] **2. About** (`about.astro`):
     - [ ] Founder story section
@@ -806,7 +1054,6 @@ Build order; components per page in build order; each page ends with an assembly
 - [ ] **5. Get Involved** (`get-involved.astro`):
     - [ ] Branch Founder section
     - [ ] Volunteer CTA
-    - [ ] EmailSignup (reused)
     - [ ] Assemble `get-involved.astro`
 - [ ] **6. Donate** (`donate.astro`):
     - [ ] QRCodeDonate — "Give" section: QR code + Zeffy link
@@ -850,12 +1097,25 @@ Build order; components per page in build order; each page ends with an assembly
 
 **Open integration decisions:**
 - ContactForm submission backend: Formspree vs. Cloudflare Function.
+  Markup and client-side behavior (validation, Cancel-reset, submit
+  interception) are built — see ContactForm's §7 entry; only the real
+  submit handler and reCAPTCHA widget are still pending this choice.
+  (There is no longer an `EmailSignup` backend decision to track here —
+  see §7's "Considered and Removed" note; that need is already served by
+  the Email List/Volunteer form above.)
 - Donation tracker embed on the Donate page: pending visual inspection.
 - Get Involved page's "Volunteer CTA": the Google Form behind it is a
   general contact-list signup (name/email/phone/state), not volunteer-
   specific — decide before building `get-involved.astro` whether the
   "Volunteer" framing/copy still makes sense, gets adjusted, or the CTA
   is merged with the Email List concept entirely.
+- **DonateBanner scope and copy (see §7):** the live site's real donate
+  promo is a site-wide floating widget with internal-announcement-style
+  copy ("We Launched Our Zeffy"), not scoped to specific pages. Decide
+  when building `DonateBanner` whether to keep it Home/Donate-only (as
+  currently planned) or make it persistent site-wide, and rewrite its
+  copy to be donor-facing per §3's higher-standard principle rather than
+  reusing the live wording as-is.
 - **ImpactStats live sheet (🔶 pending — one item left):** `ImpactStats.astro`
   is fully wired to Google Sheet ID
   `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, tab `gid=638911803`
@@ -884,6 +1144,11 @@ Build order; components per page in build order; each page ends with an assembly
        and cost real debugging time, so it's worth understanding before
        touching that constant. If rows are added to or removed from the
        summary block, `SHEET_RANGE` needs to be updated to match.
+    3. The live site's current homepage reports slightly higher numbers
+       (6,180+ lbs, $21,376+) than `src/data/stats.ts`'s fallback values
+       — see ImpactStats's §7 entry. Not corrected here since the sheet
+       is the intended source of truth; flagging so the gap isn't
+       mistaken for a data bug later.
 
 ---
 
@@ -904,9 +1169,30 @@ Build order; components per page in build order; each page ends with an assembly
 - Cookie consent banner: decision deferred to the end of the project.
 - Confirm a component should exist as its own reusable piece before
   building it — don't create one by default just because a section exists.
+  As of this update, that confirmation includes checking the real live
+  site (unityprovisions.org) for whether the content actually exists
+  there and where — real signal for the decision, never a mandate to
+  copy it exactly (see §2, §3) — and checking this site's own existing
+  components/data for whether the need is already served, since the
+  live site's own economics for adding something (often free, via a
+  site builder) don't apply to a hand-built rebuild.
+- **This is a remake to a higher standard, not a verbatim copy (see §3).**
+  Live copy, layout, and visual treatment are a starting reference, not
+  a target to reproduce exactly. Rewrite wording that's unclear or
+  grammatically rough, restyle sections that read as flat or easy to
+  miss, reorganize content where it serves the visitor better, and drop
+  a section entirely if it turns out to just duplicate something this
+  site already does elsewhere — all while keeping the organization's
+  real facts, mission, and voice intact. `YouTubeEmbed`'s click-to-load
+  facade (an improvement kept) and `EmailSignup` (built, then removed
+  once it was clear it duplicated the Footer's existing Email List link
+  and Get Involved's Volunteer CTA — see §7's "Considered and Removed"
+  note) are the concrete examples on record so far.
 - Real content (team roster, impact numbers, project descriptions, page
   copy) lives in typed data files or directly in page templates — use it
-  as captured here rather than re-researching it.
+  as captured here rather than re-researching it. Where a §7 entry notes
+  it was "verified against the live site," that's a live re-check done
+  during this project, not just a carry-over assumption.
 - Dynamic tag props (commonly named `as`) are typed as
   `keyof HTMLElementTagNameMap`, or a narrower literal union when only
   specific tags make sense (e.g. `SectionHeading`'s `'h1'|'h2'|'h3'`) —
@@ -925,4 +1211,6 @@ Build order; components per page in build order; each page ends with an assembly
   on disk (even an empty one at the correct path) is not a signal that
   it's been started or built. §5's ✅/📋 markers are the only source of
   truth for build status — always trust those over what's present in the
-  file tree.
+  file tree. The exception is `EmailSignup.astro`: if it still exists on
+  disk in the actual repo, that's leftover from before this removal, not
+  a placeholder — delete it (see §7's "Considered and Removed" note).

@@ -1,0 +1,129 @@
+---
+import Container from '@components/ui/Container.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import Button from '@components/ui/Button.astro';
+import { cn } from '@utils/cn';
+
+interface Props {
+  heading: string;
+  subtext?: string;
+}
+
+// Required, no defaults — matches the pattern of the other Home section
+// components (Hero, MissionStatement, GetInvolvedTeaser, etc.): this is a
+// pure content component, and real copy is supplied by index.astro at
+// assembly time rather than baked in here.
+const { heading, subtext } = Astro.props as Props;
+
+// Shared classes for every text/select/file input, so the design system's
+// "surface background, 1px border, radius-sm" spec for form fields
+// (project-roadmap.md §6) only has to be written once instead of on each
+// input individually.
+
+const inputClasses = 'w-full rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary';
+const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primary';
+---
+<Container as="section">
+  <div class="flex flex-col items-center gap-8 py-12 md:py-16">
+    <SectionHeading title={heading} subtext={subtext} align="center" />
+
+    <form id="contact-form" class="flex w-full max-w-xl flex-col gap-5">
+      <label class={labelClasses} for="contact-name">
+        Name
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          class={inputClasses}
+        />
+      </label>
+
+      <label class={labelClasses} for="contact-email">
+        Email <span aria-hidden="true">*</span>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          class={inputClasses}
+        />
+      </label>
+
+      <label class={labelClasses} for="contact-referral">
+        Where did you hear about us?
+        <input
+          id="contact-referral"
+          name="referral"
+          type="text"
+          class={inputClasses}
+        />
+      </label>
+
+      <label class={labelClasses} for="contact-attachment">
+        Attachment
+        <input
+          id="contact-attachment"
+          name="attachment"
+          type="file"
+          class={cn(
+            inputClasses,
+            'file:mr-3 file:rounded-sm file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-primary-hover'
+          )}
+        />
+      </label>
+
+      <!--
+        🔶 reCAPTCHA placeholder. project-roadmap.md §10 lists the
+        submission backend (Formspree vs. a Cloudflare Function) as an
+        open decision — a real reCAPTCHA widget needs a site key tied to
+        whichever backend is chosen, so it can't be wired up yet. This box
+        marks where it goes; swap it for the real widget once that's
+        decided.
+      -->
+      <div
+        data-recaptcha-placeholder
+        class="flex items-center justify-center rounded-sm border border-dashed border-border px-3 py-6 text-center text-sm text-text-secondary"
+      >
+        reCAPTCHA will appear here once the submission backend is set up.
+      </div>
+
+      <p class="text-xs text-text-secondary">* required field</p>
+
+      <div class="flex gap-3">
+        <Button type="submit" variant="primary">Send</Button>
+        <Button type="button" variant="secondary">Cancel</Button>
+      </div>
+    </form>
+  </div>
+</Container>
+
+<script>
+  // The submission backend isn't chosen yet (project-roadmap.md §10), so
+  // this script only stops the browser's default submit (which would just
+  // reload the page — there's nothing listening on the other end yet) and
+  // logs a reminder. Replace the submit handler below with a real fetch()
+  // call to Formspree, or a POST to a Cloudflare Function, once that's
+  // decided.
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    console.warn(
+      'ContactForm: submission backend not wired up yet (see project-roadmap.md §10).'
+    );
+  });
+
+  // Cancel is a type="button" (not type="reset"), found here via event
+  // delegation on the form rather than by giving it an id and adding an
+  // `id` prop to Button.astro just for this one use. This also means any
+  // future type="button" added inside this form resets it too, which is
+  // the correct behavior for a "Cancel" action.
+  form?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.closest('button[type="button"]')) {
+      form.reset();
+    }
+  });
+</script>
