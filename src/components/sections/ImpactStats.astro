@@ -65,7 +65,7 @@ const LIVE_LABELS = stats
   </dl>
 </Container>
 
-<script define:vars={{ TEST_SHEET_ID, TEST_SHEET_GID, SHEET_RANGE, LIVE_LABELS }}>
+<script define:vars={{ SHEET_ID, SHEET_GID, SHEET_RANGE, LIVE_LABELS }}>
   
   // liveEls is a NodeList of all the <div> elements in the stat grid that have a `data-live-label` attribute.
   // Each of those elements corresponds to a stat that should be updated with live data from the Google Sheet.
@@ -126,8 +126,8 @@ const LIVE_LABELS = stats
     // The URL for the Google Sheets gviz endpoint, with the query and range parameters.
     // Source: https://developers.google.com/chart/interactive/docs/querylanguage#sending-queries-to-the-server
     const url =
-      `https://docs.google.com/spreadsheets/d/${TEST_SHEET_ID}/gviz/tq` + // The base URL for the Google Sheets gviz endpoint, with the sheet ID.
-      `?gid=${TEST_SHEET_GID}` + // The GID of the sheet tab to query.
+      `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` + // The base URL for the Google Sheets gviz endpoint, with the sheet ID.
+      `?gid=${SHEET_GID}` + // The GID of the sheet tab to query.
       `&range=${encodeURIComponent(SHEET_RANGE)}` + // The range of cells to query.
       `&tq=${encodeURIComponent(query)}` + // The query string, URL-encoded.
       `&tqx=out:json;responseHandler:__unityImpactStatsCallback`; // The output format and callback function name.
