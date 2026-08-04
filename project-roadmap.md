@@ -342,10 +342,17 @@ Status: ✅ Built · 📋 Planned
   without them are unaffected. Slot: label/content.
 - Structure: single inline-flex element; `<a>` if `href` is set, else `<button>`.
 - Example: `<Button variant="accent" href="https://zeffy.com/...">Donate Now</Button>`
-- Note: still doesn't accept `type="reset"` or an `id` prop. `ContactForm`
-  needed a way to identify its Cancel button without either, and solved
-  it with event delegation on the form rather than extending Button
-  again — see ContactForm's entry for why.
+- Note: still doesn't accept `type="reset"` or an `id` prop.
+  `ContactForm`'s Cancel button needs identifying without either — it's
+  found via `form.querySelector('button[type="button"]')` since it's the
+  only such button inside that form, and its own trigger button (which
+  opens the form) is found the same way, via a wrapping `<div>`'s id
+  rather than one on the `Button` itself. See ContactForm's entry: Cancel
+  was briefly removed under the assumption it was a plain reset button
+  (a well-known anti-pattern, since a reset sitting next to Submit on an
+  already-visible form invites accidental data loss) — it turned out to
+  actually close a collapsed/expanded form panel, a legitimate and
+  different action, so it's back with that corrected understanding.
 
 **SectionHeading** — ✅ Built
 - Purpose: consistent section-intro block — optional eyebrow, required
@@ -362,11 +369,14 @@ Status: ✅ Built · 📋 Planned
 - Purpose: a bounded surface (background, radius, shadow, padding) for
   grouped content.
 - Use when: team member cards, project sections, any content needing
-  visual separation from the page background. Not yet used by any page
-  section — the one candidate use case so far (an elevated box for a
-  native `EmailSignup`) was reconsidered and removed along with that
-  component; see the "Considered and Removed" note under Page Sections
-  below.
+  visual separation from the page background. First used inside a page
+  section by `ContactForm` — a good fit, since a form asking for a
+  visitor's attention benefits from a bounded, elevated surface distinct
+  from the page background, the same reasoning originally worked out for
+  a native `EmailSignup` before that component was removed (see the
+  "Considered and Removed" note under Page Sections below) — the Card
+  treatment itself was the right call, just applied to the wrong
+  component at the time.
 - Props: default slot; optional `padding?: 'sm'|'md'|'lg'` (default `md`).
 - Structure: single `<div>`; `bg-surface rounded-md shadow-sm` plus a
   padding utility (`p-4`/`p-6`/`p-8`) selected via a `Record` lookup keyed
@@ -748,73 +758,140 @@ Status: ✅ Built · 📋 Planned
   during development: heading "Contact Us," a one-line subtext inviting
   questions — both are stand-ins pending real copy, same status as
   Hero's headline/tagline before real content was supplied.
-- Fields, in the order §7 originally specified: Name, Email, "Where did
-  you hear about us?", file attachment, a reCAPTCHA placeholder, then
-  Send/Cancel.
-  - **Only Email is `required`** (`type="email"`, with a visible `*` and
-    a "* required field" legend) — §7's spec explicitly wrote
-    "Email (required)" and nothing else, so Name, the referral field,
-    and the attachment are left optional, following that literally.
-  - **"Where did you hear about us?" is a plain text input, not a
-    dropdown.** §7 never specified a fixed set of referral-source
-    options, and inventing one (Instagram/TikTok/etc.) would be adding
-    content that wasn't actually decided. Free text captures any answer
-    without that guesswork.
-  - **File attachment** is a plain `<input type="file">`, styled via
-    Tailwind's `file:` variant (targeting the input's native
-    `::file-selector-button`) rather than a custom drag-and-drop widget
-    — §7 just says "file attachment," and a plain file input is the
-    simplest thing that satisfies that.
-  - **reCAPTCHA** is a visibly-marked placeholder `<div>`
-    (`data-recaptcha-placeholder`, dashed border, explanatory text) —
-    not a real widget. A real one needs a site key tied to whichever
-    submission backend is chosen (see below), so it can't be wired up
-    until that decision is made.
-- Structure: `<Container as="section">` (no distinct background, same
-  reasoning as the other Home sections) wrapping a centered
-  `SectionHeading` and a `max-w-xl` `<form>`. Every field is a `<label>`
-  wrapping its `<input>` (both an implicit association via nesting *and*
-  an explicit `for`/`id` pair, for maximum assistive-tech compatibility)
-  in a `flex flex-col` layout, so the label text always sits above the
-  field per §6's forms spec. Inputs share one `inputClasses` constant
-  (surface background, `border-border`, `rounded-sm`) built with `cn()`,
-  so the "1px border, radius-sm" spec only has to be written once.
-- Submission and Cancel behavior (both handled in one inline `<script>`):
-  - The Cancel button is `Button` with `type="button"` — `Button.astro`
-    doesn't support `type="reset"`, and rather than extend it again
-    (it was already extended once for `target`/`rel`, see Button's own
-    entry above), the script listens for clicks anywhere in the form and
-    checks whether the click landed on (or inside) a
-    `button[type="button"]`; if so it calls `form.reset()`. This finds
-    the Cancel button without needing an `id` prop that `Button.astro`
-    doesn't currently expose, and would also correctly reset the form
-    for any future secondary button added inside it.
-  - The Send button is `Button` with `type="submit"`. Its native submit
-    is intercepted with `event.preventDefault()` and a `console.warn`
-    reminder — since no backend is wired yet (see below), letting the
-    browser's default submit through would just reload the page with
-    nowhere for the data to go.
+- **Revised under §3's higher-standard principle, after asking "what
+  does a visitor submitting this form actually want to do?"** The
+  original build followed §7's initial spec (and the live site) closely
+  — Name, Email, "Where did you hear about us?", a file attachment,
+  reCAPTCHA, Send/Cancel, always visible on the page — and in doing so
+  missed the one field the entire form exists for, carried over a field
+  that doesn't earn its place, and (in an earlier pass of this revision)
+  briefly misjudged what Cancel was actually for. Addressed in order:
+  - **Added: a required `Message` textarea.** The original field set had
+    no way for a visitor to actually say what they're contacting the
+    organization about — Name, Email, and a referral-source question,
+    but nothing for the message itself. That's not a minor gap; without
+    it the form couldn't do its one job. This is now the form's third
+    required field (`rows="5"`, `resize-y`, a `placeholder="How can we
+    help you?"` for a warm, inviting entry point without cluttering the
+    real label above it).
+  - **Removed: the file attachment.** A general public "Contact Us" form
+    has very few legitimate cases where a visitor needs to attach a
+    file — and what it does add is real: an open file-upload endpoint on
+    a public form is a genuine spam/malware vector, needing size limits,
+    type restrictions, and scanning to handle safely. That's meaningful
+    backend security work for a need almost nobody has. This is the same
+    shape of issue as `EmailSignup`'s removal (see that entry): a feature
+    that exists because the live site's GoDaddy form builder bundles
+    "Attach Files" by default, not because it was chosen for this form's
+    actual needs. If a real need for attachments ever comes up (e.g. a
+    school submitting a proposal), the safer answer is following up by
+    email, or a dedicated Google Form (which already handles file uploads
+    securely, the same way `contactListFormUrl` already handles mailing-
+    list signups) — not a custom upload endpoint on a general inquiry
+    form.
+  - **Name is now `required`** alongside Email and Message — replying to
+    an inquiry without knowing who sent it is awkward. "Where did you
+    hear about us?" is the only optional field.
+  - **Cancel was briefly removed, then restored with a corrected
+    understanding of what it actually does.** It was first cut as an
+    assumed plain reset button — a well-documented anti-pattern, since a
+    reset sitting next to Submit on an already-visible, already-typed-in
+    form invites an accidental full-form wipe for little real benefit.
+    But the live site's actual behavior (confirmed by inspection, not
+    assumption) is progressive disclosure: the form stays collapsed
+    behind a single "Drop us a line!" button, and Cancel closes it back
+    up again — a legitimate, different action from a reset, since
+    nothing is being wiped that the visitor was actively relying on
+    staying visible. Both the collapse/expand behavior and Cancel's
+    corrected role are rebuilt below.
+  - **Card-wrapped, elevated layout.** The form now sits inside a `Card`
+    (`padding="lg"`) rather than flush on the page background like the
+    other Home sections — the same "bounded surface, distinct
+    background" treatment already worked out for a native `EmailSignup`
+    before that component was removed (see its entry). A form asking for
+    a visitor's attention benefits from being visually set apart at
+    least as much as a one-field signup would have; this component just
+    hadn't gotten that treatment yet. (Card has no `class` pass-through,
+    so the `max-w-xl` width constraint is applied via a wrapping `<div>`
+    around the `<Card>`, per Card's own documented gap.)
+- Remaining field: **"Where did you hear about us?" stays a plain text
+  input, not a dropdown**, and stays optional. It doesn't serve the
+  visitor directly, but it's a real, low-cost, legitimate question for
+  the organization's own marketing insight. §7 never specified a fixed
+  set of referral-source options, and inventing one (Instagram/TikTok/
+  etc.) would be adding content that wasn't actually decided; free text
+  captures any answer without that guesswork.
+- **reCAPTCHA** is a visibly-marked placeholder `<div>`
+  (`data-recaptcha-placeholder`, dashed border, explanatory text) — not
+  a real widget. Unlike the file attachment, this is a genuine,
+  necessary need (spam protection on any public form, especially one
+  with a free-text message field) — it stays. A real widget needs a site
+  key tied to whichever submission backend is chosen (see below), so it
+  can't be wired up until that decision is made.
+- Structure: `<Container as="section">` (no distinct background of its
+  own — the elevation now comes from the `Card` inside it, not the
+  section) wrapping a centered `SectionHeading` (always visible, in both
+  the collapsed and expanded states), a trigger-button wrapper `<div>`
+  (visible only when collapsed), and the form panel (a `max-w-xl` `<div>`
+  wrapping the `Card`, hidden by default). Every field inside the form is
+  a `<label>` wrapping its `<input>`/`<textarea>` (both an implicit
+  association via nesting *and* an explicit `for`/`id` pair, for maximum
+  assistive-tech compatibility) in a `flex flex-col` layout, so the label
+  text always sits above the field per §6's forms spec. Inputs and the
+  textarea share one `inputClasses` constant (surface background,
+  `border-border`, `rounded-sm`) built with `cn()`, so the "1px border,
+  radius-sm" spec only has to be written once; the textarea adds
+  `resize-y` on top so it can only be resized vertically, not stretched
+  sideways out of the form's layout.
+- **Disclosure behavior (reusing the pattern already documented for
+  Navbar's mobile menu):** the panel carries a native `hidden` attribute
+  by default. Clicking the "Drop Us a Line!" trigger button removes
+  `hidden` from the panel, hides the trigger's wrapping `<div>`, sets
+  `aria-expanded="true"` on the trigger, and moves focus to the first
+  field. Clicking Cancel (inside the form) does the reverse — re-hides
+  the panel, re-shows the trigger, sets `aria-expanded="false"`, calls
+  `form.reset()` (clearing whatever was typed, since "Cancel" here means
+  "never mind, close this" — the same reasoning that makes a Cancel
+  button legitimate for a collapsible panel but not for an
+  already-committed, always-visible form), and returns focus to the
+  trigger. Pressing Escape while focus is inside the panel does the same
+  as Cancel. Both the trigger button and the Cancel button are found via
+  `querySelector` rather than an `id` prop on `Button` (which doesn't
+  support one) — the trigger via its wrapping `<div>`'s id, Cancel via
+  `form.querySelector('button[type="button"]')`, since it's the only
+  such button inside the form (see Button's entry above).
+- Submission: a separate listener on the form's `submit` event calls
+  `event.preventDefault()` and logs a `console.warn` reminder — since no
+  backend is wired yet (see below), letting the browser's default submit
+  through would just reload the page with nowhere for the data to go.
 - **Open decision carried over from §10:** the actual submission
   backend — Formspree vs. a Cloudflare Function — is still undecided.
-  Per that section's guidance, the markup and client-side behavior
-  (validation via HTML5 `required`, Cancel-reset, the submit
-  interception) are complete now; only the real submit handler (a
-  `fetch()` call to Formspree, or a POST to a Cloudflare Function) and
-  the real reCAPTCHA widget are deferred until that's chosen.
-- **Why this one stays native, unlike `EmailSignup` (see below):** this
-  form collects a real message plus an optional file attachment — there
-  is no existing external form on this site that does that. The Google
-  Form behind "Email List"/"Volunteer" only asks for name/email/phone/
-  state, a different, simpler shape. ContactForm fills a genuine gap
-  rather than duplicating something that already works.
-- **Verified against the live site:** the real homepage's "Contact Us"
-  section has exactly this field set — Name, Email (marked with `*`),
-  "Where did you hear about us?", "Attach Files," a reCAPTCHA notice,
-  Send/Cancel — confirming §7's original spec matched the live site
-  closely already. The one difference: the live site shows a contact
-  email (`contact@unityprovisions.org`) above the form, which isn't
-  reproduced here; worth deciding whether to add it as static text
-  alongside the heading/subtext once real copy is finalized.
+  The markup and client-side behavior (HTML5 `required` validation, the
+  disclosure/Cancel behavior, the submit interception) are complete now;
+  only the real submit handler (a `fetch()` call to Formspree, or a POST
+  to a Cloudflare Function) and the real reCAPTCHA widget are deferred
+  until that's chosen.
+- **Why this stays a native form, unlike `EmailSignup` (see that
+  entry):** this form now collects a real message — there is no existing
+  external form on this site that does that. The Google Form behind
+  "Email List"/"Volunteer" only asks for name/email/phone/state, a
+  different, simpler shape. ContactForm fills a genuine gap rather than
+  duplicating something that already works.
+- **Verified against the live site, revisited:** the real homepage's
+  "Contact Us" section has Name, Email (marked required), "Where did you
+  hear about us?", "Attach Files," a reCAPTCHA notice, and Send/Cancel —
+  and, going by the visible page text captured, no distinctly-labeled
+  message field either, though GoDaddy's contact-form widget likely
+  renders one that just didn't surface in a text-only fetch. The live
+  site also confirmed something worth reproducing on its own merits: the
+  form is collapsed behind a "Drop us a line!" button by default, not
+  shown in full immediately — a real, good instance of progressive
+  disclosure this rebuild now matches (see the disclosure-behavior note
+  above), independent of §3's general caution against copying the live
+  site by default. The live site also shows a contact email
+  (`contact@unityprovisions.org`) above its form, which isn't reproduced
+  here; worth deciding whether to add it as static text alongside the
+  heading/subtext once real copy is finalized.
 
 **~~EmailSignup~~ — Considered, built, then removed**
 - What it was: a native inline mailing-list signup form (heading, an
