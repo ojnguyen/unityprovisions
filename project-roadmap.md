@@ -34,7 +34,7 @@ the project, and each one carries a ✅ Built or 📋 Planned marker. Check
 §5 directly rather than trusting a status list that could drift out of
 sync with it.
 
-**Continue here:** Phase 5, Step 1 (Home) — build `DonateBanner.astro`
+**Continue here:** Phase 5, Step 1 (Home) — `Assemble index.astro`
 next (see Component Library §7 for its spec, Implementation Phases §9
 for the full remaining order, and §5 for the current file tree).
 **Update this line every time a step is completed, so it always names
@@ -190,7 +190,7 @@ src/
 │   │   ├── PartnersAndSupporters.astro ✅ built — Home, About
 │   │   ├── GetInvolvedTeaser.astro     ✅ built — Home
 │   │   ├── ContactForm.astro           ✅ built — Home
-│   │   └── DonateBanner.astro          📋 planned — Home, Donate
+│   │   └── DonateBanner.astro          ✅ built — Home
 │   │
 │   ├── staff/                     — Team page composites
 │   │   ├── StaffCard.astro             📋 planned
@@ -939,28 +939,98 @@ Status: ✅ Built · 📋 Planned
   elsewhere (a full page of context, or a richer form respectively) —
   see their own entries above for the specific distinction in each case.
 
-**DonateBanner** — 📋 Planned
-- Purpose: the prominent donate prompt.
-- Use when: Home and the Donate page only.
-- Props: promo image, heading, `ctaLabel`/`ctaHref` (Zeffy).
-- 🔎 Live-site note (found while verifying `EmailSignup`, not yet acted
-  on): `unityprovisions.org`'s real donate promo ("We Launched Our
-  Zeffy") is not actually scoped to Home/Donate — it renders as a
-  floating widget present on every page checked (Home,
-  `/become-a-branch-founder`, even a dead-end login page). Worth an
-  explicit decision when this component is actually built: keep it
-  page-scoped as currently planned, or make it a persistent, site-wide
-  element (closer to what's live) — either is a legitimate choice, not
-  yet made. Whatever the real site does, remember §3's higher-standard
-  principle applies here too — the live version's copy ("We Launched Our
-  Zeffy") reads like an internal-update announcement rather than a
-  donor-facing call to action, and is a candidate for a rewrite rather
-  than a straight copy. Unlike `EmailSignup`, though, this section's
-  underlying action (donating via Zeffy) doesn't already have a
-  dedicated, redundant entry point elsewhere on Home beyond Hero's own
-  CTA and the Navbar's — worth keeping that in mind too when deciding
-  scope, so this doesn't end up triple-counted the way `EmailSignup`
-  would have been.
+**DonateBanner** — ✅ Built
+- Purpose: a second, deliberately later "give money" ask on Home — a
+  closing CTA band positioned after Mission, Impact, the video, Partners,
+  Get Involved, and Contact, for visitors who've read through the whole
+  page and scrolled well past both earlier donate prompts (Navbar's
+  button, which isn't scroll-sticky and disappears once you scroll down;
+  Hero's CTA, seen once at the very top). This is a genuinely different
+  case from `EmailSignup`'s redundancy: that was an identical link
+  duplicated right next to another identical link; this is the same
+  underlying action, offered again deliberately at a different point in
+  a long page's reading journey, once the earlier CTAs are long out of
+  view — a standard, legitimate nonprofit fundraising pattern.
+- **Use when: Home only — narrowed from the original "Home and the
+  Donate page," resolving the scope question that had been open since
+  `EmailSignup`'s removal.** `QRCodeDonate` is already documented as
+  "the primary, fully-specified content" of the Donate page — the first
+  thing a visitor sees there. Adding a second identical banner further
+  down that same short, two-section page would repeat the same button
+  right after its own opening ask, reading as redundant rather than
+  reinforcing (unlike Home's much longer scroll, where the gap between
+  the first and second ask is substantial). See §10 for the closed-out
+  decision.
+- **Not a floating/sitewide widget, unlike the live site's version.**
+  `unityprovisions.org`'s real donate promo ("We Launched Our Zeffy")
+  renders as an overlay present on every page (Home, `/become-a-branch-
+  founder`, even a dead-end login page). Two reasons this wasn't carried
+  over: first, this codebase has no existing pattern for persistent/
+  floating UI — building one would be new architecture for a single
+  component, not a small addition, the same "free for them, real
+  engineering for us" gap already worked out for `EmailSignup`. Second,
+  a donate popup following visitors across every page, including
+  informational ones like About or Team, reads as pushy rather than
+  trust-building for a young nonprofit — a judgment call under §3's
+  higher-standard principle, not just an engineering-cost one.
+- **CTA routes to `/donate` (this rebuild's own internal page), not
+  straight to Zeffy.** The live site's Hero button and floating widget
+  both link directly to Zeffy — the live site has no internal donate
+  page with a QR code and impact tracker the way this rebuild's
+  `/donate` does. Routing here matches what this rebuild's own `Hero`
+  and `Navbar` already do (both point at `/donate`, not Zeffy directly),
+  funneling visitors through the fuller give-and-track experience rather
+  than around it. Consistent with `GetInvolvedTeaser`'s exact pattern,
+  `href="/donate"` is hardcoded inside the component, not exposed as a
+  prop — this component's whole identity is "the band that closes Home
+  by pointing at Donate," and hardcoding the destination keeps that
+  permanently true.
+- **Copy, rewritten, not copied.** The live version's heading ("We
+  Launched Our Zeffy") reads like an internal platform-migration
+  announcement, not a donor-facing ask — a candidate for rewriting under
+  §3's higher-standard principle from the moment it was first noted.
+  Recommended real copy for assembly: heading "Support Our Mission,"
+  subtext "Your gift helps us stock donation centers, launch new
+  branches, and reach students who need it most" — both tie the ask to
+  concrete outcomes already established earlier on the page (Impact
+  Stats, Partners) rather than announcing a payment-platform change.
+  `ctaLabel`: "Donate Now."
+- **No image prop**, unlike the original spec ("promo image, heading,
+  ctaLabel/ctaHref"). No promo image asset exists in this project (§5's
+  `assets/donate/` only lists a QR code image, not yet supplied, for a
+  different component) and a bold color band with clear copy and a
+  single button is a complete, professional pattern without one — the
+  same reasoning already applied to `Hero`, which also ended up with no
+  image prop despite an early `global.css` comment hinting one might be
+  needed. If a real photo is supplied later, it can be added then;
+  building for a hypothetical asset now would be speculative.
+- Props: `heading: string`, `subtext: string`, `ctaLabel: string` — all
+  required, no defaults, matching `GetInvolvedTeaser`'s exact shape
+  (this component's closest sibling: both are closing-teaser bands with
+  a hardcoded internal destination).
+- Structure: `<div class="bg-primary-hover">` wrapping
+  `<Container as="section">`, following the same pattern already used by
+  `Navbar`'s `<header>` — a full-bleed background needs a plain wrapping
+  element around `Container`, not `Container as="section"` alone (see
+  Container's own entry above for why). Inside: a centered flex column
+  with a plain `<h2>` and `<p>` (not `SectionHeading` — see below) and a
+  `Button` (`variant="accent" size="lg"`).
+- **`bg-primary-hover`, not `bg-primary`, for the band's background —
+  a real accessibility reason, not a stylistic one.** This site's global
+  focus ring (`global.css`) is `outline: 2px solid var(--color-primary)`.
+  Using that same color as the band's own background would make the
+  ring invisible to keyboard users tabbing to the Donate button, since
+  it would exactly match the backdrop it sits against. `--color-primary-
+  hover` is a distinctly darker shade of the same brand color — same
+  family, real contrast against the lighter ring color.
+- **Not using `SectionHeading`, for the same reason `Hero` doesn't.**
+  `SectionHeading` hardcodes `text-text-primary`/`text-text-secondary`
+  for its heading/subtext, with no prop to override them — dark text
+  that would be nearly unreadable against this band's colored
+  background. A plain `<h2>`/`<p>` with explicit `text-white`/
+  `text-white/80` was used instead, matching Hero's own precedent of
+  writing custom markup when `SectionHeading`'s fixed styling doesn't
+  fit.
 
 ### Domain Composites
 
@@ -1111,8 +1181,8 @@ Build order; components per page in build order; each page ends with an assembly
     - [x] PartnersAndSupporters
     - [x] GetInvolvedTeaser
     - [x] ContactForm
-    - [ ] DonateBanner — next
-    - [ ] Assemble `index.astro`
+    - [x] DonateBanner
+    - [ ] Assemble `index.astro` — next
 - [ ] **2. About** (`about.astro`):
     - [ ] Founder story section
     - [ ] ImpactStats (reused)
@@ -1186,13 +1256,11 @@ Build order; components per page in build order; each page ends with an assembly
   specific — decide before building `get-involved.astro` whether the
   "Volunteer" framing/copy still makes sense, gets adjusted, or the CTA
   is merged with the Email List concept entirely.
-- **DonateBanner scope and copy (see §7):** the live site's real donate
-  promo is a site-wide floating widget with internal-announcement-style
-  copy ("We Launched Our Zeffy"), not scoped to specific pages. Decide
-  when building `DonateBanner` whether to keep it Home/Donate-only (as
-  currently planned) or make it persistent site-wide, and rewrite its
-  copy to be donor-facing per §3's higher-standard principle rather than
-  reusing the live wording as-is.
+- ~~DonateBanner scope and copy~~ — resolved; see §7's entry. Built
+  Home-only (not Donate — `QRCodeDonate` already covers that page), as
+  a normal in-page section rather than a sitewide floating widget, with
+  rewritten donor-facing copy and a CTA routed to this rebuild's own
+  `/donate` page rather than straight to Zeffy.
 - **ImpactStats live sheet (🔶 pending — one item left):** `ImpactStats.astro`
   is fully wired to Google Sheet ID
   `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, tab `gid=638911803`

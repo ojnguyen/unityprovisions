@@ -17,6 +17,7 @@ import PartnerAndSupporters from '@components/sections/PartnersAndSupporters.ast
 import { partners } from '@data/partners';
 import GetInvolvedTeaser from '@components/sections/GetInvolvedTeaser.astro';
 import ContactForm from '@components/sections/ContactForm.astro';
+import DonateBanner from '@components/sections/DonateBanner.astro';
 ---
 
 <Layout>
@@ -83,5 +84,6 @@ import ContactForm from '@components/sections/ContactForm.astro';
 		<PartnerAndSupporters partners={partners} />
 		<GetInvolvedTeaser heading="Get Involved" subtext="Learn how you can make a difference in your community." ctaLabel="Learn More"/>
 		<ContactForm heading="Contact Us" subtext="We would love to hear from you! Please fill out the form below and we will get back to you as soon as possible." />
+		<DonateBanner heading="Support Our Cause" subtext="Your contributions help us continue our mission and make a positive impact in the community." ctaLabel="Donate Now"/>
 	</main>
 </Layout>
