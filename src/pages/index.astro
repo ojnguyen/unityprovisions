@@ -1,89 +1,53 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import { Icon } from 'astro-icon/components';
-import Button from '@components/ui/Button.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
-import Card from '@components/ui/Card.astro';
-import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
-import testImage from '@assets/test-image.jpg';
-import Container from '@components/ui/Container.astro';
-import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 import Hero from '@components/sections/Hero.astro';
 import ImpactStats from '@components/sections/ImpactStats.astro';
-import { stats } from '@data/stats';
 import MissionStatement from '@components/sections/MissionStatement.astro';
 import YouTubeEmbed from '@components/sections/YouTubeEmbed.astro';
-import PartnerAndSupporters from '@components/sections/PartnersAndSupporters.astro';
-import { partners } from '@data/partners';
+import PartnersAndSupporters from '@components/sections/PartnersAndSupporters.astro';
 import GetInvolvedTeaser from '@components/sections/GetInvolvedTeaser.astro';
 import ContactForm from '@components/sections/ContactForm.astro';
 import DonateBanner from '@components/sections/DonateBanner.astro';
+import { stats } from '@data/stats';
+import { partners } from '@data/partners';
 ---
 
 <Layout>
-	<main class="min-h-screen flex flex-col gap-8 items-center justify-center">
-		<div class="bg-primary text-white text-3xl font-bold p-10 rounded-lg flex items-center gap-4">
-			<Icon name="lucide:phone" class="w-8 h-8" />
-			Tailwind + Astro Icon is working!
-		</div>
-		<div>
-			<Button variant="secondary" size="sm">
-				<Icon name="lucide:arrow-down" class="w-6 h-6" />
-				Click Me
-			</Button>
-		</div>
-		<div>
-			<SectionHeading
-				as="h1"
-				eyebrow="Eyebrow Text"
-				title="Title (h1 right now)"
-				subtext="subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext subtext"
-				align="center"
-			/>
-		</div>
-		<div>
-			<Card padding="sm">
-				<p>This is a card with small padding.</p>
-			</Card>
-		</div>
-		<div>
-			<ResponsiveImage
-				src={testImage}
-				alt="Test Image"
-				width={800}
-				height={600}
-				radius="md"
-				loading="lazy"
-			/>	
-		</div>
-		<Container>
-			<p class="text-center">
-				This is a container (as a div) with a maximum width of default 7xl. It is centered and has padding on the sides. text text text text text text text text text text text text text text text text text text text text 
-			</p>
-		</Container>
-		<ExternalLinkCTA
-			label="Email List"
-			href="https://forms.gle/7JFDkKPdzYv1LfCP6"
-			icon="lucide:external-link" 
-		/>
-		<Hero
-			headline="Creating opportunities and building stronger communities."
-			tagline="Unity Provisions"
-			ctaLabel="Donate"
-			ctaHref="/donate"
-		/>
-		<ImpactStats stats={stats} />
-		<MissionStatement
-			heading="Our Mission"
-			body="Our mission is to create opportunities and build stronger communities through our programs and initiatives. We strive to empower individuals and foster a sense of unity and collaboration."
-		/>
-		<YouTubeEmbed
-			videoId="dQw4w9WgXcQ"
-			title="Rick Astley - Never Gonna Give You Up (Video)"
-		/>
-		<PartnerAndSupporters partners={partners} />
-		<GetInvolvedTeaser heading="Get Involved" subtext="Learn how you can make a difference in your community." ctaLabel="Learn More"/>
-		<ContactForm heading="Contact Us" subtext="We would love to hear from you! Please fill out the form below and we will get back to you as soon as possible." />
-		<DonateBanner heading="Support Our Cause" subtext="Your contributions help us continue our mission and make a positive impact in the community." ctaLabel="Donate Now"/>
-	</main>
+  <Hero
+    headline="Creating opportunities and building stronger communities."
+    tagline="Students Ending Hunger"
+    ctaLabel="Donate"
+    ctaHref="/donate"
+  />
+
+  <ImpactStats stats={stats} />
+
+  <MissionStatement
+    heading="Our Mission"
+    body="At Unity Provisions, we believe that no one should go hungry in a world of abundance. As a student-led movement, we empower young leaders to create sustainable food collection programs in schools and communities worldwide. Through education, collaboration, and action, we fight the stigma around food insecurity and transform surplus into sustenance. Together, we are building a future where access to food is a right, not a privilege."
+  />
+
+  <YouTubeEmbed
+    videoId="QsL7OpKv2Qg"
+    title="Watch Our Story"
+  />
+
+  <PartnersAndSupporters partners={partners} />
+
+  <GetInvolvedTeaser
+    heading="Get Involved"
+    subtext="Whether you're starting a branch, volunteering, or joining our mailing list, there's a place for you in the fight against hunger."
+    ctaLabel="Learn More"
+  />
+
+  <ContactForm
+    heading="Contact Us"
+    subtext="Have a question, an idea, or just want to say hello? We'd love to hear from you."
+  />
+
+  <DonateBanner
+    heading="Support Our Mission"
+    subtext="Your gift helps us stock donation centers, launch new branches, and reach students who need it most."
+    ctaLabel="Donate Now"
+  />
 </Layout>
