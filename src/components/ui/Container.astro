@@ -5,11 +5,17 @@ interface Props {
   as?: keyof HTMLElementTagNameMap;
   maxWidth?: string;
 }
- 
-const { as: Tag = 'div', maxWidth = 'max-w-7xl' } = Astro.props as Props;
+
+// maxWidth default bumped from 'max-w-7xl' (1280px) to 'max-w-[90rem]'
+// (1440px) during Phase 5 visual polish — 1280px was leaving too much
+// bare margin on common laptop/desktop widths, especially since most
+// sections had no background of their own to make that margin feel
+// intentional (see Hero/ImpactStats/PartnersAndSupporters, which now
+// also use full-bleed background bands for the same reason).
+const { as: Tag = 'div', maxWidth = 'max-w-[90rem]' } = Astro.props as Props;
 
 const classes = cn(maxWidth, 'mx-auto px-4 sm:px-6 lg:px-8');
 ---
 <Tag class={classes}>
   <slot />
-</Tag> 
+</Tag>

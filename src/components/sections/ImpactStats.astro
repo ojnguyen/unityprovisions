@@ -1,5 +1,6 @@
 ---
 import Container from '@components/ui/Container.astro';
+import { Icon } from 'astro-icon/components';
 import type { Stat } from '@/types';
 
 interface Props {
@@ -54,16 +55,21 @@ const LIVE_LABELS = stats
   .map((stat) => stat.liveSheetLabel)
   .filter((label): label is string => typeof label === 'string' && label.length > 0);
 ---
-<Container as="section">
-  <dl class="grid grid-cols-2 gap-8 py-8 text-center md:grid-cols-4 md:py-12">
-    {stats.map((stat) => (
-      <div class="flex flex-col items-center gap-1" data-live-label={stat.liveSheetLabel}>
-        <dt class="text-3xl font-bold text-primary">{stat.value}</dt>
-        <dd class="text-sm text-text-secondary">{stat.label}</dd>
-      </div>
-    ))}
-  </dl>
-</Container>
+<div class="border-y border-border bg-surface">
+  <Container as="section">
+    <dl class="grid grid-cols-2 gap-8 py-10 text-center md:grid-cols-4 md:py-14">
+      {stats.map((stat) => (
+        <div class="flex flex-col items-center gap-1" data-live-label={stat.liveSheetLabel}>
+          {stat.icon && (
+            <Icon name={stat.icon} aria-hidden="true" class="mb-1 h-6 w-6 text-primary/70" />
+          )}
+          <dt class="text-3xl font-bold text-primary">{stat.value}</dt>
+          <dd class="text-sm text-text-secondary">{stat.label}</dd>
+        </div>
+      ))}
+    </dl>
+  </Container>
+</div>
 
 <script define:vars={{ SHEET_ID, SHEET_GID, SHEET_RANGE, LIVE_LABELS }}>
   

@@ -8,24 +8,43 @@
 /* src/styles/global.css
  *
  * 🔶 PLACEHOLDER TOKENS — see Phase 2 design system doc for reasoning.
- * --color-bg is confirmed real (pulled from the live site's theme-color meta tag).
- * Everything else marked 🔶 is a structural guess, NOT a real measurement.
- * Do not build Phase 5 pages against these without a plan to swap them —
- * search this file for 🔶 before pages ship.
+ * Radius, shadow, and font tokens below are still structural guesses,
+ * not real measurements — search this file for 🔶 before pages ship.
+ *
+ * Color palette (this session): --color-bg was previously pinned to
+ * the live site's own pale-yellow theme-color (#f9f9e6), on the
+ * reasoning that it was at least one *confirmed* real value among a
+ * set of guesses. That reasoning no longer applies — explicit
+ * direction this session was to disregard the live site's colors
+ * entirely (it's a low-contrast, non-professional page-builder
+ * default) and design a real palette instead. unityprovisions.org
+ * remains the reference for content/copy/facts (§3) — just not for
+ * color anymore. --color-primary and --color-accent are unchanged
+ * from the prior revision (already redesigned, already validated
+ * against contrast, not flagged as a problem this round).
  */
 
 @theme {
   /* ---- Color ---- */
-  --color-bg: #f9f9e6;              /* real */
-  --color-surface: #ffffff;         /* 🔶 */
-  --color-text-primary: #1a1a1a;    /* 🔶 */
-  --color-text-secondary: #5c5c5c;  /* 🔶 */
-  --color-primary: #6b7f3f;         /* 🔶 placeholder olive */
-  --color-primary-hover: #59692f;   /* 🔶 */
-  --color-accent: #c47a3d;          /* 🔶 placeholder ochre */
-  --color-border: #e0ddc9;          /* 🔶 */
-  --color-success: #2f7d4f;         /* 🔶 */
-  --color-error: #b3413b;           /* 🔶 */
+
+  /* Crisp white base — replaces the live site's pale yellow-cream
+     entirely. Paired with --color-surface below (a soft sage tint,
+     not plain white) so the alternating section-band pattern
+     (ImpactStats, PartnersAndSupporters, Navbar, Footer, Card) still
+     has two visually distinct tones instead of collapsing into a
+     single flat white. */
+  --color-bg: #ffffff;
+  --color-surface: #eef3ea;         /* 🔶 pale sage, derived from --color-primary at low saturation */
+  --color-text-primary: #1a1a1a;    /* 🔶 unchanged — already high-contrast, no reason to touch */
+  --color-text-secondary: #5c5c5c;  /* 🔶 unchanged */
+
+  --color-primary: #355e3b;         /* 🔶 unchanged from prior revision — deep forest green, ~7:1 vs white text */
+  --color-primary-hover: #26442a;   /* 🔶 unchanged */
+  --color-accent: #a8592b;          /* 🔶 unchanged from prior revision — deep terracotta, ~5:1 vs white text */
+
+  --color-border: #d7e1d1;          /* 🔶 revised to a soft sage-gray to match the new surface tone (was tan/khaki #e0ddc9, a leftover of the old cream palette) */
+  --color-success: #2f7d4f;         /* 🔶 unchanged */
+  --color-error: #b3413b;           /* 🔶 unchanged */
 
   /* ---- Typography ---- */
   --font-display: system-ui, sans-serif; /* 🔶 pending DevTools check */
@@ -51,8 +70,9 @@
 
   /* Breakpoints & container width intentionally left at Tailwind defaults
      (sm:640px md:768px lg:1024px xl:1280px) — no evidence yet the live
-     site needs anything nonstandard. Revisit if Phase 5 visual comparison
-     shows a mismatch, especially at the mobile nav collapse point. */
+     site needs anything nonstandard. Content max-width: see
+     Container.astro (max-w-[90rem] / 1440px, bumped from 1280px in an
+     earlier session). */
 }
 
 @layer base {

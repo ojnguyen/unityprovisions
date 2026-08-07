@@ -12,35 +12,42 @@ const { videoId, title } = Astro.props as Props;
 // URL from YouTube's public thumbnail service
 const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 ---
-<Container as="section">
-  <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
-    <SectionHeading title={title} align="center" />
-    <div
-      class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black"
-      data-youtube-facade
-      data-video-id={videoId}
-      data-title={title}
-    >
-      <button
-        type="button"
-        class="group absolute inset-0 flex h-full w-full items-center justify-center"
-        aria-label={`Play video: ${title}`}
+<!--
+  id="watch-our-story" is the scroll target for Hero's optional
+  secondary CTA / scroll-cue (see Hero.astro) — added here rather than
+  giving Container an id prop, so Container's API stays generic (§7).
+-->
+<div id="watch-our-story">
+  <Container as="section">
+    <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+      <SectionHeading title={title} align="center" />
+      <div
+        class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black"
+        data-youtube-facade
+        data-video-id={videoId}
+        data-title={title}
       >
-        <img
-          src={thumbnailUrl}
-          alt=""
-          loading="lazy"
-          class="absolute inset-0 h-full w-full object-cover"
-        />
-        <span class="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 transition-transform duration-150 group-hover:scale-110">
-          <svg viewBox="0 0 24 24" class="h-6 w-6 translate-x-0.5 fill-text-primary" aria-hidden="true">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </span>
-      </button>
+        <button
+          type="button"
+          class="group absolute inset-0 flex h-full w-full items-center justify-center"
+          aria-label={`Play video: ${title}`}
+        >
+          <img
+            src={thumbnailUrl}
+            alt=""
+            loading="lazy"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+          <span class="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 transition-transform duration-150 group-hover:scale-110">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 translate-x-0.5 fill-text-primary" aria-hidden="true">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </button>
+      </div>
     </div>
-  </div>
-</Container>
+  </Container>
+</div>
 
 <script>
   // Click-to-load facade: nothing from YouTube (iframe, player JS) loads

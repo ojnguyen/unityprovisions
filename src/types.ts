@@ -51,6 +51,12 @@ export interface Stat {
    * live-data mechanism and setup requirements.
    */
   liveSheetLabel?: string;
+  /**
+   * Optional Iconify icon name (e.g. 'lucide:globe'), rendered above
+   * the stat's value in ImpactStats.astro. Purely decorative — a stat
+   * with no icon just renders without one, same as `logo` on Partner.
+   */
+  icon?: string;
 }
 
 /**
@@ -65,7 +71,7 @@ export interface Partner {
   type?: 'partner' | 'supporter';
   /**
    * Optional path/URL to a logo image. No logo assets exist yet for
-   * this project (see §5's assets/ tree) — until one is supplied here,
+   * this project (see §5's assets/ tree), until one is supplied here,
    * this organization renders as a plain text badge instead.
    */
   logo?: string;

@@ -33,14 +33,19 @@ disagree.
 
 **Continue here:** Phase 5, Step 2 (About) — write the founder story
 section next (real content already captured in §8; see §9 for the full
-remaining order).
+remaining order). Home went through several rounds of visual polish
+first (palette, spacing, Hero content, icons across sections — §6/§7);
+apply the same conventions when About is built.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
-kept to a sentence, not a paragraph. No multi-paragraph justifications
-or blow-by-blow decision history — only the current, final state and
-the short reason for it. If an entry is getting long when you go to edit
-it, cut it down before adding to it.
+kept to a sentence, not a paragraph — condense a "why" to one line,
+don't delete it outright; there's a real difference between trimming
+narration ("this session we...") and cutting a fact or a rationale.
+No multi-paragraph justifications or blow-by-blow decision history —
+only the current, final state and the short reason for it. If an entry
+is getting long when you go to edit it, cut the *narration* down before
+adding to it — not the facts.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -75,12 +80,14 @@ it, cut it down before adding to it.
   else on this site (see `EmailSignup`'s removal, §7).
 - Accessible, performant, responsive, SEO-sound from the start.
 - **Remake, not a clone.** unityprovisions.org is a reference for real
-  facts, voice, and structure — not a target to reproduce exactly.
-  Rewrite unclear or rough copy; restyle, reorganize, merge, or drop
-  sections that don't serve the visitor as well as they could; don't
-  replicate something "free" on the live site's page-builder (a bundled
-  widget, a duplicate CTA) if it costs real engineering here for no real
-  benefit. Every such change gets documented in §7, not made silently.
+  facts, voice, and structure — not a target to reproduce exactly, and
+  **not a color reference at all** (explicit direction, this overrides
+  the general rule below for color specifically — see §6). Rewrite
+  unclear or rough copy; restyle, reorganize, merge, or drop sections
+  that don't serve the visitor as well as they could; don't replicate
+  something "free" on the live site's page-builder (a bundled widget, a
+  duplicate CTA) if it costs real engineering here for no real benefit.
+  Every such change gets documented in §7, not made silently.
 
 ---
 
@@ -90,7 +97,8 @@ it, cut it down before adding to it.
 - Tailwind CSS v4, CSS-first (`@theme` in `global.css`; no
   `tailwind.config.mjs`; `@tailwindcss/vite` in `astro.config.mjs`).
 - Integrations: `sitemap()`, `mdx()`, `astro-icon()`. Icons: Lucide +
-  Simple Icons via astro-icon.
+  Simple Icons via astro-icon — now used across most Home sections, not
+  just Navbar/Footer (§7).
 - Path aliases (`tsconfig.json`): `@components/*`, `@layouts/*`,
   `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, `@/types`. No
   `baseUrl` (deprecated TS 6.0) — every alias has its own `./src/...`
@@ -113,6 +121,8 @@ src/
 │   ├── team/                     — 8 headshots for Team (not yet supplied)
 │   ├── projects/                 — Relief Route / AgriScan imagery (not yet supplied)
 │   └── donate/                   — QR code image (not yet supplied)
+│   (Hero's background photo lives somewhere under assets/ too — added
+│   locally by the user; path unknown to this document, see §2.)
 │
 ├── components/
 │   ├── ui/
@@ -186,27 +196,29 @@ re-reading that entry first.
 
 ### Color
 Defined once in `global.css`'s `@theme` block; Tailwind auto-generates
-matching utilities (`bg-primary`, `text-text-secondary`, etc.).
+matching utilities.
 
-| Token | Value | Status |
+| Token | Value | Note |
 |---|---|---|
-| `--color-bg` | `#f9f9e6` | confirmed real |
-| `--color-surface` | `#ffffff` | placeholder |
-| `--color-text-primary` | `#1a1a1a` | placeholder |
-| `--color-text-secondary` | `#5c5c5c` | placeholder |
-| `--color-primary` | `#6b7f3f` | placeholder |
-| `--color-primary-hover` | `#59692f` | placeholder |
-| `--color-accent` | `#c47a3d` | placeholder |
-| `--color-border` | `#e0ddc9` | placeholder |
-| `--color-success` | `#2f7d4f` | placeholder |
-| `--color-error` | `#b3413b` | placeholder |
+| `--color-bg` | `#ffffff` | Page base. Fully redesigned, deliberately independent of the live site (explicit direction, §3) |
+| `--color-surface` | `#eef3ea` | Soft sage tint — alternating section bands, Navbar/Footer, Card |
+| `--color-text-primary` | `#1a1a1a` | |
+| `--color-text-secondary` | `#5c5c5c` | |
+| `--color-primary` | `#355e3b` | Deep forest green, ~7:1 contrast with white text |
+| `--color-primary-hover` | `#26442a` | |
+| `--color-accent` | `#a8592b` | Deep terracotta, ~5:1 contrast with white text — original ochre (#c47a3d) failed WCAG AA |
+| `--color-border` | `#d7e1d1` | Sage-gray, matches the new surface tone |
+| `--color-success` | `#2f7d4f` | Unreviewed |
+| `--color-error` | `#b3413b` | Unreviewed |
 
-Only `--color-bg` is confirmed against the live site; the rest need real
-values pulled via DevTools before Phase 5 pages ship.
+All 🔶 placeholder in the sense of "not pulled from a real brand
+guide" — but no longer pending a live-site swap-in. The palette is a
+deliberate, independent design decision; unityprovisions.org is out of
+scope as a color reference (§3).
 
 ### Typography
-`--font-display` / `--font-body`: both `system-ui` placeholder, pending
-real font-family values.
+`--font-display` / `--font-body`: both `system-ui`, pending real
+font-family values.
 
 | Token | Size | Use |
 |---|---|---|
@@ -218,9 +230,18 @@ real font-family values.
 | `--text-2xl` | 32px | h2 |
 | `--text-3xl` | 44px | h1 / hero |
 
+**Gotcha:** this scale only defines up through `--text-3xl`. Tailwind's
+`text-4xl`/`5xl`/`6xl` utilities still exist but fall back to Tailwind's
+*un-customized* defaults (36px/48px/60px) — `text-4xl` (36px) is
+actually smaller than this system's `text-3xl` (44px). Hero briefly had
+`md:text-4xl` on its `<h1>`, which silently shrank the headline on
+desktop; fixed by just using `text-3xl` alone. Watch for this any time
+a component reaches for `text-4xl` or above.
+
 ### Spacing & Breakpoints
 Tailwind defaults (`sm:640px md:768px lg:1024px xl:1280px`), no
-overrides. Content max-width ~1280px (`max-w-7xl`).
+overrides. Content max-width: `max-w-[90rem]` (1440px) — see
+`Container.astro` (§7).
 
 ### Radius & Shadow
 `--radius-sm` (4px, inputs/small buttons) · `--radius-md` (8px, cards) ·
@@ -233,21 +254,43 @@ elevation.
 - Cards: surface background, `radius-md`, `shadow-sm`, 1.5rem padding.
 - Forms: surface-background inputs, 1px border, `radius-sm`,
   primary-colored focus ring, labels always above fields.
+- **Section backgrounds:** `--color-bg` (white) is the page's default
+  surface; sections alternate with full-bleed `bg-surface` (sage) bands
+  for rhythm. Pattern: wrap `<Container>` in a plain background `<div>`
+  (established by `DonateBanner`, also used by `Hero`, `ImpactStats`,
+  `PartnersAndSupporters`, and `Navbar`'s `<header>`). Use
+  `Container`'s `as="section"` only when no distinct full-bleed
+  background is needed — when one is, the background lives on the
+  wrapping `<div>`, not `Container` itself.
+- **A light-colored control on a dark/photo background** (Hero's
+  secondary CTA) is written by hand rather than reusing `Button`'s
+  `secondary` variant, which assumes a light page background
+  (border-primary/text-primary) and would be invisible on a photo.
+- **Decorative icons** (Iconify, via `astro-icon`) are now used across
+  most Home sections as a lightweight way to give plain heading+text
+  blocks some visual weight without needing real photography — see
+  ImpactStats, MissionStatement, GetInvolvedTeaser,
+  PartnersAndSupporters, ContactForm in §7. All are optional props /
+  additive — a section renders fine with no icon supplied.
 
 ### Accessibility
 - `:focus-visible` only — `2px solid var(--color-primary)`, 2px offset,
   applied globally.
 - Exactly one `<h1>` per page.
 - Real `alt` text on every image — except a decorative image nested
-  inside an already-labeled control (e.g. `YouTubeEmbed`'s thumbnail
-  inside its labeled play button uses `alt=""`). Narrow exception, not a
-  general pass to leave alt text empty elsewhere.
+  inside an already-labeled control (e.g. `YouTubeEmbed`'s thumbnail,
+  Hero's background photo — both `alt=""`). Narrow exception, not a
+  general pass to leave alt text empty elsewhere. All decorative icons:
+  `aria-hidden`.
 - Every form input has a real `<label>`.
 - Icon-only links/buttons: `aria-label`.
 - `<a>`/`<button>` never substituted for each other.
 - Mobile nav: full keyboard operability, correct focus management.
 - Viewport meta includes `initial-scale=1` (`Layout.astro`) — required
   for `md:` breakpoints to behave correctly on real phones.
+- Color contrast checked ad hoc during palette-revision sessions (text/
+  button colors against their real backgrounds, §6 table) — not yet a
+  full systematic pass; still on the Cross-Cutting checklist (§9).
 
 ---
 
@@ -259,7 +302,8 @@ Status: ✅ Built · 📋 Planned
 
 **Button** — ✅ Built
 - Single styled clickable element site-wide. Off-site links use
-  `ExternalLinkCTA` instead.
+  `ExternalLinkCTA` instead. Not used for Hero's secondary CTA — see
+  §6's note on light controls on dark backgrounds.
 - Props: `variant?: 'primary'|'secondary'|'accent'` (primary) ·
   `size?: 'sm'|'md'|'lg'` (md) · `href?` · `type?: 'button'|'submit'`
   (button) · `target?` · `rel?` (last two only apply on the `<a>`
@@ -283,7 +327,7 @@ Status: ✅ Built · 📋 Planned
 - Props: `padding?: 'sm'|'md'|'lg'` (md).
 - No `class` pass-through — wrap in an outer `<div>` for width
   constraints (see ContactForm).
-- First used by: `ContactForm`.
+- Used by `ContactForm`; renders pale sage.
 
 **ResponsiveImage** — ✅ Built
 - Wraps `astro:assets`'s `<Image />` with design tokens.
@@ -293,11 +337,10 @@ Status: ✅ Built · 📋 Planned
 **Container** — ✅ Built
 - Max-width + horizontal-padding wrapper.
 - Props: `as?: keyof HTMLElementTagNameMap` (div) · `maxWidth?`
-  (`max-w-7xl`).
-- Use `as="section"` only when no distinct full-bleed background is
-  needed. For a distinct background, wrap a plain element around
-  `<Container>` instead (`Navbar`'s `<header>`, `DonateBanner`'s
-  `<div>`).
+  (`max-w-[90rem]`).
+- No `id` prop — components needing a scroll anchor wrap `Container` in
+  their own `<div id="...">` instead (see `YouTubeEmbed`). See §6 for
+  the full-bleed-background wrapping pattern.
 
 **ExternalLinkCTA** — ✅ Built
 - Standalone, prominent off-site CTA. Wraps `Button` with
@@ -321,10 +364,11 @@ Status: ✅ Built · 📋 Planned
   focus to first link on open, Escape closes + returns focus.
 - Donate renders as an accent `Button`, not a plain link. No
   `aria-current` support on `Button`, so it doesn't get active-page
-  styling on `/donate` — accepted, minor (accent color already
-  distinguishes it).
+  styling on `/donate` — accepted, minor.
 - No "Email List" nav item (live site has one) — reachable via Footer
   only (see `EmailSignup` below).
+- `bg-surface` now renders pale sage instead of white — no code change,
+  just the token update (§6).
 
 **Footer** — ✅ Built
 - Data: `footer.ts` — nav links, Email List/Linktree external links,
@@ -332,9 +376,7 @@ Status: ✅ Built · 📋 Planned
 - Plain `<a>` tags, not `ExternalLinkCTA` (too heavy for a dense link
   row).
 - Copyright year: `new Date().getFullYear()` at build time.
-- Live site has both this Footer link and a native inline signup widget
-  on its homepage — see `EmailSignup` below for why only the link was
-  kept.
+- `bg-surface` now renders pale sage — same note as Navbar.
 
 ### Root Layout — `src/layouts/`
 
@@ -348,16 +390,30 @@ Status: ✅ Built · 📋 Planned
 
 **Hero** — ✅ Built
 - Home's opening `<h1>` section.
-- Props: `headline` · `tagline` · `ctaLabel` · `ctaHref` (all required).
-- No `SectionHeading` (needs custom eyebrow styling); no image prop
-  (none needed/available).
-- Real copy: see `index.astro`.
+- Props: `headline` · `tagline` · `ctaLabel` · `ctaHref` (all required)
+  · `subtext?` · `secondaryCtaLabel?`/`secondaryCtaHref?` (must be
+  supplied together) · `backgroundImage?: ImageMetadata` (now in use
+  with a real photo — added locally, path not reflected here, §2).
+- Full-bleed photo (or gradient fallback) behind centered white text +
+  a primary/ghost button pair. Overlay is t a CSS
+  `mask-image`.
+- No scroll-cue arrow (removed — read as distracting).
+- `<h1>` uses `text-3xl` only, no `md:` override — see §6's Typography
+  gotcha (a previous `md:text-4xl` was silently shrinking it).
+- Still no `SectionHeading` (needs custom white-text styling on a
+  colored/photo background, same reasoning as `DonateBanner`).
+- Real copy: trimmed to one clear kicker + one short headline + one
+  supporting line (previously three overlapping messages) — see
+  `index.astro`.
 
 **ImpactStats** — ✅ Built (🔶 live data pending — see §10)
 - Stat grid; 2 of 4 stats live-sourced from a public Google Sheet.
 - Props: `stats: Stat[]`.
-- No heading prop — Home renders it bare; About wraps it in its own
-  `SectionHeading` ("fuller").
+- Full-bleed `bg-surface` band (`border-y border-border`) for contrast
+  against `--color-bg`. Each stat now renders its optional `icon`
+  (Iconify name from `stats.ts`) above the value.
+- No heading prop — Home renders it bare; About will wrap it in its own
+  `SectionHeading` ("fuller") once About is built.
 - Live sheet: ID `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid
   `638911803`, range `B1:C6` (must stay scoped to the summary block —
   widening it into the donation log below breaks Google's column-type
@@ -370,16 +426,20 @@ Status: ✅ Built · 📋 Planned
   since the sheet is the intended source of truth.
 
 **MissionStatement** — ✅ Built
-- Props: `heading` · `body` (both required).
-- Uses `SectionHeading` (unlike Hero — no exclusion here).
-- Real copy: see `index.astro` — verified word-for-word against the live
-  site's "Our Mission" section, exact match.
+- Props: `heading` · `body` (both required) · `icon?` (new — optional
+  circular icon badge above the heading)
+- Centered, uses `SectionHeading` (unlike Hero — no exclusion here).
+- Real copy: see `index.astro` — verified word-for-word against the
+  live site's "Our Mission" section, exact match.
 
 **YouTubeEmbed** — ✅ Built
 - Click-to-load facade (thumbnail + button) → real `<iframe>`
   (`youtube-nocookie.com`) only on click. Deliberate improvement over
   the live site's eager iframe.
 - Props: `videoId` · `title` (both required).
+- Wrapped in `<div id="watch-our-story">` — the scroll target for
+  Hero's secondary CTA. Added to a wrapping `<div>` rather than giving
+  `Container` an `id` prop, to keep `Container`'s API generic.
 - Thumbnail `alt=""` (decorative, inside a labeled button — §6's
   exception).
 - Real copy: see `index.astro` (videoId pulled from the live site's
@@ -389,14 +449,19 @@ Status: ✅ Built · 📋 Planned
 - Props: `partners: Partner[]`.
 - Groups into Partners/Supporters (no `type` = partner by default);
   badge, or `<img>` once a `logo` path is set (none supplied yet).
+- Full-bleed `bg-surface` band, same as `ImpactStats`. Each text badge
+  (no `logo` set) now includes a small `lucide:building-2` icon —
+  previously plain bordered text with nothing else.
 - No heading prop — same brief (Home) / fuller (About) pattern as
   ImpactStats.
 - Verified against live site: partner/supporter lists match
   `partners.ts`.
 
 **GetInvolvedTeaser** — ✅ Built
-- Props: `heading` · `subtext` · `ctaLabel` (all required).
-  `href="/get-involved"` hardcoded, not a prop.
+- Props: `heading` · `subtext` · `ctaLabel` (all required) · `icon?`
+  (new — same badge pattern as `MissionStatement`, kept inline rather
+  than extracted to a shared component; too small to earn its own
+  file, §3). `href="/get-involved"` hardcoded, not a prop.
 - `variant="primary"` (not `accent` — accent reserved for donate asks).
 - Doesn't exist on the live site as-is (deliberate rebuild choice); its
   destination is a full page of context, which is why it earns its own
@@ -412,13 +477,15 @@ Status: ✅ Built · 📋 Planned
   surface; a Google Form or direct email is the safer path if a real
   need ever comes up.
 - Collapsed by default behind a "Drop Us a Line!" button (matches live
-  site), revealing a `Card`-wrapped panel. Same disclosure pattern as
-  `Navbar` (`aria-expanded`/`aria-controls`, focus management, Escape).
-  **Cancel** closes the panel and resets the fields — this is closing an
-  optional panel, not resetting an always-visible form (the latter is
-  the real anti-pattern; this isn't that).
+  site), revealing a `Card`-wrapped panel (now pale sage, §6). Same
+  disclosure pattern as `Navbar` (`aria-expanded`/`aria-controls`,
+  focus management, Escape). **Cancel** closes the panel and resets the
+  fields — this is closing an optional panel, not resetting an
+  always-visible form (the latter is the real anti-pattern; this isn't
+  that).
 - Trigger/Cancel buttons found via `querySelector` (a wrapping div's id
   / `button[type="button"]`), not a `Button` `id` prop (unsupported).
+- Email link now has a small `lucide:mail` icon next to it.
 - Real copy: see `index.astro`.
 - Open: submission backend (Formspree vs. Cloudflare Function) — markup
   and validation complete, no handler wired; reCAPTCHA is a placeholder
@@ -431,8 +498,6 @@ Status: ✅ Built · 📋 Planned
   — so a native version meant building/maintaining a real backend to
   re-solve an already-solved problem, and would have directly duplicated
   the Volunteer CTA on the same page.
-- Live site has it "for free" via its page-builder; that economics
-  doesn't transfer to a hand-built rebuild.
 - If wanted again: one `ExternalLinkCTA` pointed at `contactListFormUrl`,
   inline — not a new component.
 
@@ -440,18 +505,21 @@ Status: ✅ Built · 📋 Planned
 - Props: `heading` · `subtext` · `ctaLabel` (all required).
   `href="/donate"` hardcoded.
 - Full-bleed `bg-primary-hover` band (not `bg-primary` — matches the
-  global focus-ring color, which would make the ring invisible against a
-  same-color background) + custom white `<h2>`/`<p>` (not
+  global focus-ring color, which would make the ring invisible against
+  a same-color background) + custom white `<h2>`/`<p>` (not
   `SectionHeading` — can't override its text color).
+- Source of the full-bleed-band pattern, and of the "hand-write a light
+  control instead of reusing `Button`'s `secondary` variant" pattern
+  `Hero` also uses.
 - Home only, not the Donate page — `QRCodeDonate` already covers that
   page fully; a second identical CTA there would be redundant.
 - Not a floating/sitewide widget (live site's is) — no floating-UI
   pattern exists in this codebase, and it would read as pushy across
   every page for a young nonprofit still building trust.
-- Real copy: see `index.astro`.
 - Serves a different purpose than Hero/Navbar's donate CTAs: a second
   ask, positioned deliberately after a full read-through, once the
   earlier CTAs are scrolled out of view — not a redundant duplicate.
+- Real copy: see `index.astro`.
 
 ### Domain Composites
 
@@ -553,7 +621,8 @@ Giving + transparency in one place.
 ### Phase 4 — Shared Infrastructure (complete)
 - [x] Design Tokens
 - [~] Global Styles & Fonts (base styles shipped; real font-family
-      pending)
+      pending; palette fully redesigned across several sessions, still
+      🔶 as a deliberate design choice, not a live-site match — §6)
 - [x] Utility Helpers
 - [x] UI Primitives: Button, SectionHeading, Card, ResponsiveImage,
       Container, ExternalLinkCTA
@@ -562,7 +631,9 @@ Giving + transparency in one place.
 - [x] Layout.astro
 
 ### Phase 5 — Build Pages (current)
-- [x] **1. Home** (`index.astro`) — fully built and assembled
+- [x] **1. Home** (`index.astro`) — fully built and assembled; several
+      visual-polish rounds since (palette, container width, section
+      banding, Hero content + real photo, icons across sections — §6/§7)
     - [x] Hero
     - [x] ImpactStats
     - [x] MissionStatement
@@ -572,8 +643,8 @@ Giving + transparency in one place.
     - [x] ContactForm
     - [x] DonateBanner
     - [x] Assemble `index.astro`
-- [ ] **2. About** (`about.astro`):
-    - [ ] Founder story section — next
+- [ ] **2. About** (`about.astro`) — next:
+    - [ ] Founder story section
     - [ ] ImpactStats (reused)
     - [ ] PartnersAndSupporters (reused)
     - [ ] Annual Report reference
@@ -598,10 +669,12 @@ Giving + transparency in one place.
 
 ### Cross-Cutting (every page)
 - [ ] Responsive check at each breakpoint
-- [ ] Accessibility pass
+- [ ] Accessibility pass (contrast spot-checked ad hoc so far, §6 — full
+      systematic pass still unstarted)
 - [ ] SEO (title, meta description, OG tags, canonical URL, heading
       hierarchy, alt text)
-- [ ] Performance check (image optimization, Lighthouse)
+- [ ] Performance check (image optimization, Lighthouse — check Hero's
+      real photo once this doc's copy of `index.astro` is current, §2)
 - [ ] Cross-browser spot check
 
 ### Phase 6 — Deployment
@@ -614,8 +687,7 @@ Giving + transparency in one place.
 ## 10. Data / Content Integrations
 
 **Static data files:** `navigation.ts` (6-item nav) · `footer.ts` ·
-`staff.ts` (8 members, planned) · `stats.ts` (4 stats) · `partners.ts` ·
-`projects.ts` (planned).
+`staff.ts` (8 members, planned) · `stats.ts` (4 stats) · `partners.ts` · `projects.ts` (planned).
 
 **External destinations:**
 - Email List (Footer) / Volunteer (Get Involved) →
@@ -643,9 +715,7 @@ Giving + transparency in one place.
   column B — silent fallback if wording changes; (2) `SHEET_RANGE`
   (`'B1:C6'`) must stay scoped to the summary block — widening it into
   the donation log below breaks Google's column-type inference (this
-  already happened once during development). Live site currently reports
-  higher numbers than the `stats.ts` fallback (§7) — not corrected here,
-  since the sheet is the intended source of truth.
+  already happened once during development).
 
 ---
 
@@ -660,15 +730,20 @@ Giving + transparency in one place.
   component-local types stay inline in that component's `Props`.
 - Every component: `Astro.props as Props`.
 - Class lists: `cn(...)`, never manual string concatenation.
-- `Container` lives in `ui/` — generic, no page-specific content.
+- `Container` lives in `ui/` — generic, no page-specific content, no
+  `id` prop (§7).
 - Cookie consent banner: decision deferred to end of project.
 - Confirm a component deserves its own file before building it (§2, §3)
   — including checking the live site and this project's own existing
   components/data for redundancy.
 - Real content (roster, stats, project descriptions, page copy) lives in
   data files or page templates — use as captured here, don't
-  re-research. A §7 note marked "verified against the live site" is a
-  live re-check done during this project.
+  re-research. A §7 note marked "verified against the live site" (or
+  "verified word-for-word") records that a live re-check was actually
+  done during this project — it's a fact, not filler; don't delete
+  those notes when trimming an entry. **Exception: color** — the live
+  site is out of scope as a color reference (§3/§6); still the
+  reference for everything else.
 - Dynamic tag props (`as`): typed `keyof HTMLElementTagNameMap` or a
   narrower literal union — never a bare `string` (breaks Astro's
   type-checking on `<Tag>`).
@@ -679,8 +754,34 @@ Giving + transparency in one place.
   components) — a file's existence isn't a "started" signal. §5's
   ✅/📋 markers are the only source of truth. Exception:
   `EmailSignup.astro` — if it still exists on disk, delete it (§7).
-- `index.astro` is fully assembled with real copy; the Phase-4
-  dev-sandbox demo blocks are gone. Two bugs fixed during that assembly,
-  worth remembering for other pages: don't wrap page content in its own
-  `<main>` — `Layout.astro` already provides one; double-check import
-  aliases match real component names exactly.
+- `index.astro` is fully assembled with real copy; don't wrap page
+  content in its own `<main>` — `Layout.astro` already provides one;
+  double-check import aliases match real component names exactly.
+- Full-bleed section background bands (wrap `<Container>` in a plain
+  background `<div>`, e.g. `bg-surface` or `bg-primary`) are an
+  established pattern — use it any time a section needs visual
+  separation from `--color-bg`, rather than inventing a new approach
+  per component.
+- A light-colored control on a dark/photo background is hand-written,
+  not `Button`'s `secondary` variant (assumes a light page background)
+  — same reasoning `DonateBanner` established for its custom heading
+  markup, that `Hero` now also follows.
+- Decorative Iconify icons (via `astro-icon`) are an established,
+  lightweight way to add visual weight to plain heading+text sections —
+  always optional props, never required.
+- Prefer a plain gradient overlay `<div>` over a CSS `mask-image` for
+  photo-legibility treatments — independently tunable opacity stops,
+  and doesn't reveal a solid color underneath once fully faded.
+- Tailwind gotcha: this project's custom `--text-3xl` (44px) is larger
+  than un-customized `text-4xl` (36px) — don't reach for `text-4xl`+
+  assuming it's bigger than `text-3xl` here (§6).
+- **Local edits to files this document tracks (e.g. `index.astro`) that
+  happen outside the session maintaining this file won't be reflected
+  here automatically** — paste the current file back in when resuming.
+- **When trimming this document for length, cut narration ("this
+  session we…", historical "was X" values), not facts.** A "why" that
+  prevents a future mistake, a verification record ("checked against
+  the live site"), or a specific implementation detail (e.g. how a
+  button is targeted via `querySelector`) should be condensed to one
+  line, never deleted outright — three genuine cases of this happened
+  in one edit of this document and had to be restored afterward.

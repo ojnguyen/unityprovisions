@@ -10,20 +10,26 @@ import ContactForm from '@components/sections/ContactForm.astro';
 import DonateBanner from '@components/sections/DonateBanner.astro';
 import { stats } from '@data/stats';
 import { partners } from '@data/partners';
+import hero_image from '@assets/hero_image.jpg'
 ---
 
 <Layout>
   <Hero
-    headline="Creating opportunities and building stronger communities."
+    headline="Turning Surplus Into Sustenance."
     tagline="Students Ending Hunger"
+    subtext="A student-led movement building donation centers in schools and communities worldwide."
     ctaLabel="Donate"
     ctaHref="/donate"
+    secondaryCtaLabel="Watch Our Story"
+    secondaryCtaHref="#watch-our-story"
+    backgroundImage={hero_image}
   />
 
   <ImpactStats stats={stats} />
 
   <MissionStatement
     heading="Our Mission"
+    icon="lucide:heart"
     body="At Unity Provisions, we believe that no one should go hungry in a world of abundance. As a student-led movement, we empower young leaders to create sustainable food collection programs in schools and communities worldwide. Through education, collaboration, and action, we fight the stigma around food insecurity and transform surplus into sustenance. Together, we are building a future where access to food is a right, not a privilege."
   />
 
@@ -36,6 +42,7 @@ import { partners } from '@data/partners';
 
   <GetInvolvedTeaser
     heading="Get Involved"
+    icon="lucide:users"
     subtext="Whether you're starting a branch, volunteering, or joining our mailing list, there's a place for you in the fight against hunger."
     ctaLabel="Learn More"
   />

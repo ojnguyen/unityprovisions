@@ -1,5 +1,6 @@
 ---
 import Container from '@components/ui/Container.astro';
+import { Icon } from 'astro-icon/components';
 import type { Partner } from '@/types';
 
 interface Props {
@@ -21,25 +22,28 @@ const groups = [
   { label: 'Supporters', orgs: supporterOrgs },
 ].filter((group) => group.orgs.length > 0);
 ---
-<Container as="section">
-  <div class="flex flex-col gap-10 py-12 md:py-16">
-    {groups.map((group) => (
-      <div class="flex flex-col items-center gap-4 text-center">
-        <h3 class="text-sm font-semibold uppercase tracking-wide text-primary">
-          {group.label}
-        </h3>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          {group.orgs.map((org) => (
-            org.logo ? (
-              <img src={org.logo} alt={org.name} class="h-10 object-contain" />
-            ) : (
-              <span class="rounded-sm border border-border px-3 py-1.5 text-sm text-text-secondary">
-                {org.name}
-              </span>
-            )
-          ))}
+<div class="border-y border-border bg-surface">
+  <Container as="section">
+    <div class="flex flex-col gap-10 py-12 md:py-16">
+      {groups.map((group) => (
+        <div class="flex flex-col items-center gap-4 text-center">
+          <h3 class="text-sm font-semibold uppercase tracking-wide text-primary">
+            {group.label}
+          </h3>
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            {group.orgs.map((org) => (
+              org.logo ? (
+                <img src={org.logo} alt={org.name} class="h-10 object-contain" />
+              ) : (
+                <span class="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 text-sm text-text-secondary">
+                  <Icon name="lucide:building-2" aria-hidden="true" class="h-3.5 w-3.5 text-primary/60" />
+                  {org.name}
+                </span>
+              )
+            ))}
+          </div>
         </div>
-      </div>
-    ))}
-  </div>
-</Container>
+      ))}
+    </div>
+  </Container>
+</div>
