@@ -41,6 +41,7 @@
   --color-primary: #355e3b;         /* 🔶 unchanged from prior revision — deep forest green, ~7:1 vs white text */
   --color-primary-hover: #26442a;   /* 🔶 unchanged */
   --color-accent: #a8592b;          /* 🔶 unchanged from prior revision — deep terracotta, ~5:1 vs white text */
+  --color-accent-hover: #79401f;    /* Added for button-hover consistency — same ~28% darken ratio as primary→primary-hover; ~8:1 vs white text */
 
   --color-border: #d7e1d1;          /* 🔶 revised to a soft sage-gray to match the new surface tone (was tan/khaki #e0ddc9, a leftover of the old cream palette) */
   --color-success: #2f7d4f;         /* 🔶 unchanged */

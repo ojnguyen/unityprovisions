@@ -207,6 +207,7 @@ matching utilities.
 | `--color-primary` | `#355e3b` | Deep forest green, ~7:1 contrast with white text |
 | `--color-primary-hover` | `#26442a` | |
 | `--color-accent` | `#a8592b` | Deep terracotta, ~5:1 contrast with white text — original ochre (#c47a3d) failed WCAG AA |
+| `--color-accent-hover` | `#79401f` | Added for button-hover consistency (§7 Button) — same ~28% darken ratio as primary→primary-hover; ~8:1 with white text |
 | `--color-border` | `#d7e1d1` | Sage-gray, matches the new surface tone |
 | `--color-success` | `#2f7d4f` | Unreviewed |
 | `--color-error` | `#b3413b` | Unreviewed |
@@ -566,8 +567,7 @@ DonateBanner.
 ### About (`/about`)
 The organization's full story.
 Order: founder story → ImpactStats (fuller) → PartnersAndSupporters
-(fuller) → Annual Report reference (plain link, not a component) → link
-to Team.
+(fuller) → Annual Report CTA (external link via `ExternalLinkCTA` or embedded PDF — decision + reasoning in §10) → link to Team.
 
 Founder story (real copy): "Unity Provisions began with a simple but
 painful question: 'Is there dinner?' Growing up, our founder Ryan knew
@@ -701,7 +701,36 @@ Giving + transparency in one place.
   (`linktr.ee/UnityProvisions`)
 - Phone: `(857) 777-8811` (`tel:8577778811`)
 
+**Live-site content audit** — homepage sections that exist on
+unityprovisions.org but aren't (fully) covered in this revision yet,
+confirmed via a live fetch this session (§3 — real-content check):
+- **"Our Biggest Event Yet"** — a single-event spotlight, not a running
+  stat: North Quincy branch collected and donated 1,025 lbs of food to
+  Quincy Community Action Program (Dec 20, 2024), with a photo. No
+  equivalent exists anywhere in this revision (Home, About, or
+  Projects) — needs a decision on where it'd live, plus a real photo
+  (§5 blocker: no project/event photography supplied yet).
+- **"Creating Opportunities"** (live site's actual heading — not
+  "Created Opportunities") — the same 4 numbers already in `stats.ts`,
+  plus it names all 8 countries (US, Canada, India, UAE, Puerto Rico,
+  Pakistan, Morocco, England) — that list isn't captured anywhere in
+  this revision yet.
+- **"Our Partners"** — same orgs already in `partners.ts` (Wang YMCA,
+  Mystic Valley YMCA, Food4Philly), but the live site gives each a
+  photo + short paragraph vs. this revision's plain badge list. Once
+  real logo/photo assets exist (§5 blocker), About's "fuller"
+  `PartnersAndSupporters` pass is the natural place to add them.
+- **"Grants & Funding"** — same supporter list already in `partners.ts`
+  (`type: 'supporter'`), but with an intro paragraph on why the grants
+  matter that `PartnersAndSupporters.astro` doesn't currently render —
+  it only labels the group "Supporters", no framing copy.
+No action taken this session — logged so a future pass (a Home
+revisit, or while building About/Projects) can decide what's worth
+adding and where, rather than rediscovering it from scratch.
+
 **Open decisions:**
+- Annual Report CTA (About, §8): Deciding to either link out via
+  `ExternalLinkCTA` or embedding via PDF.
 - ContactForm submission backend: Formspree vs. Cloudflare Function.
   Markup/validation done; only the real handler + reCAPTCHA widget
   pending.
@@ -766,6 +795,10 @@ Giving + transparency in one place.
   not `Button`'s `secondary` variant (assumes a light page background)
   — same reasoning `DonateBanner` established for its custom heading
   markup, that `Hero` now also follows.
+- Button hover states always resolve to a fixed `-hover` design token
+  (e.g. `--color-primary-hover`, `--color-accent-hover`), never an
+  opacity blend — keeps hover appearance identical regardless of what
+  background the button happens to sit on (§7 Button).
 - Decorative Iconify icons (via `astro-icon`) are an established,
   lightweight way to add visual weight to plain heading+text sections —
   always optional props, never required.
