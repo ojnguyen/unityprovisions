@@ -31,11 +31,11 @@ Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 2 (About) — write the founder story
-section next (real content already captured in §8; see §9 for the full
-remaining order). Home went through several rounds of visual polish
-first (palette, spacing, Hero content, icons across sections — §6/§7);
-apply the same conventions when About is built.
+**Continue here:** Phase 5, Step 2 (About) — founder story (with
+founder photo) and `ImpactStats` ("fuller", own `SectionHeading`) are
+both built in `about.astro`. Next: `PartnersAndSupporters` (reused,
+"fuller"), then Annual Report reference and a Team link — see §9 for
+the full remaining order.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -118,11 +118,11 @@ adding to it — not the facts.
 ```
 src/
 ├── assets/
-│   ├── team/                     — 8 headshots for Team (not yet supplied)
+│   ├── hero_image.jpg            — Hero's background photo (in use, index.astro)
+│   ├── ryan_nguyen.webp          — Founder photo (in use, about.astro)
+│   ├── team/                     — 8 headshots for Team (not yet supplied — may overlap with ryan_nguyen.webp above, tbd)
 │   ├── projects/                 — Relief Route / AgriScan imagery (not yet supplied)
 │   └── donate/                   — QR code image (not yet supplied)
-│   (Hero's background photo lives somewhere under assets/ too — added
-│   locally by the user; path unknown to this document, see §2.)
 │
 ├── components/
 │   ├── ui/
@@ -171,7 +171,7 @@ src/
 │
 ├── pages/
 │   ├── index.astro                     ✅ built — Home
-│   ├── about.astro                     📋 planned
+│   ├── about.astro                     📋 planned (founder story + founder photo + ImpactStats built — see §7)
 │   ├── team.astro                      📋 planned
 │   ├── projects.astro                  📋 planned
 │   ├── get-involved.astro              📋 planned
@@ -186,9 +186,9 @@ src/
 └── types.ts                            ✅ built
 ```
 
-**Note:** `EmailSignup.astro` was built, then removed (§7) — delete it
-from the repo if it still exists there; don't recreate it without
-re-reading that entry first.
+**Note:** `EmailSignup.astro` was built, then removed (§7), and its
+deletion from the repo has been confirmed — no further action needed;
+don't recreate it without re-reading that entry first.
 
 ---
 
@@ -394,10 +394,12 @@ Status: ✅ Built · 📋 Planned
 - Props: `headline` · `tagline` · `ctaLabel` · `ctaHref` (all required)
   · `subtext?` · `secondaryCtaLabel?`/`secondaryCtaHref?` (must be
   supplied together) · `backgroundImage?: ImageMetadata` (now in use
-  with a real photo — added locally, path not reflected here, §2).
+  with a real photo: `src/assets/hero_image.jpg`).
 - Full-bleed photo (or gradient fallback) behind centered white text +
-  a primary/ghost button pair. Overlay is t a CSS
-  `mask-image`.
+  a primary/ghost button pair. Overlay uses a CSS `mask-image`
+  (`mask-y-from-accent` utility class) — the deliberate final choice
+  for Hero's photo-legibility treatment, not the gradient-overlay
+  `<div>` pattern (§11).
 - No scroll-cue arrow (removed — read as distracting).
 - `<h1>` uses `text-3xl` only, no `md:` override — see §6's Typography
   gotcha (a previous `md:text-4xl` was silently shrinking it).
@@ -413,8 +415,14 @@ Status: ✅ Built · 📋 Planned
 - Full-bleed `bg-surface` band (`border-y border-border`) for contrast
   against `--color-bg`. Each stat now renders its optional `icon`
   (Iconify name from `stats.ts`) above the value.
-- No heading prop — Home renders it bare; About will wrap it in its own
-  `SectionHeading` ("fuller") once About is built.
+- No heading prop — renders bare on Home; About wraps it in its own
+  centered `SectionHeading` ("By The Numbers" / "Our Impact") — the
+  "fuller" version §8 calls for.
+- Home and About each independently live-fetch the same sheet — no
+  shared state across pages (this is a static multi-page site, so
+  nothing persists across a full page navigation). Numbers match in
+  practice, since both hit the same source with identical logic;
+  deliberately kept simple over adding a caching layer (decided).
 - Live sheet: ID `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid
   `638911803`, range `B1:C6` (must stay scoped to the summary block —
   widening it into the donation log below breaks Google's column-type
@@ -522,6 +530,27 @@ Status: ✅ Built · 📋 Planned
   earlier CTAs are scrolled out of view — not a redundant duplicate.
 - Real copy: see `index.astro`.
 
+### Page-Specific Content (not componentized)
+
+Content that lives directly in a page file rather than as its own
+component — used exactly once, doesn't isolate a reusable concern
+(§2 process, step 1). Listed here so a future session doesn't
+re-litigate the "deserves its own file?" question from scratch.
+
+**About's founder story** — built in `about.astro`. `Container` +
+`SectionHeading` (`as="h1"`, eyebrow "Our Story", title "Is There
+Dinner?") + a photo/prose layout (`ResponsiveImage` + `max-w-3xl`
+prose column), side-by-side from `md:` up, stacked on mobile. Real
+copy: §8, split into paragraphs for readability — the pounds/dollar
+figures are deliberately vague ("thousands of pounds... thousands of
+dollars"), with a line pointing to the `ImpactStats` numbers rendered
+further down this same page, instead of a hardcoded or synced number.
+A build-time-derived version and a fully live-synced version (via a
+broadcast event from `ImpactStats`) were both built and reverted —
+too much machinery for one sentence; don't re-attempt without
+checking here first. Founder photo: `src/assets/ryan_nguyen.webp`,
+sized 400×500 pending a look at the real crop.
+
 ### Domain Composites
 
 **StaffCard / StaffGrid** — 📋 Planned
@@ -569,7 +598,10 @@ The organization's full story.
 Order: founder story → ImpactStats (fuller) → PartnersAndSupporters
 (fuller) → Annual Report CTA (external link via `ExternalLinkCTA` or embedded PDF — decision + reasoning in §10) → link to Team.
 
-Founder story (real copy): "Unity Provisions began with a simple but
+Founder story (real copy; pounds/dollar figures deliberately kept
+vague — "thousands" — with a pointer to the numbers below, rather than
+a hardcoded or synced figure — see §7): "Unity Provisions began with a
+simple but
 painful question: 'Is there dinner?' Growing up, our founder Ryan knew
 the silence of nights when food was uncertain. Later, while volunteering
 at a local food pantry, he saw firsthand how hunger hides behind quiet
@@ -579,11 +611,12 @@ Ryan realized how fragile food programs could be. He founded Unity
 Provisions to build something that couldn't disappear overnight. What
 started with a single branch at Boston Latin School has grown into a
 youth-led network of over 35 branches across multiple countries.
-Together, student leaders have collected more than 4,000 pounds of food
-and clothing, raised over $11,000, and built partnerships with
+Together, student leaders have collected thousands of pounds of food
+and clothing, raised thousands of dollars, and built partnerships with
 organizations like the Wang YMCA to sustain community-based donation
-centers. Our mission is to empower young people to fight hunger by
-creating and leading donation centers in their schools and communities."
+centers — see the current numbers below. Our mission is to empower
+young people to fight hunger by creating and leading donation centers
+in their schools and communities."
 
 ### Team (`/team`)
 StaffGrid of 8 real members (§7).
@@ -643,9 +676,9 @@ Giving + transparency in one place.
     - [x] ContactForm
     - [x] DonateBanner
     - [x] Assemble `index.astro`
-- [ ] **2. About** (`about.astro`) — next:
-    - [ ] Founder story section
-    - [ ] ImpactStats (reused)
+- [ ] **2. About** (`about.astro`) — in progress:
+    - [x] Founder story section
+    - [x] ImpactStats (reused)
     - [ ] PartnersAndSupporters (reused)
     - [ ] Annual Report reference
     - [ ] Team link
@@ -802,9 +835,10 @@ adding and where, rather than rediscovering it from scratch.
 - Decorative Iconify icons (via `astro-icon`) are an established,
   lightweight way to add visual weight to plain heading+text sections —
   always optional props, never required.
-- Prefer a plain gradient overlay `<div>` over a CSS `mask-image` for
-  photo-legibility treatments — independently tunable opacity stops,
-  and doesn't reveal a solid color underneath once fully faded.
+- Photo-legibility treatment: a CSS `mask-image` (Hero's
+  `mask-y-from-accent` utility class) is the established pattern, not
+  a gradient overlay `<div>` — final decision, supersedes an earlier-
+  considered gradient-overlay approach.
 - Tailwind gotcha: this project's custom `--text-3xl` (44px) is larger
   than un-customized `text-4xl` (36px) — don't reach for `text-4xl`+
   assuming it's bigger than `text-3xl` here (§6).
