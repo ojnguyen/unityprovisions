@@ -7,6 +7,7 @@ import ImpactStats from '@components/sections/ImpactStats.astro';
 import PartnersAndSupporters from '@components/sections/PartnersAndSupporters.astro';
 import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
 import Button from '@components/ui/Button.astro';
+import { Icon } from 'astro-icon/components';
 import ryanPhoto from '@assets/ryan_nguyen.webp';
 import { stats } from '@data/stats';
 import { partners } from '@data/partners';
@@ -69,8 +70,16 @@ import { partners } from '@data/partners';
     </div>
   </Container>
 
+  <!--
+    pt matches the site's usual section padding (separates this heading
+    from the founder story above); pb is deliberately compressed so the
+    heading sits close to — and visually reads as introducing — the
+    sage ImpactStats band immediately below it, rather than floating
+    equidistant between two unrelated sections. Formal rule, and when
+    (not) to apply it to other sections: project-roadmap.md §11.
+  -->
   <Container as="section">
-    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
       <SectionHeading
         title="The Numbers So Far"
         subtext="Real numbers, updated live from branches around the world."
@@ -81,8 +90,9 @@ import { partners } from '@data/partners';
 
   <ImpactStats stats={stats} />
 
+  <!-- Same asymmetric-padding treatment as "The Numbers So Far" above — see project-roadmap.md §11 for the general rule. -->
   <Container as="section">
-    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
       <SectionHeading
         title="Who Helps Make This Possible"
         subtext="The businesses, nonprofits, and community groups working alongside us."
@@ -114,6 +124,9 @@ import { partners } from '@data/partners';
 
   <Container as="section">
     <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+      <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Icon name="lucide:users" aria-hidden="true" class="h-6 w-6" />
+      </span>
       <SectionHeading
         title="Meet the People Behind It"
         subtext="The students leading branches, running events, and keeping this whole thing moving."

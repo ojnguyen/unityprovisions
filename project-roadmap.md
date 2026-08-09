@@ -32,7 +32,9 @@ markers). Trust that over any summary, including this one, if they ever
 disagree.
 
 **Continue here:** Phase 5, Step 3 (Team) — About (`about.astro`) is
-fully assembled and complete (§9). Team needs: `StaffCard` (single
+fully assembled and complete (§9), including a visual-polish pass this
+session (icon badge on "Meet the Team" CTA, asymmetric heading padding
+on the two data-intro blocks — §6/§11). Team needs: `StaffCard` (single
 member card — photo, name, role, optional email), `StaffGrid` (lays
 out an array of them), real data in `staff.ts` (roster already
 captured in §7's Domain Composites section), then assemble
@@ -272,17 +274,21 @@ elevation.
   `PartnersAndSupporters`, and `Navbar`'s `<header>`). Use
   `Container`'s `as="section"` only when no distinct full-bleed
   background is needed — when one is, the background lives on the
-  wrapping `<div>`, not `Container` itself.
+  wrapping `<div>`, not `Container` itself. A heading-only block that
+  exists purely to introduce one of these bands uses asymmetric
+  top/bottom padding to visually attach to it, rather than the usual
+  symmetric spacing — see §11.
 - **A light-colored control on a dark/photo background** (Hero's
   secondary CTA) is written by hand rather than reusing `Button`'s
   `secondary` variant, which assumes a light page background
   (border-primary/text-primary) and would be invisible on a photo.
-- **Decorative icons** (Iconify, via `astro-icon`) are now used across
-  most Home sections as a lightweight way to give plain heading+text
-  blocks some visual weight without needing real photography — see
-  ImpactStats, MissionStatement, GetInvolvedTeaser,
-  PartnersAndSupporters, ContactForm in §7. All are optional props /
-  additive — a section renders fine with no icon supplied.
+- **Decorative icons** (Iconify, via `astro-icon`) give plain
+  heading+text blocks some visual weight without needing real
+  photography — see ImpactStats, MissionStatement, GetInvolvedTeaser,
+  PartnersAndSupporters, ContactForm in §7, and About's "Meet the
+  Team" CTA. All are optional props / additive — a section renders
+  fine with no icon supplied. See §11 for which section *shapes*
+  actually earn a badge — this spans every page, not just Home.
 
 ### Accessibility
 - `:focus-visible` only — `2px solid var(--color-primary)`, 2px offset,
@@ -432,8 +438,11 @@ Status: ✅ Built · 📋 Planned
   against `--color-bg`. Each stat now renders its optional `icon`
   (Iconify name from `stats.ts`) above the value.
 - No heading prop — renders bare on Home; About wraps it in its own
-  centered `SectionHeading` ("By The Numbers" / "Our Impact") — the
-  "fuller" version §8 calls for.
+  centered `SectionHeading` ("Numbers So Far") — the "fuller" version
+  §8 calls for. That heading block uses asymmetric top/bottom padding
+  (`pt-12 pb-4 md:pt-16 md:pb-6`, not the usual symmetric `py-*`) so it
+  reads as introducing the sage stats band directly below it, rather
+  than floating equidistant between it and the section above — see §11.
 - Home and About each independently live-fetch the same sheet — no
   shared state across pages (this is a static multi-page site, so
   nothing persists across a full page navigation). Numbers match in
@@ -487,7 +496,9 @@ Status: ✅ Built · 📋 Planned
   `bg` prop above).
 - No standalone heading prop for the whole section — same brief (Home)
   / fuller (About, its own external `SectionHeading`) pattern as
-  ImpactStats.
+  ImpactStats. About's "Who Helps Make This Possible" heading uses the
+  same asymmetric-padding treatment as its "Numbers So Far" heading
+  above — see ImpactStats entry and §11.
 - Verified against live site: partner/supporter lists match
   `partners.ts`. About's intro copy is original framing about what
   partners/grants generally provide — not specific claims about any
@@ -585,6 +596,13 @@ broadcast event from `ImpactStats`) were both built and reverted —
 too much machinery for one sentence; don't re-attempt without
 checking here first. Founder photo: `src/assets/ryan_nguyen.webp`,
 sized 400×500 pending a look at the real crop.
+
+**About's "Meet the Team" CTA** — built in `about.astro`, closing
+section: icon badge (`lucide:users`, same visual treatment as
+MissionStatement/GetInvolvedTeaser — see §11) + `SectionHeading` +
+one primary `Button` to `/team`. Added this session for consistency
+with its closest structural sibling (bare heading + subtext + single
+button, no other visual anchor) — see §11 for the underlying rule.
 
 ### Domain Composites
 
@@ -887,6 +905,37 @@ adding and where, rather than rediscovering it from scratch.
   pass that removed several of these). The founder story's "Our Story"
   eyebrow is a deliberate, explicit exception to this — kept per
   preference, not evidence the convention should be loosened generally.
+- Icon badges (the circular `bg-primary/10 text-primary` Iconify badge
+  above a heading) are reserved for sections that are *only* a heading
+  + short subtext + optional single button, with no other visual
+  anchor of their own — MissionStatement, GetInvolvedTeaser (Home), and
+  About's "Meet the Team" CTA are this shape. Sections that already
+  have their own anchor (a photo, a colored band, an inline icon next
+  to a link, or a data/logo grid immediately following) don't get one
+  — YouTubeEmbed, ContactForm, DonateBanner, the founder story, and
+  About's "Numbers So Far" / "Who Helps Make This Possible" intros all
+  fall here. Check this rule before adding or omitting a badge on any
+  new bare heading section, on any page.
+- A bare heading-only intro block (`Container` + `div` + `SectionHeading`,
+  no other content of its own) that sits directly above a full-bleed
+  band it introduces (sage `bg-surface`, `bg-primary`/`bg-primary-hover`,
+  or any future full-bleed treatment) uses **asymmetric** padding —
+  full padding on top (`pt-12 md:pt-16`, matching the site's usual
+  `py-12 md:py-16`) but compressed padding on the bottom (`pb-4
+  md:pb-6`) — instead of the standard symmetric `py-12 md:py-16`. This
+  visually attaches the heading to the content it introduces, rather
+  than leaving it floating equidistant between that content and
+  whatever comes before it. First used on About's "Numbers So Far" and
+  "Who Helps Make This Possible" headings (§7, ImpactStats /
+  PartnersAndSupporters entries) — apply the same treatment to any
+  future heading block that exists solely to introduce a full-bleed
+  section immediately following it. Doesn't apply when the heading is
+  part of its own self-contained, already-padded section (e.g.
+  MissionStatement, GetInvolvedTeaser — heading + button live inside
+  one block together) or when no full-bleed section immediately
+  follows it (e.g. About's "Annual Report" and "Meet the People Behind
+  It" closing blocks, which are themselves the content, not an intro
+  to something else).
 - Photo-legibility treatment: a CSS `mask-image` (Hero's
   `mask-y-from-accent` utility class) is the established pattern, not
   a gradient overlay `<div>` — final decision, supersedes an earlier-
