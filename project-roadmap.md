@@ -32,10 +32,10 @@ markers). Trust that over any summary, including this one, if they ever
 disagree.
 
 **Continue here:** Phase 5, Step 2 (About) — founder story (with
-founder photo) and `ImpactStats` ("fuller", own `SectionHeading`) are
-both built in `about.astro`. Next: `PartnersAndSupporters` (reused,
-"fuller"), then Annual Report reference and a Team link — see §9 for
-the full remaining order.
+founder photo), `ImpactStats`, and `PartnersAndSupporters` (all
+"fuller", each with their own `SectionHeading`/intro copy) are built
+in `about.astro`. Next: Annual Report reference, then a Team link —
+see §9 for the full remaining order.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -118,11 +118,17 @@ adding to it — not the facts.
 ```
 src/
 ├── assets/
-│   ├── hero_image.jpg            — Hero's background photo (in use, index.astro)
-│   ├── ryan_nguyen.webp          — Founder photo (in use, about.astro)
-│   ├── team/                     — 8 headshots for Team (not yet supplied — may overlap with ryan_nguyen.webp above, tbd)
-│   ├── projects/                 — Relief Route / AgriScan imagery (not yet supplied)
-│   └── donate/                   — QR code image (not yet supplied)
+│   ├── hero_image.jpg             — Hero's background photo (in use, index.astro)
+│   ├── ryan_nguyen.webp           — Founder photo (in use, about.astro)
+│   ├── sodexo.jpg                 — Sodexo logo (in use, partners.ts)
+│   ├── ymca.jpg                   — Generic YMCA logo (in use, partners.ts — shared by Wang YMCA, Mystic Valley YMCA, and YMCA)
+│   ├── food4philly.jpg            — Food4Philly logo (in use, partners.ts)
+│   ├── esther_r_sanger_center.jpg — Esther R. Sanger Center logo (in use, partners.ts)
+│   ├── walmart.jpg                — Walmart Spark Good logo (in use, partners.ts)
+│   ├── google.jpg                 — Google logo (in use, partners.ts)
+│   ├── team/                      — 8 headshots for Team (not yet supplied — may overlap with ryan_nguyen.webp above, tbd)
+│   ├── projects/                  — Relief Route / AgriScan imagery (not yet supplied)
+│   └── donate/                    — QR code image (not yet supplied)
 │
 ├── components/
 │   ├── ui/
@@ -171,7 +177,7 @@ src/
 │
 ├── pages/
 │   ├── index.astro                     ✅ built — Home
-│   ├── about.astro                     📋 planned (founder story + founder photo + ImpactStats built — see §7)
+│   ├── about.astro                     📋 planned (founder story + founder photo + ImpactStats + PartnersAndSupporters built — see §7)
 │   ├── team.astro                      📋 planned
 │   ├── projects.astro                  📋 planned
 │   ├── get-involved.astro              📋 planned
@@ -324,11 +330,17 @@ Status: ✅ Built · 📋 Planned
   `DonateBanner`) write custom heading markup instead.
 
 **Card** — ✅ Built
-- Bounded surface: `bg-surface rounded-md shadow-sm` + padding.
-- Props: `padding?: 'sm'|'md'|'lg'` (md).
+- Bounded surface: `rounded-md shadow-sm` + padding + background.
+- Props: `padding?: 'sm'|'md'|'lg'` (md) · `bg?: 'surface'|'bg'`
+  (surface) — `surface` (pale sage) suits a card sitting on the page's
+  default white background; `bg` (white) suits a card sitting inside
+  an already-`bg-surface` full-bleed band, where the default would
+  blend in and lose all contrast.
 - No `class` pass-through — wrap in an outer `<div>` for width
   constraints (see ContactForm).
-- Used by `ContactForm`; renders pale sage.
+- Used by `ContactForm` (default `bg="surface"`, renders pale sage) and
+  `PartnersAndSupporters`'s "fuller" org-card grid (`bg="bg"`, since
+  that section already sits on its own `bg-surface` band).
 
 **ResponsiveImage** — ✅ Built
 - Wraps `astro:assets`'s `<Image />` with design tokens.
@@ -455,16 +467,35 @@ Status: ✅ Built · 📋 Planned
   embedded player).
 
 **PartnersAndSupporters** — ✅ Built
-- Props: `partners: Partner[]`.
+- Props: `partners: Partner[]` · `partnersIntro?` · `supportersIntro?`
+  (both new — framing paragraphs for the "Partners"/"Supporters"
+  groups respectively).
 - Groups into Partners/Supporters (no `type` = partner by default);
   badge, or `<img>` once a `logo` path is set (none supplied yet).
-- Full-bleed `bg-surface` band, same as `ImpactStats`. Each text badge
-  (no `logo` set) now includes a small `lucide:building-2` icon —
-  previously plain bordered text with nothing else.
-- No heading prop — same brief (Home) / fuller (About) pattern as
+- Full-bleed `bg-surface` band, same as `ImpactStats`.
+- Two display modes per group, chosen by whether that group's intro
+  prop is supplied — not a separate boolean. **Brief** (Home, no
+  intro) — the original compact badge row, each with a small
+  `lucide:building-2` icon. **Fuller** (About, intro supplied) — the
+  intro paragraph plus a grid of `Card` primitives (`bg="bg"`, since
+  `Card`'s own default `bg-surface` would otherwise blend into this
+  section's own `bg-surface` band and lose all contrast — see `Card`'s
+  `bg` prop above).
+- No standalone heading prop for the whole section — same brief (Home)
+  / fuller (About, its own external `SectionHeading`) pattern as
   ImpactStats.
 - Verified against live site: partner/supporter lists match
-  `partners.ts`.
+  `partners.ts`. About's intro copy is original framing about what
+  partners/grants generally provide — not specific claims about any
+  named organization; a real per-org photo + paragraph (what the live
+  site actually does) is still blocked on real assets/copy (§10).
+- `Partner.logo` (types.ts) accepts a local `src/assets/...` import
+  (`ImageMetadata`) or a plain string — a `resolveLogoSrc()` helper in
+  this component normalizes either to a plain `src` before rendering.
+  Real logos are now in place for every org except Stephen J. Brady
+  Stop Hunger, which still renders as a text badge/icon until one is
+  supplied. The three YMCA-affiliated entries share one generic `ymca`
+  logo file.
 
 **GetInvolvedTeaser** — ✅ Built
 - Props: `heading` · `subtext` · `ctaLabel` (all required) · `icon?`
@@ -679,7 +710,7 @@ Giving + transparency in one place.
 - [ ] **2. About** (`about.astro`) — in progress:
     - [x] Founder story section
     - [x] ImpactStats (reused)
-    - [ ] PartnersAndSupporters (reused)
+    - [x] PartnersAndSupporters (reused)
     - [ ] Annual Report reference
     - [ ] Team link
     - [ ] Assemble `about.astro`
@@ -749,14 +780,14 @@ confirmed via a live fetch this session (§3 — real-content check):
   Pakistan, Morocco, England) — that list isn't captured anywhere in
   this revision yet.
 - **"Our Partners"** — same orgs already in `partners.ts` (Wang YMCA,
-  Mystic Valley YMCA, Food4Philly), but the live site gives each a
-  photo + short paragraph vs. this revision's plain badge list. Once
-  real logo/photo assets exist (§5 blocker), About's "fuller"
-  `PartnersAndSupporters` pass is the natural place to add them.
-- **"Grants & Funding"** — same supporter list already in `partners.ts`
-  (`type: 'supporter'`), but with an intro paragraph on why the grants
-  matter that `PartnersAndSupporters.astro` doesn't currently render —
-  it only labels the group "Supporters", no framing copy.
+  Mystic Valley YMCA, Food4Philly). About's "fuller" pass (§7) now adds
+  a group intro paragraph + a card grid, and real logos are now in
+  place for nearly every org (§5) — still no per-org descriptive
+  paragraph like the live site has, though; that's still blocked on
+  verified per-org copy, not fabricated for named real orgs.
+- **"Grants & Funding"** — ✅ addressed: `PartnersAndSupporters`'s
+  "fuller" pass (§7) now renders an intro paragraph under "Supporters"
+  explaining why the grants matter, same treatment as the live site.
 No action taken this session — logged so a future pass (a Home
 revisit, or while building About/Projects) can decide what's worth
 adding and where, rather than rediscovering it from scratch.

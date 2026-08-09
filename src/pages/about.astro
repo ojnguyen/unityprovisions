@@ -4,8 +4,10 @@ import Container from '@components/ui/Container.astro';
 import SectionHeading from '@components/ui/SectionHeading.astro';
 import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
 import ImpactStats from '@components/sections/ImpactStats.astro';
+import PartnersAndSupporters from '@components/sections/PartnersAndSupporters.astro';
 import ryanPhoto from '@assets/ryan_nguyen.webp';
 import { stats } from '@data/stats';
+import { partners } from '@data/partners';
 ---
 
 <Layout
@@ -77,4 +79,21 @@ import { stats } from '@data/stats';
   </Container>
 
   <ImpactStats stats={stats} />
+
+  <Container as="section">
+    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+      <SectionHeading
+        eyebrow="Our Network"
+        title="Partners & Supporters"
+        subtext="The organizations that help make our work possible."
+        align="center"
+      />
+    </div>
+  </Container>
+
+  <PartnersAndSupporters
+    partners={partners}
+    partnersIntro="These organizations open their doors and share their resources with us, giving Unity Provisions branches the space, logistics, and on-the-ground support to run donation centers in their communities."
+    supportersIntro="Grants and funding from these organizations help us stock donation centers, launch new branches, and reach the students and families who need us most."
+  />
 </Layout>

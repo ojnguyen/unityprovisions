@@ -3,6 +3,8 @@
  *  utils/) since these are types, not functions — keeping them separate
  *  from `utils/` avoids mixing runtime code with type-only declarations. */
 
+import type { ImageMetadata } from 'astro';
+
 export type ButtonVariant = 'primary' | 'secondary' | 'accent';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -69,10 +71,5 @@ export interface Stat {
 export interface Partner {
   name: string;
   type?: 'partner' | 'supporter';
-  /**
-   * Optional path/URL to a logo image. No logo assets exist yet for
-   * this project (see §5's assets/ tree), until one is supplied here,
-   * this organization renders as a plain text badge instead.
-   */
-  logo?: string;
+  logo?: ImageMetadata | string;
 }

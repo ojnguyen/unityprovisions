@@ -3,9 +3,10 @@ import { cn } from '@utils/cn';
 
 interface Props {
   padding?: 'sm' | 'md' | 'lg';
+  bg?: 'surface' | 'bg';
 }
 
-const { padding = 'md' } = Astro.props as Props;
+const { padding = 'md', bg = 'surface' } = Astro.props as Props;
 
 const paddingSizes: Record<'sm' | 'md' | 'lg', string> = {
   sm: 'p-4',
@@ -13,8 +14,14 @@ const paddingSizes: Record<'sm' | 'md' | 'lg', string> = {
   lg: 'p-8',
 };
 
+const bgColors: Record<'surface' | 'bg', string> = {
+  surface: 'bg-surface',
+  bg: 'bg-bg',
+};
+
 const classes = cn(
-  'bg-surface rounded-md shadow-sm',
+  bgColors[bg],
+  'rounded-md shadow-sm',
   paddingSizes[padding]
 );
 ---
