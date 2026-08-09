@@ -5,6 +5,8 @@ import SectionHeading from '@components/ui/SectionHeading.astro';
 import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
 import ImpactStats from '@components/sections/ImpactStats.astro';
 import PartnersAndSupporters from '@components/sections/PartnersAndSupporters.astro';
+import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
+import Button from '@components/ui/Button.astro';
 import ryanPhoto from '@assets/ryan_nguyen.webp';
 import { stats } from '@data/stats';
 import { partners } from '@data/partners';
@@ -70,8 +72,7 @@ import { partners } from '@data/partners';
   <Container as="section">
     <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
       <SectionHeading
-        eyebrow="By The Numbers"
-        title="Our Impact"
+        title="The Numbers So Far"
         subtext="Real numbers, updated live from branches around the world."
         align="center"
       />
@@ -83,9 +84,8 @@ import { partners } from '@data/partners';
   <Container as="section">
     <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
       <SectionHeading
-        eyebrow="Our Network"
-        title="Partners & Supporters"
-        subtext="The organizations that help make our work possible."
+        title="Who Helps Make This Possible"
+        subtext="The businesses, nonprofits, and community groups working alongside us."
         align="center"
       />
     </div>
@@ -93,7 +93,35 @@ import { partners } from '@data/partners';
 
   <PartnersAndSupporters
     partners={partners}
-    partnersIntro="These organizations open their doors and share their resources with us, giving Unity Provisions branches the space, logistics, and on-the-ground support to run donation centers in their communities."
-    supportersIntro="Grants and funding from these organizations help us stock donation centers, launch new branches, and reach the students and families who need us most."
+    partnersIntro="These organizations give our branches space, logistics support, and guidance to keep donation centers running in their communities."
+    supportersIntro="Grants and funding from these organizations keep our donation centers stocked and help us open new branches where they're needed most."
   />
+
+  <Container as="section">
+    <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+      <SectionHeading
+        title="Annual Report"
+        subtext="A look at where your donations went this year."
+        align="center"
+      />
+      <ExternalLinkCTA
+        label="Read Our Annual Report"
+        href="https://online.fliphtml5.com/uvjxy/tupw/"
+        icon="lucide:book-open"
+      />
+    </div>
+  </Container>
+
+  <Container as="section">
+    <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+      <SectionHeading
+        title="Meet the People Behind It"
+        subtext="The students leading branches, running events, and keeping this whole thing moving."
+        align="center"
+      />
+      <Button href="/team" variant="primary" size="md">
+        Meet the Team
+      </Button>
+    </div>
+  </Container>
 </Layout>

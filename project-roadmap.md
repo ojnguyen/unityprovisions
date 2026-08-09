@@ -31,11 +31,15 @@ Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 2 (About) — founder story (with
-founder photo), `ImpactStats`, and `PartnersAndSupporters` (all
-"fuller", each with their own `SectionHeading`/intro copy) are built
-in `about.astro`. Next: Annual Report reference, then a Team link —
-see §9 for the full remaining order.
+**Continue here:** Phase 5, Step 3 (Team) — About (`about.astro`) is
+fully assembled and complete (§9). Team needs: `StaffCard` (single
+member card — photo, name, role, optional email), `StaffGrid` (lays
+out an array of them), real data in `staff.ts` (roster already
+captured in §7's Domain Composites section), then assemble
+`team.astro`. No visual-polish precedent to match yet the way About
+had Home's — this is the first "fuller" page built from scratch
+rather than reusing Home sections, so expect more original component
+work here than About needed.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -177,7 +181,7 @@ src/
 │
 ├── pages/
 │   ├── index.astro                     ✅ built — Home
-│   ├── about.astro                     📋 planned (founder story + founder photo + ImpactStats + PartnersAndSupporters built — see §7)
+│   ├── about.astro                     ✅ built — About
 │   ├── team.astro                      📋 planned
 │   ├── projects.astro                  📋 planned
 │   ├── get-involved.astro              📋 planned
@@ -711,9 +715,9 @@ Giving + transparency in one place.
     - [x] Founder story section
     - [x] ImpactStats (reused)
     - [x] PartnersAndSupporters (reused)
-    - [ ] Annual Report reference
-    - [ ] Team link
-    - [ ] Assemble `about.astro`
+    - [x] Annual Report reference
+    - [x] Team link
+    - [x] Assemble `about.astro`
 - [ ] **3. Team** (`team.astro`):
     - [ ] StaffCard
     - [ ] StaffGrid
@@ -793,8 +797,17 @@ revisit, or while building About/Projects) can decide what's worth
 adding and where, rather than rediscovering it from scratch.
 
 **Open decisions:**
-- Annual Report CTA (About, §8): Deciding to either link out via
-  `ExternalLinkCTA` or embedding via PDF.
+- Annual Report CTA (About, §8): ✅ resolved — link out via
+  `ExternalLinkCTA` to a FlipHTML5 flipbook
+  (`https://online.fliphtml5.com/uvjxy/tupw/`), not an embedded PDF.
+  Reasoning: embedded PDFs (`<iframe>`/`<object>`) are inconsistent on
+  mobile — iOS Safari and Chrome for Android often show blank space or
+  force a download instead of rendering inline, HTTPS/header quirks
+  can silently break the embed, and browser updates can change this
+  behavior without warning. A plain link avoids all of that, keeps the
+  file swappable without a redeploy, and matches this project's
+  existing pattern of external CTAs for participation (§3). See §7
+  (Annual Report CTA entry) for the built version.
 - ContactForm submission backend: Formspree vs. Cloudflare Function.
   Markup/validation done; only the real handler + reCAPTCHA widget
   pending.
@@ -866,6 +879,14 @@ adding and where, rather than rediscovering it from scratch.
 - Decorative Iconify icons (via `astro-icon`) are an established,
   lightweight way to add visual weight to plain heading+text sections —
   always optional props, never required.
+- `SectionHeading`'s `eyebrow` prop is opt-in, not a default habit —
+  Home's sections never use it. Only reach for it when it adds real
+  information the title doesn't already carry; a vague label ("By The
+  Numbers", "Transparency") that just restates or decorates the title
+  gets cut, not kept (see About's Annual Report CTA entry, §7, for the
+  pass that removed several of these). The founder story's "Our Story"
+  eyebrow is a deliberate, explicit exception to this — kept per
+  preference, not evidence the convention should be loosened generally.
 - Photo-legibility treatment: a CSS `mask-image` (Hero's
   `mask-y-from-accent` utility class) is the established pattern, not
   a gradient overlay `<div>` — final decision, supersedes an earlier-
