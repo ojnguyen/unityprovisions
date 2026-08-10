@@ -90,3 +90,23 @@ export interface StaffMember {
   email?: string;
   photo?: ImageMetadata | string;
 }
+
+/**
+ * Shared shape for a single project — used by projects.ts (the data
+ * source) and ProjectSection.astro (Projects page, used once per
+ * project). `image` and `embedUrl` are independent, not mutually
+ * exclusive by type — Relief Route uses `embedUrl` (the live tool,
+ * embedded directly), AgriScan uses `image` (a product screenshot);
+ * nothing stops a future project from using both, or neither.
+ */
+export interface Project {
+  title: string;
+  description: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  embedUrl?: string;
+  embedTitle?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  ctaIcon?: string;
+}

@@ -1,0 +1,46 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Container from '@components/ui/Container.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ProjectSection from '@components/projects/ProjectSection.astro';
+import { projects } from '@data/projects';
+---
+
+<Layout
+  title="Projects — Unity Provisions"
+  description="Relief Route and AgriScan — the tools Unity Provisions is building to make food more accessible."
+>
+  <!--
+    Page-level h1 lives here, not inside ProjectSection (which always
+    renders its own title as h2) — §6 requires exactly one h1 per
+    page, and Relief Route/AgriScan are peers, not a hierarchy where
+    one project outranks the other. No icon badge here either, same
+    reasoning as Team's heading (§11): the ProjectSection immediately
+    below is its own visual anchor.
+  -->
+  <Container as="section">
+    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+      <SectionHeading
+        as="h1"
+        title="Our Projects"
+        subtext="Two tools in progress: an interactive map to help people find food resources, and a low-cost way to help them grow more of their own."
+        align="center"
+      />
+    </div>
+  </Container>
+
+  {projects.map((project) => (
+    <ProjectSection {...project} />
+  ))}
+
+  <!--
+    Plain trailing gap, no content — Navbar and Footer both use
+    bg-surface (sage) too, so without this, AgriScan's sage content
+    band directly above would visually merge into Footer's sage below,
+    with only a barely-visible 1px border-t between them. This gives
+    Footer a clean, distinct edge to start from. project-roadmap.md
+    §11 — if a future page's last section before Footer also ends up
+    sage, same fix applies.
+  --> 
+  <div class="py-12 md:py-16"></div>
+</Layout>

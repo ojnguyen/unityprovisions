@@ -31,17 +31,18 @@ Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 4 (Projects) — Team (`team.astro`) is
-fully built and assembled (§9): `StaffCard`, `StaffGrid`, and
-`staff.ts`'s 8-member roster are all in place (§7). `photo` ended up
-optional on `StaffMember`, not required as originally planned, since
-no real headshots exist yet (§5) — every card currently renders
-`StaffCard`'s placeholder avatar; swap in real photos by setting
-`photo` on the relevant `staff.ts` entries once headshots are
-supplied, no component changes needed. Projects needs: `ProjectSection`
-(heading + description + optional CTA, used twice — Relief Route, then
-AgriScan), real data in `projects.ts` (content already captured in
-§7's Domain Composites section), then assemble `projects.astro`.
+**Continue here:** Phase 5, Step 5 (Get Involved) — Projects
+(`projects.astro`) is fully built and assembled (§9): `ProjectSection`,
+`projects.ts`, and the page itself are all in place (§7). Relief Route
+embeds the live tool directly via iframe (owner-approved exception to
+the click-to-load default, §11); AgriScan uses the real `agriscan.webp`
+screenshot at placeholder dimensions pending a real-crop check, and its
+former embedded hiring form is now a plain mailto CTA. Get Involved
+needs: Branch Founder content section + Volunteer CTA (both real copy
+already captured in §8), assembled directly in `get-involved.astro`
+(no new components expected — check first per §2's process, but this
+page's content doesn't obviously isolate a reusable concern the way
+Team/Projects did).
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -133,7 +134,7 @@ src/
 │   ├── walmart.jpg                — Walmart Spark Good logo (in use, partners.ts)
 │   ├── google.jpg                 — Google logo (in use, partners.ts)
 │   ├── team/                      — 8 headshots for Team (not yet supplied — may overlap with ryan_nguyen.webp above, tbd)
-│   ├── projects/                  — Relief Route / AgriScan imagery (not yet supplied)
+│   ├── projects/agriscan.webp     — AgriScan screenshot (in use, projects.ts — Relief Route needs no image, embeds the live tool directly instead)
 │   └── donate/                    — QR code image (not yet supplied)
 │
 ├── components/
@@ -164,7 +165,7 @@ src/
 │   │   └── StaffGrid.astro             ✅ built — Team
 │   │
 │   ├── projects/
-│   │   └── ProjectSection.astro        📋 planned — used twice
+│   │   └── ProjectSection.astro        ✅ built — Projects
 │   │
 │   └── donate/
 │       ├── QRCodeDonate.astro          📋 planned
@@ -176,7 +177,7 @@ src/
 │   ├── staff.ts                        ✅ built — 8 members
 │   ├── stats.ts                        ✅ built
 │   ├── partners.ts                     ✅ built
-│   └── projects.ts                     📋 planned
+│   └── projects.ts                     ✅ built — 2 projects
 │
 ├── layouts/
 │   └── Layout.astro                    ✅ built
@@ -185,7 +186,7 @@ src/
 │   ├── index.astro                     ✅ built — Home
 │   ├── about.astro                     ✅ built — About
 │   ├── team.astro                      ✅ built — Team
-│   ├── projects.astro                  📋 planned
+│   ├── projects.astro                  ✅ built — Projects
 │   ├── get-involved.astro              📋 planned
 │   └── donate.astro                    📋 planned
 │
@@ -644,13 +645,72 @@ button, no other visual anchor) — see §11 for the underlying rule.
   (Wendy: `wjamsri@ymcaboston.org` — she's a YMCA staff mentor, not a
   student leader, hence the different domain).
 
-**ProjectSection** — 📋 Planned
-- Heading + description + optional CTA, used twice. Props: `title`,
-  `description`, `ctaLabel?`/`ctaHref?` (from `projects.ts`).
-- Relief Route: interactive map for donation centers/food banks; CTA
-  "Add Centers Near You" (external).
-- AgriScan: low-cost crop-optimization console for small farms/gardens/
-  developing regions; no CTA yet.
+**ProjectSection** — ✅ Built
+- Heading + description + optional image, embed, and CTA, used twice.
+  Props (`Project` type, `types.ts`): `title` · `description` (both
+  required) · `image?` · `imageAlt?` · `embedUrl?` · `embedTitle?` ·
+  `ctaLabel?` · `ctaHref?` · `ctaIcon?`.
+- Copy for both projects is paraphrased from the live site's dedicated
+  Relief Route/AgriScan pages, not transcribed verbatim — matches §3's
+  "preserve the substance, not a word-for-word copy" principle.
+- Renders as two sibling blocks, not one wrapped section: a plain
+  white heading block (title + description) with the §11 asymmetric-
+  padding treatment, then a separate full-bleed sage band for the
+  actual "data" (the screenshot or the live embed) and its CTA. This
+  replaced an earlier version that alternated a `bg` prop per whole
+  section (white for one project, sage for the other) — sage is now
+  reserved specifically for content, matching how
+  `ImpactStats`/`PartnersAndSupporters` are always sage and never
+  alternated, with the heading always white above them.
+- Media inside the sage band gets a bordered frame (`border
+  border-border`, plus `bg-bg` on the iframe specifically, so there's
+  a clean white backdrop before the embed finishes loading) rather
+  than sitting directly on the sage background.
+- Heading always renders as `h2` — `projects.astro` supplies its own
+  page-level `h1` ("Our Projects") above both project blocks, since
+  Relief Route and AgriScan are peers, not a hierarchy where one
+  outranks the other (§6: exactly one `h1` per page).
+- No icon badge on the page `h1` or either project heading — per the
+  §11 icon-badge rule, each already has its own visual anchor (the
+  sage content band immediately below it) — same shape as About's
+  "Numbers So Far"/"Who Helps Make This Possible" headings, and the
+  same reasoning already applied to Team's heading.
+- **Relief Route**: embeds `reliefroute.unityprovisions.org` directly
+  via a plain `<iframe>` (`loading="lazy"` only — no click-to-load JS
+  facade, unlike `YouTubeEmbed`). Deliberate call by the project
+  owner, overriding the more cautious facade approach discussed first
+  — they confirmed the original live site embeds the same tool
+  successfully on mobile. Untested in this session (no live browser
+  access available here) — if the embed ever renders blank or
+  misbehaves, suspect the target's `X-Frame-Options`/CSP headers
+  before this component's code. CTA was originally "Add Centers Near
+  You," pointing at a separate request-a-center page — that page
+  turned out not to do anything beyond showing the map again (Relief
+  Route's own copy already says it's still being built), so the CTA
+  became a `mailto:` "help us build this" ask instead, same shape as
+  AgriScan's.
+- **AgriScan**: uses `image` (`agriscan.webp`, a real screenshot,
+  assumed path `src/assets/projects/agriscan.webp` — flag if it's
+  actually elsewhere) at placeholder dimensions 800×500 pending a look
+  at the real crop, same open item as the founder photo (§7 About).
+  The live site's "We're Hiring!" section — a full embedded
+  resume-upload form — was replaced with a plain `mailto:` CTA ("Help
+  Build AgriScan"). Reasoning: an upload endpoint is a real
+  spam/security surface for a small volunteer-run org (same call
+  already made for `ContactForm`'s removed file attachment), and the
+  live site's separate "Opportunities" job-board page is gated behind
+  a login wall that doesn't exist in this rebuild (§3: no accounts
+  anywhere) — so there's no in-house alternative to point people to
+  either way.
+- Both projects' `mailto:` CTAs carry a `?subject=` query param (e.g.
+  `?subject=Interested%20in%20Helping%20Build%20AgriScan`) so the org
+  can tell the two asks apart in their inbox at a glance, rather than
+  relying on the sender to explain why they're emailing — standard
+  `mailto:` behavior, no extra code needed.
+- `projects.astro` also adds a plain white spacer after the last
+  `ProjectSection` — `Footer` is `bg-surface` too, and without it,
+  AgriScan's sage content band would run straight into Footer's sage
+  with no visible break. See §11 for the general rule.
 
 **QRCodeDonate** — 📋 Planned
 - The actual giving mechanism: QR code + Zeffy fallback link, both
@@ -704,8 +764,15 @@ the Team"). Intro copy is original for this revision — not verified
 against a live-site equivalent; flag if a real Team/Leadership section
 on unityprovisions.org should be sourced from instead.
 
-### Projects (`/projects`)
-Two `ProjectSection`s — Relief Route, then AgriScan (§7).
+### Projects (`/projects`) — ✅ Built
+Page-level `h1` ("Our Projects") + two `ProjectSection`s — Relief
+Route (embedded interactive map +  + a "help
+us build this" CTA), then AgriScan (screenshot + a "help
+us build this" CTA, replacing the live site's embedded hiring form).
+Each project's white heading sits directly above its own sage content
+band — same heading/data split as About's ImpactStats/
+PartnersAndSupporters, not a per-project color alternation. Full
+reasoning in §7.
 
 ### Get Involved (`/get-involved`)
 "The single, clear answer to how do I participate."
@@ -770,10 +837,10 @@ Giving + transparency in one place.
     - [x] StaffCard
     - [x] StaffGrid
     - [x] Assemble `team.astro`
-- [ ] **4. Projects** (`projects.astro`):
-    - [ ] ProjectSection — Relief Route
-    - [ ] ProjectSection — AgriScan
-    - [ ] Assemble `projects.astro`
+- [x] **4. Projects** (`projects.astro`):
+    - [x] ProjectSection — Relief Route
+    - [x] ProjectSection — AgriScan
+    - [x] Assemble `projects.astro`
 - [ ] **5. Get Involved** (`get-involved.astro`):
     - [ ] Branch Founder section
     - [ ] Volunteer CTA
@@ -809,13 +876,18 @@ Giving + transparency in one place.
 
 **Static data files:** `navigation.ts` (6-item nav) · `footer.ts` ·
 `staff.ts` (8 members) · `stats.ts` (4 stats) · `partners.ts` ·
-`projects.ts` (planned).
+`projects.ts` (2 projects).
 
 **External destinations:**
 - Email List (Footer) / Volunteer (Get Involved) →
   `https://forms.gle/7JFDkKPdzYv1LfCP6` (same form; "Volunteer" framing
   is an open question)
 - Become a Branch Founder → `https://forms.gle/qfwhsPP61RrAd1cW7`
+- Relief Route (embedded live tool) →
+  `https://reliefroute.unityprovisions.org/` · "Help Build Relief Route" CTA →
+  `mailto:contact@unityprovisions.org?subject=Interested%20in%20Helping%20Build%20Relief%20Route`
+- AgriScan "Help Build AgriScan" CTA →
+  `mailto:contact@unityprovisions.org?subject=Interested%20in%20Helping%20Build%20AgriScan`
 - Donate (Zeffy) →
   `https://www.zeffy.com/fundraising/ending-hunger-through-youth-leadership`
 - Social: Instagram (`instagram.com/unityprovisions`) · TikTok
@@ -922,6 +994,15 @@ adding and where, rather than rediscovering it from scratch.
   established pattern — use it any time a section needs visual
   separation from `--color-bg`, rather than inventing a new approach
   per component.
+- `Navbar` and `Footer` both use `bg-surface` (sage), not `--color-bg`
+  — easy to forget since most pages happen to end on a white section
+  before `Footer`. If a page's last section before `Footer` is itself
+  sage (as `Projects` ended up, with `AgriScan`'s content band), add a
+  plain white spacer (`<div class="py-12 md:py-16"></div>`, no
+  `Container` needed — nothing inside it needs constraining) so the
+  two sage regions don't merge into one with only a barely-visible
+  `border-t` between them. Page-specific fix, not a `Layout`-wide one
+  — check this whenever a new page's last section is decided.
 - A light-colored control on a dark/photo background is hand-written,
   not `Button`'s `secondary` variant (assumes a light page background)
   — same reasoning `DonateBanner` established for its custom heading
@@ -963,15 +1044,25 @@ adding and where, rather than rediscovering it from scratch.
   than leaving it floating equidistant between that content and
   whatever comes before it. First used on About's "Numbers So Far" and
   "Who Helps Make This Possible" headings (§7, ImpactStats /
-  PartnersAndSupporters entries) — apply the same treatment to any
-  future heading block that exists solely to introduce a full-bleed
-  section immediately following it. Doesn't apply when the heading is
-  part of its own self-contained, already-padded section (e.g.
-  MissionStatement, GetInvolvedTeaser — heading + button live inside
-  one block together) or when no full-bleed section immediately
+  PartnersAndSupporters entries); each project heading in
+  `ProjectSection` (§7) now follows the same treatment too — apply it
+  to any future heading block that exists solely to introduce a
+  full-bleed section immediately following it. Doesn't apply when the
+  heading is part of its own self-contained, already-padded section
+  (e.g. MissionStatement, GetInvolvedTeaser — heading + button live
+  inside one block together) or when no full-bleed section immediately
   follows it (e.g. About's "Annual Report" and "Meet the People Behind
   It" closing blocks, which are themselves the content, not an intro
   to something else).
+- Relief Route's `ProjectSection` embeds `reliefroute.unityprovisions.org`
+  directly via a plain, always-loaded `<iframe>` (`loading="lazy"`
+  only) — not the click-to-load JS facade `YouTubeEmbed` uses for a
+  similar case. This is a deliberate, project-owner-approved exception
+  to that precedent, not a new default: they confirmed the original
+  live site embeds the same tool successfully on mobile. Don't assume
+  future third-party/self-hosted embeds get the same direct treatment
+  without asking — `YouTubeEmbed`'s facade pattern is still the
+  fallback default for anything not explicitly confirmed this way.
 - Photo-legibility treatment: a CSS `mask-image` (Hero's
   `mask-y-from-accent` utility class) is the established pattern, not
   a gradient overlay `<div>` — final decision, supersedes an earlier-
