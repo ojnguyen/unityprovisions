@@ -1,0 +1,53 @@
+---
+import Card from '@components/ui/Card.astro';
+import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
+import { Icon } from 'astro-icon/components';
+import type { StaffMember } from '@/types';
+
+type Props = StaffMember;
+
+const { name, role, email, photo } = Astro.props as Props;
+
+// Fixed at 160x160 whether or not a real `photo` is set, so the
+// placeholder avatar below and a real headshot (once one is added to
+// staff.ts) occupy exactly the same footprint — no layout shift when
+// photos arrive. radius="md" matches every other photo/logo on the
+// site (founder photo, partner logos) rather than a circular avatar,
+// which would be a new, one-off visual pattern nothing else here uses.
+const PHOTO_SIZE = 160;
+---
+<Card padding="md" bg="surface">
+  <div class="flex flex-col items-center gap-3 text-center">
+    {photo ? (
+      <ResponsiveImage
+        src={photo}
+        alt={name}
+        width={PHOTO_SIZE}
+        height={PHOTO_SIZE}
+        radius="md"
+      />
+    ) : (
+      <span
+        class="flex h-40 w-40 items-center justify-center rounded-md bg-primary/10 text-primary"
+        aria-hidden="true"
+      >
+        <Icon name="lucide:user" class="h-20 w-20" />
+      </span>
+    )}
+
+    <div>
+      <p class="font-semibold text-text-primary">{name}</p>
+      <p class="text-sm text-text-secondary">{role}</p>
+    </div>
+
+    {email && (
+      <a
+        href={`mailto:${email}`}
+        class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover"
+      >
+        <Icon name="lucide:mail" aria-hidden="true" class="h-3.5 w-3.5" />
+        {email}
+      </a>
+    )}
+  </div>
+</Card>

@@ -31,17 +31,17 @@ Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 3 (Team) — About (`about.astro`) is
-fully assembled and complete (§9), including a visual-polish pass this
-session (icon badge on "Meet the Team" CTA, asymmetric heading padding
-on the two data-intro blocks — §6/§11). Team needs: `StaffCard` (single
-member card — photo, name, role, optional email), `StaffGrid` (lays
-out an array of them), real data in `staff.ts` (roster already
-captured in §7's Domain Composites section), then assemble
-`team.astro`. No visual-polish precedent to match yet the way About
-had Home's — this is the first "fuller" page built from scratch
-rather than reusing Home sections, so expect more original component
-work here than About needed.
+**Continue here:** Phase 5, Step 4 (Projects) — Team (`team.astro`) is
+fully built and assembled (§9): `StaffCard`, `StaffGrid`, and
+`staff.ts`'s 8-member roster are all in place (§7). `photo` ended up
+optional on `StaffMember`, not required as originally planned, since
+no real headshots exist yet (§5) — every card currently renders
+`StaffCard`'s placeholder avatar; swap in real photos by setting
+`photo` on the relevant `staff.ts` entries once headshots are
+supplied, no component changes needed. Projects needs: `ProjectSection`
+(heading + description + optional CTA, used twice — Relief Route, then
+AgriScan), real data in `projects.ts` (content already captured in
+§7's Domain Composites section), then assemble `projects.astro`.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -160,8 +160,8 @@ src/
 │   │   └── DonateBanner.astro          ✅ built — Home
 │   │
 │   ├── staff/
-│   │   ├── StaffCard.astro             📋 planned
-│   │   └── StaffGrid.astro             📋 planned
+│   │   ├── StaffCard.astro             ✅ built — Team
+│   │   └── StaffGrid.astro             ✅ built — Team
 │   │
 │   ├── projects/
 │   │   └── ProjectSection.astro        📋 planned — used twice
@@ -173,7 +173,7 @@ src/
 ├── data/
 │   ├── navigation.ts                   ✅ built — 6-item nav + orgName
 │   ├── footer.ts                       ✅ built
-│   ├── staff.ts                        📋 planned
+│   ├── staff.ts                        ✅ built — 8 members
 │   ├── stats.ts                        ✅ built
 │   ├── partners.ts                     ✅ built
 │   └── projects.ts                     📋 planned
@@ -184,7 +184,7 @@ src/
 ├── pages/
 │   ├── index.astro                     ✅ built — Home
 │   ├── about.astro                     ✅ built — About
-│   ├── team.astro                      📋 planned
+│   ├── team.astro                      ✅ built — Team
 │   ├── projects.astro                  📋 planned
 │   ├── get-involved.astro              📋 planned
 │   └── donate.astro                    📋 planned
@@ -606,16 +606,43 @@ button, no other visual anchor) — see §11 for the underlying rule.
 
 ### Domain Composites
 
-**StaffCard / StaffGrid** — 📋 Planned
-- Team member card / grid. Props: `StaffCard { photo, name, role,
-  email? }`; `StaffGrid`: array of entries.
+**StaffCard / StaffGrid** — ✅ Built
+- Team member card / grid. `StaffCard` props: `StaffMember` type —
+  `name` · `role` (required) · `email?` · `photo?: ImageMetadata |
+  string`. `StaffGrid` props: `members: StaffMember[]`.
+- `photo` is optional, not required as originally planned in this
+  entry — same reasoning as `Partner.logo` (§7 PartnersAndSupporters):
+  no real headshots exist yet (§5 asset blocker). Every current
+  `staff.ts` entry has no `photo` set, so every card currently renders
+  `StaffCard`'s placeholder avatar (a `lucide:user` icon in a
+  `bg-primary/10` square) — sized identically (160×160, `radius="md"`)
+  to a real photo, so adding one later won't shift the layout. Add a
+  `photo` import to the relevant `staff.ts` entry once headshots are
+  supplied; no component changes needed.
+- Card styling: `Card` primitive, `bg="surface"` (pale sage) — sits on
+  Team's default white background, same reasoning as `ContactForm`'s
+  panel.
+- Email renders as a visible `mailto:` link with a small `lucide:mail`
+  icon, same treatment as About's contact email and Footer's phone
+  link.
+- `StaffGrid`: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4` (`w-full`,
+  set on the grid itself so it fills its parent regardless of the
+  flex-column wrapper it's used inside — same fix
+  `PartnersAndSupporters`'s grid needed). Starts at 1 column, not 2
+  like `PartnersAndSupporters`'s org-card grid — a staff card carries
+  more content (photo + name + role + email) than an org badge, so it
+  needs the extra width on small screens.
+- No icon badge above `team.astro`'s `SectionHeading` — per the §11
+  icon-badge rule, a badge is reserved for a bare heading with no
+  other visual anchor; the 8-card grid right below already is one.
 - Data (`staff.ts`): Ryan Nguyen (Founder & CEO) · Alex Jamkatel (Chief
   Technology Officer) · Vivian Pan (Branch Operations Director) · Louis
   Dang (Executive Secretary) · Wendy Jamsri (Project Mentor & YMCA
   Regional Teen Director) · Alexander Lee (Chief Marketing Officer) ·
   Ananya Bhat (Director of Development) · Aditi Jaiswal (Director of
   People and Culture). Emails: `firstname.lastname@unityprovisions.org`
-  (Wendy: `wjamsri@ymcaboston.org`).
+  (Wendy: `wjamsri@ymcaboston.org` — she's a YMCA staff mentor, not a
+  student leader, hence the different domain).
 
 **ProjectSection** — 📋 Planned
 - Heading + description + optional CTA, used twice. Props: `title`,
@@ -671,8 +698,11 @@ centers — see the current numbers below. Our mission is to empower
 young people to fight hunger by creating and leading donation centers
 in their schools and communities."
 
-### Team (`/team`)
-StaffGrid of 8 real members (§7).
+### Team (`/team`) — ✅ Built
+`StaffGrid` of 8 real members (§7), under one `SectionHeading` ("Meet
+the Team"). Intro copy is original for this revision — not verified
+against a live-site equivalent; flag if a real Team/Leadership section
+on unityprovisions.org should be sourced from instead.
 
 ### Projects (`/projects`)
 Two `ProjectSection`s — Relief Route, then AgriScan (§7).
@@ -736,10 +766,10 @@ Giving + transparency in one place.
     - [x] Annual Report reference
     - [x] Team link
     - [x] Assemble `about.astro`
-- [ ] **3. Team** (`team.astro`):
-    - [ ] StaffCard
-    - [ ] StaffGrid
-    - [ ] Assemble `team.astro`
+- [x] **3. Team** (`team.astro`):
+    - [x] StaffCard
+    - [x] StaffGrid
+    - [x] Assemble `team.astro`
 - [ ] **4. Projects** (`projects.astro`):
     - [ ] ProjectSection — Relief Route
     - [ ] ProjectSection — AgriScan
@@ -762,6 +792,11 @@ Giving + transparency in one place.
 - [ ] Performance check (image optimization, Lighthouse — check Hero's
       real photo once this doc's copy of `index.astro` is current, §2)
 - [ ] Cross-browser spot check
+- [ ] Comment cleanup pass — replace the long, AI-style explanatory
+      comment blocks throughout the codebase (components, data files,
+      this doc's own code-adjacent notes) with short, human-written
+      comments. Blocked on an example of the target style — get one
+      from the project owner before starting, rather than guessing.
 
 ### Phase 6 — Deployment
 - [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
@@ -773,7 +808,8 @@ Giving + transparency in one place.
 ## 10. Data / Content Integrations
 
 **Static data files:** `navigation.ts` (6-item nav) · `footer.ts` ·
-`staff.ts` (8 members, planned) · `stats.ts` (4 stats) · `partners.ts` · `projects.ts` (planned).
+`staff.ts` (8 members) · `stats.ts` (4 stats) · `partners.ts` ·
+`projects.ts` (planned).
 
 **External destinations:**
 - Email List (Footer) / Volunteer (Get Involved) →

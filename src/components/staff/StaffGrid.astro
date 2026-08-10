@@ -1,0 +1,15 @@
+---
+import StaffCard from '@components/staff/StaffCard.astro';
+import type { StaffMember } from '@/types';
+
+interface Props {
+  members: StaffMember[];
+}
+
+const { members } = Astro.props as Props;
+---
+<div class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+  {members.map((member) => (
+    <StaffCard {...member} />
+  ))}
+</div>

@@ -73,3 +73,20 @@ export interface Partner {
   type?: 'partner' | 'supporter';
   logo?: ImageMetadata | string;
 }
+
+/**
+ * Shared shape for a single team member — used by staff.ts (the data
+ * source) and StaffCard.astro/StaffGrid.astro (Team page). `photo` is
+ * optional, same reasoning as `Partner.logo` above: real headshots
+ * aren't supplied yet (project-roadmap.md §5), so StaffCard falls back
+ * to a placeholder avatar until a `photo` is set on the relevant
+ * entry. Originally planned as required (§7) before that asset
+ * blocker was hit — see StaffCard's §7 entry for the full reasoning.
+ */
+export interface StaffMember {
+  name: string;
+  role: string;
+  /** e.g. 'firstname.lastname@unityprovisions.org' */
+  email?: string;
+  photo?: ImageMetadata | string;
+}
