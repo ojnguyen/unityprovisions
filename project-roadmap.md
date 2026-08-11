@@ -31,18 +31,15 @@ Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 5 (Get Involved) — Projects
-(`projects.astro`) is fully built and assembled (§9): `ProjectSection`,
-`projects.ts`, and the page itself are all in place (§7). Relief Route
-embeds the live tool directly via iframe (owner-approved exception to
-the click-to-load default, §11); AgriScan uses the real `agriscan.webp`
-screenshot at placeholder dimensions pending a real-crop check, and its
-former embedded hiring form is now a plain mailto CTA. Get Involved
-needs: Branch Founder content section + Volunteer CTA (both real copy
-already captured in §8), assembled directly in `get-involved.astro`
-(no new components expected — check first per §2's process, but this
-page's content doesn't obviously isolate a reusable concern the way
-Team/Projects did).
+**Continue here:** Phase 5, Step 6 (Donate) — Get Involved
+(`get-involved.astro`) is fully built and assembled (§9): a Branch
+Founder section (eyebrow + "Turn Your Passion Into Impact" heading, a
+5-item support checklist, a global-network paragraph, and an "Apply"
+CTA) and a "Stay Connected" email-list section (renamed from
+"Volunteer" — §10, resolved) are both page-specific content, no new
+components (§7). Donate needs: `QRCodeDonate` (QR + Zeffy link, fully
+specified in §8) and `DocumentEmbed` (Donation Tracker widget, shape
+still pending visual inspection), assembled in `donate.astro`.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -113,6 +110,10 @@ adding to it — not the facts.
 - No CSS-in-JS, no component library. `cn()` = zero-dependency class
   joiner; add `tailwind-merge` only if a real class-conflict-resolution
   need comes up.
+- `utils/stats.ts`'s `getStatValue(label)` looks up a `stats.ts` entry
+  by label (e.g. `'branches'`, `'countries'`) — used by About/Get
+  Involved page copy that references those counts, so it can't drift
+  out of sync with `stats.ts` (§7/§11).
 - **Live data:** `ImpactStats` live-updates 2 of its 4 stats from a
   public Google Sheet via `gviz/tq` (JSONP `<script>`, not `fetch()` —
   gviz blocks CORS). Keeps the site fully static — no SSR, no API keys.
@@ -187,14 +188,15 @@ src/
 │   ├── about.astro                     ✅ built — About
 │   ├── team.astro                      ✅ built — Team
 │   ├── projects.astro                  ✅ built — Projects
-│   ├── get-involved.astro              📋 planned
+│   ├── get-involved.astro              ✅ built — Get Involved
 │   └── donate.astro                    📋 planned
 │
 ├── styles/
 │   └── global.css                      ✅ built
 │
 ├── utils/
-│   └── cn.ts                           ✅ built
+│   ├── cn.ts                           ✅ built
+│   └── stats.ts                        ✅ built — getStatValue() helper
 │
 └── types.ts                            ✅ built
 ```
@@ -220,7 +222,7 @@ matching utilities.
 | `--color-primary` | `#355e3b` | Deep forest green, ~7:1 contrast with white text |
 | `--color-primary-hover` | `#26442a` | |
 | `--color-accent` | `#a8592b` | Deep terracotta, ~5:1 contrast with white text — original ochre (#c47a3d) failed WCAG AA |
-| `--color-accent-hover` | `#79401f` | Added for button-hover consistency (§7 Button) — same ~28% darken ratio as primary→primary-hover; ~8:1 with white text |
+| `--color-accent-hover` | `#79401f` | Added for button-hover consistency — same ~28% darken ratio as primary→primary-hover; ~8:1 vs white text |
 | `--color-border` | `#d7e1d1` | Sage-gray, matches the new surface tone |
 | `--color-success` | `#2f7d4f` | Unreviewed |
 | `--color-error` | `#b3413b` | Unreviewed |
@@ -286,10 +288,11 @@ elevation.
 - **Decorative icons** (Iconify, via `astro-icon`) give plain
   heading+text blocks some visual weight without needing real
   photography — see ImpactStats, MissionStatement, GetInvolvedTeaser,
-  PartnersAndSupporters, ContactForm in §7, and About's "Meet the
-  Team" CTA. All are optional props / additive — a section renders
-  fine with no icon supplied. See §11 for which section *shapes*
-  actually earn a badge — this spans every page, not just Home.
+  PartnersAndSupporters, ContactForm in §7, About's "Meet the Team" CTA,
+  and Get Involved's "Stay Connected" section. All are optional props /
+  additive — a section renders fine with no icon supplied. See §11 for
+  which section *shapes* actually earn a badge — this spans every page,
+  not just Home.
 
 ### Accessibility
 - `:focus-visible` only — `2px solid var(--color-primary)`, 2px offset,
@@ -374,7 +377,8 @@ Status: ✅ Built · 📋 Planned
   `<a>` for those).
 - If a "join our email list" prompt is ever wanted again (see
   `EmailSignup` below): one `<ExternalLinkCTA>` pointed at
-  `contactListFormUrl`, inline — not a new component.
+  `contactListFormUrl`, inline — not a new component. (Now in use for
+  exactly this, on Get Involved's "Stay Connected" section, below.)
 
 ### Layout — `src/components/layout/`
 
@@ -390,7 +394,7 @@ Status: ✅ Built · 📋 Planned
   `aria-current` support on `Button`, so it doesn't get active-page
   styling on `/donate` — accepted, minor.
 - No "Email List" nav item (live site has one) — reachable via Footer
-  only (see `EmailSignup` below).
+  and Get Involved only (see `EmailSignup` below).
 - `bg-surface` now renders pale sage instead of white — no code change,
   just the token update (§6).
 
@@ -549,11 +553,11 @@ Status: ✅ Built · 📋 Planned
 
 **~~EmailSignup~~** — Built, then removed
 - Was a native mailing-list signup form. Removed: its destination
-  (`contactListFormUrl`, a Google Form) already has 2 working entry
-  points — the Footer link, and Get Involved's Volunteer CTA (same URL)
-  — so a native version meant building/maintaining a real backend to
-  re-solve an already-solved problem, and would have directly duplicated
-  the Volunteer CTA on the same page.
+  (`contactListFormUrl`, a Google Form) has 2 working entry points — the
+  Footer link, and Get Involved's "Stay Connected" CTA (same URL,
+  §7/§8) — so a native version meant building/maintaining a real
+  backend to re-solve an already-solved problem, and would have
+  directly duplicated that CTA on the same page.
 - If wanted again: one `ExternalLinkCTA` pointed at `contactListFormUrl`,
   inline — not a new component.
 
@@ -596,7 +600,10 @@ A build-time-derived version and a fully live-synced version (via a
 broadcast event from `ImpactStats`) were both built and reverted —
 too much machinery for one sentence; don't re-attempt without
 checking here first. Founder photo: `src/assets/ryan_nguyen.webp`,
-sized 400×500 pending a look at the real crop.
+sized 400×500 pending a look at the real crop. Branch/country counts
+in this paragraph are pulled from `stats.ts` via `getStatValue()`
+(`utils/stats.ts`) — was hardcoded as "over 35 branches across
+multiple countries", now can't drift from `stats.ts`.
 
 **About's "Meet the Team" CTA** — built in `about.astro`, closing
 section: icon badge (`lucide:users`, same visual treatment as
@@ -604,6 +611,28 @@ MissionStatement/GetInvolvedTeaser — see §11) + `SectionHeading` +
 one primary `Button` to `/team`. Added this session for consistency
 with its closest structural sibling (bare heading + subtext + single
 button, no other visual anchor) — see §11 for the underlying rule.
+
+**Get Involved's Branch Founder & Stay Connected sections** — built in
+`get-involved.astro`. Same page-specific pattern as About's founder
+story (§2 process, step 1 — doesn't isolate a reusable concern).
+*Branch Founder*: eyebrow "Branch Founder" + title "Turn Your Passion
+Into Impact" (`SectionHeading`, the real captured intro line used as
+the heading itself, not a subtext), a 5-item support checklist
+(`lucide:check` icons, paraphrased into bullets — exact original
+strings weren't captured, only their substance), a global-network
+paragraph, and an "Apply" `ExternalLinkCTA` →
+`https://forms.gle/qfwhsPP61RrAd1cW7`. No icon badge — the checklist
+is its own visual anchor (§11 rule), same reasoning as the founder
+story above. *Stay Connected*: icon badge (`lucide:mail`) + heading +
+subtext + one `ExternalLinkCTA` ("Join Our Email List") →
+`contactListFormUrl` (imported from `footer.ts`, not re-hardcoded —
+same form as the Footer's Email List link). Renamed from "Volunteer"
+— the form is a general contact-list signup, not volunteer-specific,
+and the old label overpromised (§10, resolved this session). Branch/
+country counts in the global-network paragraph are pulled from
+`stats.ts` via `getStatValue()` (`utils/stats.ts`), not hardcoded —
+resolves the earlier "6 countries" vs. `stats.ts`'s 8 discrepancy by
+construction.
 
 ### Domain Composites
 
@@ -750,7 +779,8 @@ masking need with a smile. When that pantry abruptly shut down in 2024,
 Ryan realized how fragile food programs could be. He founded Unity
 Provisions to build something that couldn't disappear overnight. What
 started with a single branch at Boston Latin School has grown into a
-youth-led network of over 35 branches across multiple countries.
+youth-led network of **35+ branches across 8+ countries** (pulled
+dynamically from `stats.ts` via `getStatValue()`, not hardcoded — §7).
 Together, student leaders have collected thousands of pounds of food
 and clothing, raised thousands of dollars, and built partnerships with
 organizations like the Wang YMCA to sustain community-based donation
@@ -774,20 +804,24 @@ band — same heading/data split as About's ImpactStats/
 PartnersAndSupporters, not a per-project color alternation. Full
 reasoning in §7.
 
-### Get Involved (`/get-involved`)
+### Get Involved (`/get-involved`) — ✅ Built
 "The single, clear answer to how do I participate."
-Order: Branch Founder content → Volunteer CTA (external).
+Order: page `h1` ("Get Involved") → Branch Founder content → Stay
+Connected (email list) CTA.
 
-Branch Founder content (real copy): intro "Turn your passion into
-impact"; support list — getting approval from your school or community,
-guidance for planning and running events, access to reimbursements
-through the YMCA partnership, ready-to-use promotional materials and
-planning tools, opportunities for funding to grow your ideas; a "global
-network" paragraph (35+ branches across 6 countries); CTA "Apply" →
-`https://forms.gle/qfwhsPP61RrAd1cW7`.
-Volunteer CTA → `https://forms.gle/7JFDkKPdzYv1LfCP6` (same form as the
-Footer's Email List link) — whether the "Volunteer" framing still fits
-is an open question (§10).
+Branch Founder content (real copy, paraphrased into bullets — exact
+original bullet strings weren't captured, only their substance): intro
+"Turn your passion into impact" (used as the section's `h2`, not a
+subtext); support list — help getting approval from your school or
+community, guidance for planning and running events, access to
+reimbursements through the YMCA partnership, ready-to-use promotional
+materials and planning tools, opportunities for funding to grow your
+ideas; a "global network" paragraph (35+ branches / 8+ countries —
+pulled dynamically from `stats.ts` via `getStatValue()`, §7, not
+hardcoded); CTA "Apply" → `https://forms.gle/qfwhsPP61RrAd1cW7`.
+Stay Connected CTA (renamed from "Volunteer", §10 resolved) → "Join Our
+Email List", `contactListFormUrl` (same form as the Footer's Email List
+link).
 
 ### Donate (`/donate`)
 Giving + transparency in one place.
@@ -841,10 +875,10 @@ Giving + transparency in one place.
     - [x] ProjectSection — Relief Route
     - [x] ProjectSection — AgriScan
     - [x] Assemble `projects.astro`
-- [ ] **5. Get Involved** (`get-involved.astro`):
-    - [ ] Branch Founder section
-    - [ ] Volunteer CTA
-    - [ ] Assemble `get-involved.astro`
+- [x] **5. Get Involved** (`get-involved.astro`):
+    - [x] Branch Founder section
+    - [x] Stay Connected (email list) CTA
+    - [x] Assemble `get-involved.astro`
 - [ ] **6. Donate** (`donate.astro`):
     - [ ] QRCodeDonate
     - [ ] DocumentEmbed
@@ -879,9 +913,9 @@ Giving + transparency in one place.
 `projects.ts` (2 projects).
 
 **External destinations:**
-- Email List (Footer) / Volunteer (Get Involved) →
-  `https://forms.gle/7JFDkKPdzYv1LfCP6` (same form; "Volunteer" framing
-  is an open question)
+- Email List (Footer) / Stay Connected (Get Involved) →
+  `https://forms.gle/7JFDkKPdzYv1LfCP6` (same form; CTA renamed from
+  "Volunteer" — §10, resolved)
 - Become a Branch Founder → `https://forms.gle/qfwhsPP61RrAd1cW7`
 - Relief Route (embedded live tool) →
   `https://reliefroute.unityprovisions.org/` · "Help Build Relief Route" CTA →
@@ -938,9 +972,15 @@ adding and where, rather than rediscovering it from scratch.
   Markup/validation done; only the real handler + reCAPTCHA widget
   pending.
 - Donation tracker embed shape: pending visual inspection.
-- Get Involved's "Volunteer" framing: the form behind it is a general
-  contact-list signup, not volunteer-specific — decide before building
-  `get-involved.astro`.
+- Get Involved's "Volunteer" framing: ✅ resolved — renamed to "Join
+  Our Email List" / "Stay Connected" section heading (§7/§8), since the
+  form behind it is a general contact-list signup, not
+  volunteer-specific (decided this session).
+- Get Involved's Branch Founder copy previously said "35+ branches
+  across 6 countries", conflicting with `stats.ts`'s 8 countries — ✅
+  resolved: both Get Involved and About now pull these numbers from
+  `stats.ts` via `getStatValue()` (`utils/stats.ts`, §7), so the copy
+  can't drift from `stats.ts` again.
 - ImpactStats live sheet 🔶: needs "Anyone with the link – Viewer"
   sharing (currently a permissions error). Fragility: (1) the live match
   requires exact label text `"Total (lbs)"`/`"Money Collected ($)"` in
@@ -979,6 +1019,16 @@ adding and where, rather than rediscovering it from scratch.
 - Dynamic tag props (`as`): typed `keyof HTMLElementTagNameMap` or a
   narrower literal union — never a bare `string` (breaks Astro's
   type-checking on `<Tag>`).
+- Page copy that references a `stats.ts` number inside a sentence
+  (branch/country counts on About and Get Involved) uses
+  `getStatValue(label)` (`utils/stats.ts`) rather than hardcoding the
+  figure — keeps that copy from drifting out of sync with `stats.ts`.
+  Only safe for stats with no `liveSheetLabel` (branches, countries);
+  the two live-Sheet-synced stats (pounds, dollars) stay dynamic via
+  `ImpactStats`' own client-side script instead — don't reuse this
+  helper for those, and don't confuse this simple build-time read with
+  the reverted live-synced/broadcast-event approach mentioned in §7's
+  ImpactStats entry (a different, more complex mechanism).
 - §7 entries describe what was actually built, not what was originally
   planned — update them in the same edit whenever an implementation
   deviates from spec.
@@ -1002,7 +1052,8 @@ adding and where, rather than rediscovering it from scratch.
   `Container` needed — nothing inside it needs constraining) so the
   two sage regions don't merge into one with only a barely-visible
   `border-t` between them. Page-specific fix, not a `Layout`-wide one
-  — check this whenever a new page's last section is decided.
+  — check this whenever a new page's last section is decided. Get
+  Involved doesn't need this fix — its last section is plain white.
 - A light-colored control on a dark/photo background is hand-written,
   not `Button`'s `secondary` variant (assumes a light page background)
   — same reasoning `DonateBanner` established for its custom heading
@@ -1020,19 +1071,22 @@ adding and where, rather than rediscovering it from scratch.
   Numbers", "Transparency") that just restates or decorates the title
   gets cut, not kept (see About's Annual Report CTA entry, §7, for the
   pass that removed several of these). The founder story's "Our Story"
-  eyebrow is a deliberate, explicit exception to this — kept per
-  preference, not evidence the convention should be loosened generally.
+  eyebrow, and Get Involved's "Branch Founder" eyebrow, are deliberate
+  exceptions — each adds information ("Our Story" and "Branch Founder"
+  respectively) the title alone doesn't carry, kept per this rule, not
+  evidence the general convention should be loosened.
 - Icon badges (the circular `bg-primary/10 text-primary` Iconify badge
   above a heading) are reserved for sections that are *only* a heading
   + short subtext + optional single button, with no other visual
-  anchor of their own — MissionStatement, GetInvolvedTeaser (Home), and
-  About's "Meet the Team" CTA are this shape. Sections that already
-  have their own anchor (a photo, a colored band, an inline icon next
-  to a link, or a data/logo grid immediately following) don't get one
-  — YouTubeEmbed, ContactForm, DonateBanner, the founder story, and
-  About's "Numbers So Far" / "Who Helps Make This Possible" intros all
-  fall here. Check this rule before adding or omitting a badge on any
-  new bare heading section, on any page.
+  anchor of their own — MissionStatement, GetInvolvedTeaser (Home),
+  About's "Meet the Team" CTA, and Get Involved's "Stay Connected" CTA
+  are this shape. Sections that already have their own anchor (a photo,
+  a colored band, an inline icon next to a link, a checklist, or a
+  data/logo grid immediately following) don't get one — YouTubeEmbed,
+  ContactForm, DonateBanner, the founder story, Get Involved's Branch
+  Founder section, and About's "Numbers So Far" / "Who Helps Make This
+  Possible" intros all fall here. Check this rule before adding or
+  omitting a badge on any new bare heading section, on any page.
 - A bare heading-only intro block (`Container` + `div` + `SectionHeading`,
   no other content of its own) that sits directly above a full-bleed
   band it introduces (sage `bg-surface`, `bg-primary`/`bg-primary-hover`,
@@ -1052,8 +1106,9 @@ adding and where, rather than rediscovering it from scratch.
   (e.g. MissionStatement, GetInvolvedTeaser — heading + button live
   inside one block together) or when no full-bleed section immediately
   follows it (e.g. About's "Annual Report" and "Meet the People Behind
-  It" closing blocks, which are themselves the content, not an intro
-  to something else).
+  It" closing blocks, and both sections on Get Involved — none of
+  these introduce a full-bleed band, so both use plain symmetric
+  padding).
 - Relief Route's `ProjectSection` embeds `reliefroute.unityprovisions.org`
   directly via a plain, always-loaded `<iframe>` (`loading="lazy"`
   only) — not the click-to-load JS facade `YouTubeEmbed` uses for a

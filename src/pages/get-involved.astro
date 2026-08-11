@@ -1,0 +1,112 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Container from '@components/ui/Container.astro';
+import SectionHeading from '@components/ui/SectionHeading.astro';
+import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
+import { Icon } from 'astro-icon/components';
+import { contactListFormUrl } from '@data/footer';
+import { getStatValue } from '@utils/stats';
+
+// Branch Founder support list — paraphrased from the real copy
+// captured in project-roadmap.md §8 (exact original bullet strings
+// weren't captured there, only their substance).
+const branchFounderSupport = [
+  'Help getting approval from your school or community',
+  'Guidance for planning and running events',
+  'Access to reimbursements through our YMCA partnership',
+  'Ready-to-use promotional materials and planning tools',
+  'Opportunities for funding to grow your ideas',
+];
+
+// Pulled from stats.ts rather than hardcoded — see utils/stats.ts.
+const branchCount = getStatValue('branches'); // "35+"
+const countryCount = getStatValue('countries'); // "8"
+---
+
+<Layout
+  title="Get Involved — Unity Provisions"
+  description="Become a Branch Founder or join our email list — the ways to get involved with Unity Provisions."
+>
+  <Container as="section">
+    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+      <SectionHeading
+        as="h1"
+        title="Get Involved"
+        subtext="Whatever your time and skills allow, there's a place for you in the fight against hunger."
+        align="center"
+      />
+    </div>
+  </Container>
+
+  <!--
+    Branch Founder: heading + checklist + paragraph + CTA. No icon
+    badge here — the checklist is its own visual anchor, same reasoning
+    that rules a badge out for About's founder story (project-roadmap.md
+    §11). "Turn Your Passion Into Impact" is used as the h2 itself
+    (the real captured intro line, §8), with "Branch Founder" as the
+    eyebrow since the title alone doesn't say what program this is.
+  -->
+  <Container as="section">
+    <div class="flex flex-col items-center gap-8 py-12 text-center md:py-16">
+      <SectionHeading
+        eyebrow="Branch Founder"
+        title="Turn Your Passion Into Impact"
+        align="center"
+      />
+
+      <ul class="flex w-full max-w-2xl flex-col gap-3 text-left">
+        {branchFounderSupport.map((item) => (
+          <li class="flex items-start gap-3 text-lg text-text-secondary">
+            <Icon name="lucide:check" aria-hidden="true" class="mt-1 h-5 w-5 shrink-0 text-primary" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+
+      <!--
+        Branch/country counts pulled from stats.ts via getStatValue()
+        (utils/stats.ts), not hardcoded — resolves the earlier "6
+        countries" vs. stats.ts's 8 discrepancy (project-roadmap.md
+        §10) by making this copy structurally unable to drift from
+        stats.ts.
+      -->
+      <p class="max-w-2xl text-lg text-text-secondary">
+        You won't be building this alone — you'll be joining a global
+        network of {branchCount} branches across {countryCount}+
+        countries, all working toward the same mission.
+      </p>
+
+      <ExternalLinkCTA
+        label="Apply"
+        href="https://forms.gle/qfwhsPP61RrAd1cW7"
+        icon="lucide:arrow-up-right"
+      />
+    </div>
+  </Container>
+
+  <!--
+    Stay Connected: bare heading + subtext + one button — the §11
+    icon-badge shape. Renamed from "Volunteer" (project-roadmap.md §10,
+    resolved this session) since the form behind it is a general
+    contact-list signup, not volunteer-specific, and the old label
+    overpromised. Reuses contactListFormUrl from footer.ts rather than
+    re-hardcoding the URL — same form as the Footer's Email List link.
+  -->
+  <Container as="section">
+    <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+      <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Icon name="lucide:mail" aria-hidden="true" class="h-6 w-6" />
+      </span>
+      <SectionHeading
+        title="Stay Connected"
+        subtext="Join our email list to hear about new branches, events, and ways to help — no commitment required."
+        align="center"
+      />
+      <ExternalLinkCTA
+        label="Join Our Email List"
+        href={contactListFormUrl}
+        icon="lucide:arrow-up-right"
+      />
+    </div>
+  </Container>
+</Layout>

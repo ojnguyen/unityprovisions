@@ -11,6 +11,13 @@ import { Icon } from 'astro-icon/components';
 import ryanPhoto from '@assets/ryan_nguyen.webp';
 import { stats } from '@data/stats';
 import { partners } from '@data/partners';
+import { getStatValue } from '@utils/stats';
+
+// Pulled from stats.ts rather than hardcoded — see utils/stats.ts.
+// Used in the founder-story paragraph below (previously "over 35
+// branches across multiple countries").
+const branchCount = getStatValue('branches'); // "35+"
+const countryCount = getStatValue('countries'); // "8"
 ---
 
 <Layout
@@ -53,12 +60,12 @@ import { partners } from '@data/partners';
           </p>
           <p>
             What started with a single branch at Boston Latin School has
-            grown into a youth-led network of over 35 branches across
-            multiple countries. Together, student leaders have collected
-            thousands of pounds of food and clothing, raised thousands of
-            dollars, and built partnerships with organizations like the
-            Wang YMCA to sustain community-based donation centers — see
-            the current numbers below.
+            grown into a youth-led network of {branchCount} branches
+            across {countryCount}+ countries. Together, student leaders
+            have collected thousands of pounds of food and clothing,
+            raised thousands of dollars, and built partnerships with
+            organizations like the Wang YMCA to sustain community-based
+            donation centers — see the current numbers below.
           </p>
           <p>
             Our mission is to empower young people to fight hunger by
