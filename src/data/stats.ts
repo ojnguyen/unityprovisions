@@ -28,5 +28,5 @@ export const stats: Stat[] = [
     icon: 'lucide:circle-dollar-sign',
   },
   { value: '35+', label: 'branches', icon: 'lucide:map-pin' },
-  { value: '8', label: 'countries', icon: 'lucide:globe' },
+  { value: '8+', label: 'countries', icon: 'lucide:globe' },
 ];
