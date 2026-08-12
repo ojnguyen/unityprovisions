@@ -24,22 +24,21 @@ Participation and giving happen via clearly labeled external links
 
 ## 2. How to Resume This Project
 
-**Current phase:** Phase 5 — Build Pages. Phase 4 (Shared
-Infrastructure) is complete.
+**Current phase:** Phase 5 (Build Pages) is complete — all six pages
+built. Next up: the Cross-Cutting checklist (§9), entirely unstarted,
+then Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
 
 **Status source of truth:** §5's file tree (✅ Built / 📋 Planned
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Phase 5, Step 6 (Donate) — Get Involved
-(`get-involved.astro`) is fully built and assembled (§9): a Branch
-Founder section (eyebrow + "Turn Your Passion Into Impact" heading, a
-5-item support checklist, a global-network paragraph, and an "Apply"
-CTA) and a "Stay Connected" email-list section (renamed from
-"Volunteer" — §10, resolved) are both page-specific content, no new
-components (§7). Donate needs: `QRCodeDonate` (QR + Zeffy link, fully
-specified in §8) and `DocumentEmbed` (Donation Tracker widget, shape
-still pending visual inspection), assembled in `donate.astro`.
+**Continue here:** Donate (`donate.astro`) is built and assembled (§9):
+`QRCodeDonate` (a real, decode-verified QR code + Zeffy fallback link)
+and `DocumentEmbed` (a direct embed of the org's real Google Sheet —
+confirmed by the project owner to be the actual Donation Tracker, §7/
+§10, resolved) are both in place. Next: the Cross-Cutting checklist
+(§9) — responsive check, accessibility pass, SEO, performance,
+cross-browser, comment cleanup — none of it started yet.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -136,7 +135,7 @@ src/
 │   ├── google.jpg                 — Google logo (in use, partners.ts)
 │   ├── team/                      — 8 headshots for Team (not yet supplied — may overlap with ryan_nguyen.webp above, tbd)
 │   ├── projects/agriscan.webp     — AgriScan screenshot (in use, projects.ts — Relief Route needs no image, embeds the live tool directly instead)
-│   └── donate/                    — QR code image (not yet supplied)
+│   └── donate/                    — empty; not needed. The QR code is generated inline as static SVG in QRCodeDonate.astro itself (§7) rather than a supplied image file — it's fully derivable from the Zeffy URL, not a creative asset the org needs to provide.
 │
 ├── components/
 │   ├── ui/
@@ -169,8 +168,8 @@ src/
 │   │   └── ProjectSection.astro        ✅ built — Projects
 │   │
 │   └── donate/
-│       ├── QRCodeDonate.astro          📋 planned
-│       └── DocumentEmbed.astro         📋 planned
+│       ├── QRCodeDonate.astro          ✅ built
+│       └── DocumentEmbed.astro         ✅ built
 │
 ├── data/
 │   ├── navigation.ts                   ✅ built — 6-item nav + orgName
@@ -189,7 +188,7 @@ src/
 │   ├── team.astro                      ✅ built — Team
 │   ├── projects.astro                  ✅ built — Projects
 │   ├── get-involved.astro              ✅ built — Get Involved
-│   └── donate.astro                    📋 planned
+│   └── donate.astro                    ✅ built
 │
 ├── styles/
 │   └── global.css                      ✅ built
@@ -453,6 +452,9 @@ Status: ✅ Built · 📋 Planned
   nothing persists across a full page navigation). Numbers match in
   practice, since both hit the same source with identical logic;
   deliberately kept simple over adding a caching layer (decided).
+  `DocumentEmbed` (Donate) embeds this same sheet directly via
+  `<iframe>` rather than reusing this component (§7 DocumentEmbed) — a
+  full-sheet view, not the 4-number summary this component renders.
 - Live sheet: ID `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid
   `638911803`, range `B1:C6` (must stay scoped to the summary block —
   widening it into the donation log below breaks Google's column-type
@@ -741,15 +743,64 @@ construction.
   AgriScan's sage content band would run straight into Footer's sage
   with no visible break. See §11 for the general rule.
 
-**QRCodeDonate** — 📋 Planned
-- The actual giving mechanism: QR code + Zeffy fallback link, both
-  resolving to the same destination. Primary content of the Donate
-  page's "Give" section.
+**QRCodeDonate** — ✅ Built
+- Props: `heading` · `subtext` · `ctaLabel` (all required, same "page
+  supplies real copy" convention as every other section component).
+  `donateUrl` (the real Zeffy campaign) is hardcoded inside the
+  component, not a prop — same reasoning as `DonateBanner`'s hardcoded
+  `href` (§7 above): a fixed destination a page author shouldn't be
+  able to redirect.
+- Heading sits in its own white block with the §11 asymmetric-padding
+  treatment; the QR code + CTA sit in a separate full-bleed sage band
+  below it — same heading-vs-content split as `ProjectSection` and
+  `DocumentEmbed`. Originally built as one continuous white block, which
+  broke that pattern (the QR/CTA are this section's real "content," in
+  the same sense as a project screenshot or an embedded sheet); split
+  out this session to match.
+- Renders a real, scannable QR code — not a placeholder box. Generated
+  once at authoring time by encoding `donateUrl` with a standard QR
+  library (Python's `qrcode`, SVG output), decode-verified against the
+  exact URL, then pasted in as static inline `<svg>` markup. Kept
+  static rather than adding a build-time npm dependency, since a
+  nonprofit's Zeffy campaign URL essentially never changes; regenerate
+  and swap the `<path>` if it ever does. `fill` uses
+  `--color-text-primary` (near-black) — dark enough to scan reliably
+  while still drawing from the real design tokens.
+- QR sits in a `Card` with `bg="bg"` (white), not the usual `bg="surface"`
+  default — needed for scan contrast regardless of what's behind the
+  section (a QR code needs full white-behind-dark-modules contrast to
+  scan reliably); now that contrast also makes it visually pop against
+  the sage band around it, a nice side effect of the heading/content
+  split above.
+- `ExternalLinkCTA` fallback link below the QR, same real Zeffy URL —
+  matches the live site's own "if the QR code isn't working" pattern
+  (verified via a live fetch this session, §10).
+- Resolves the `src/assets/donate/` blocker (§5) differently than
+  expected: no image asset was ever needed, since a QR code is fully
+  derivable from the URL rather than a creative asset the org supplies.
 
-**DocumentEmbed** — 📋 Planned
-- "Track Our Impact" section of the Donate page — the Donation Tracker
-  widget. Confirmed to exist; final shape (full embed vs. static
-  transparency statement) pending visual inspection.
+**DocumentEmbed** — ✅ Built
+- Props: `heading` · `subtext` (both required, same convention as every
+  other section component).
+- Directly embeds the org's real Google Sheet via `<iframe>` — same
+  bordered-frame-in-a-sage-band pattern as `ProjectSection`'s embed. No
+  fallback, no optional prop: this **is** the Donation Tracker, not a
+  placeholder for one.
+- Donation tracker is the exact same Google Sheet
+  `ImpactStats.astro` already reads from (same sheet ID,
+  `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`) — not a separate
+  third-party service. Confirmed directly by the project owner.
+- `sheetEmbedUrl` uses the sheet's `/preview` path, not the `/edit` link
+  the sheet is normally shared as — `/preview` is Google's actual
+  embeddable view; `/edit` blocks being framed by another site outright.
+  Requires the same "Anyone with the link – Viewer" sharing `ImpactStats`
+  already needs on this sheet (§10) — same blocker, one fix covers both.
+- `sheetEmbedUrl` hardcoded inside the component, not a prop — same
+  reasoning as `QRCodeDonate`'s `donateUrl` (§7).
+- Superseded an earlier version of this component (embedUrl?
+  prop, ImpactStats-as-fallback) built before the real embed source was
+  confirmed — see §11's "never guess at an unconfirmed embed source"
+  convention for why that approach was taken at the time.
 
 ---
 
@@ -823,13 +874,24 @@ Stay Connected CTA (renamed from "Volunteer", §10 resolved) → "Join Our
 Email List", `contactListFormUrl` (same form as the Footer's Email List
 link).
 
-### Donate (`/donate`)
-Giving + transparency in one place.
-1. **Give** — `QRCodeDonate`: pitch + QR code + Zeffy link
+### Donate (`/donate`) — ✅ Built
+Giving + transparency in one place. Page `h1` ("Donate") + two
+sections:
+1. **Give** — `QRCodeDonate`: real, decode-verified QR code (not a
+   placeholder) + Zeffy fallback link
    (`https://www.zeffy.com/fundraising/ending-hunger-through-youth-leadership`).
-   Fully specified.
-2. **Track Our Impact** — `DocumentEmbed`: Donation Tracker widget.
-   🔶 Final shape pending visual inspection.
+   Copy paraphrased from the live site's actual `/donate` page
+   (verified via live fetch this session): intro framing + "scan to
+   donate, most gifts are tax-deductible, use the link below if the QR
+   doesn't work."
+2. **Track Our Impact** — `DocumentEmbed`: direct `<iframe>` embed of
+   the org's real Google Sheet — the same sheet `ImpactStats` reads
+   from.
+
+Combines two separate live-site pages (`/donate` — just the QR/Zeffy
+section — and `/donations`, filed under an "About" dropdown, which has
+the actual "Donation Tracker") into one page here — a deliberate
+simplification (§3), not a missed page.
 
 ---
 
@@ -847,7 +909,7 @@ Giving + transparency in one place.
 - [x] Navbar & Footer Components
 - [x] Layout.astro
 
-### Phase 5 — Build Pages (current)
+### Phase 5 — Build Pages (complete)
 - [x] **1. Home** (`index.astro`) — fully built and assembled; several
       visual-polish rounds since (palette, container width, section
       banding, Hero content + real photo, icons across sections — §6/§7)
@@ -860,7 +922,7 @@ Giving + transparency in one place.
     - [x] ContactForm
     - [x] DonateBanner
     - [x] Assemble `index.astro`
-- [ ] **2. About** (`about.astro`) — in progress:
+- [x] **2. About** (`about.astro`):
     - [x] Founder story section
     - [x] ImpactStats (reused)
     - [x] PartnersAndSupporters (reused)
@@ -879,10 +941,10 @@ Giving + transparency in one place.
     - [x] Branch Founder section
     - [x] Stay Connected (email list) CTA
     - [x] Assemble `get-involved.astro`
-- [ ] **6. Donate** (`donate.astro`):
-    - [ ] QRCodeDonate
-    - [ ] DocumentEmbed
-    - [ ] Assemble `donate.astro`
+- [x] **6. Donate** (`donate.astro`):
+    - [x] QRCodeDonate
+    - [x] DocumentEmbed
+    - [x] Assemble `donate.astro`
 
 ### Cross-Cutting (every page)
 - [ ] Responsive check at each breakpoint
@@ -956,6 +1018,21 @@ No action taken this session — logged so a future pass (a Home
 revisit, or while building About/Projects) can decide what's worth
 adding and where, rather than rediscovering it from scratch.
 
+**Donate-page audit** — confirmed via live fetch while building
+`donate.astro` this session (§7 QRCodeDonate/DocumentEmbed):
+- unityprovisions.org/donate is just the "How You Can Help" intro + QR
+  code + Zeffy fallback link — no tracker on that page. Copy from here
+  is what `QRCodeDonate` paraphrases.
+- The real "Donation Tracker" is a *separate* page,
+  unityprovisions.org/donations, filed under the live site's "About"
+  dropdown (not grouped with "Donate" in their nav). This rebuild
+  intentionally merges both into one `/donate` page (§8) — simpler
+  information architecture, matches §3's goals.
+- That tracker page confirms a real embedded widget exists; its exact
+  source wasn't visible in a static fetch, but the project owner
+  directly confirmed it's the same Google Sheet `ImpactStats` reads
+  from.
+
 **Open decisions:**
 - Annual Report CTA (About, §8): ✅ resolved — link out via
   `ExternalLinkCTA` to a FlipHTML5 flipbook
@@ -971,7 +1048,12 @@ adding and where, rather than rediscovering it from scratch.
 - ContactForm submission backend: Formspree vs. Cloudflare Function.
   Markup/validation done; only the real handler + reCAPTCHA widget
   pending.
-- Donation tracker embed shape: pending visual inspection.
+- Donation tracker embed shape: ✅ resolved. Confirmed by the project
+  owner: the live site's "Donation Tracker" is the same Google Sheet
+  `ImpactStats` already reads from — not a separate third-party
+  service. `DocumentEmbed` (§7) now directly embeds it via `/preview`
+  (Google's embeddable view; the `/edit` link the sheet is normally
+  shared as blocks being framed).
 - Get Involved's "Volunteer" framing: ✅ resolved — renamed to "Join
   Our Email List" / "Stay Connected" section heading (§7/§8), since the
   form behind it is a general contact-list signup, not
@@ -981,8 +1063,7 @@ adding and where, rather than rediscovering it from scratch.
   resolved: both Get Involved and About now pull these numbers from
   `stats.ts` via `getStatValue()` (`utils/stats.ts`, §7), so the copy
   can't drift from `stats.ts` again.
-- ImpactStats live sheet 🔶: needs "Anyone with the link – Viewer"
-  sharing (currently a permissions error). Fragility: (1) the live match
+- ImpactStats live sheet fragility: (1) the live match
   requires exact label text `"Total (lbs)"`/`"Money Collected ($)"` in
   column B — silent fallback if wording changes; (2) `SHEET_RANGE`
   (`'B1:C6'`) must stay scoped to the summary block — widening it into
@@ -1087,6 +1168,16 @@ adding and where, rather than rediscovering it from scratch.
   Founder section, and About's "Numbers So Far" / "Who Helps Make This
   Possible" intros all fall here. Check this rule before adding or
   omitting a badge on any new bare heading section, on any page.
+- Sage (`bg-surface`) is reserved for a section's actual **content** —
+  a data grid, a screenshot, an embed, a QR code — never for a heading
+  block on its own. A heading that introduces a full-bleed sage band
+  stays in its own plain white `Container` above it (using the
+  asymmetric-padding rule below to visually attach to what follows).
+  Established by `ImpactStats`/`PartnersAndSupporters` (always sage,
+  never alternated, heading always white above them — §7
+  `ProjectSection` entry) and now also followed by `ProjectSection`,
+  `DocumentEmbed`, and `QRCodeDonate` (§7) — apply it to any future
+  section that pairs a heading with real content below it.
 - A bare heading-only intro block (`Container` + `div` + `SectionHeading`,
   no other content of its own) that sits directly above a full-bleed
   band it introduces (sage `bg-surface`, `bg-primary`/`bg-primary-hover`,
@@ -1118,6 +1209,26 @@ adding and where, rather than rediscovering it from scratch.
   future third-party/self-hosted embeds get the same direct treatment
   without asking — `YouTubeEmbed`'s facade pattern is still the
   fallback default for anything not explicitly confirmed this way.
+- Never guess at an unconfirmed third-party embed URL/src — a wrong or
+  fabricated one is worse than no embed at all. When a real embed's
+  source can't be verified yet (e.g. it's injected client-side by a
+  page builder and no browser tool is available to inspect it), build
+  the component to accept it as an optional prop and fall back to
+  something real and verifiable in the meantime, not a placeholder box
+  or a guessed URL — swap in the real source once confirmed. Applied to
+  an earlier version of `DocumentEmbed` (§7) before the project owner
+  confirmed the real source directly; that confirmation superseded the
+  fallback, but the principle still applies to any future
+  unconfirmed embed.
+- When something is fully *derivable* from data already in the project
+  (e.g. a QR code encoding a URL the project already has), generate it
+  once and check it in as static output rather than treating it as a
+  missing creative asset to wait on, and rather than adding a runtime/
+  build dependency for something that will essentially never change.
+  Verify it actually works (e.g. decode the QR back and confirm it
+  matches) before shipping it. Established by `QRCodeDonate` (§7) —
+  resolved the `src/assets/donate/` blocker (§5) this way instead of
+  waiting on a supplied image.
 - Photo-legibility treatment: a CSS `mask-image` (Hero's
   `mask-y-from-accent` utility class) is the established pattern, not
   a gradient overlay `<div>` — final decision, supersedes an earlier-
