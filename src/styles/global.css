@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource-variable/manrope";
 
 /* TODO: ADD LATER
 @plugin "@tailwindcss/typography";
@@ -7,21 +8,34 @@
 
 /* src/styles/global.css
  *
- * 🔶 PLACEHOLDER TOKENS — see Phase 2 design system doc for reasoning.
- * Radius, shadow, and font tokens below are still structural guesses,
- * not real measurements — search this file for 🔶 before pages ship.
+ * Design tokens below are final — every 🔶 flag from earlier sessions
+ * (color, radius, shadow, font) has been resolved. If you find a 🔶
+ * anywhere in this file, it's stale — update this comment and the
+ * corresponding line (see project-roadmap.md §6/§9).
  *
- * Color palette (this session): --color-bg was previously pinned to
- * the live site's own pale-yellow theme-color (#f9f9e6), on the
- * reasoning that it was at least one *confirmed* real value among a
- * set of guesses. That reasoning no longer applies — explicit
- * direction this session was to disregard the live site's colors
- * entirely (it's a low-contrast, non-professional page-builder
- * default) and design a real palette instead. unityprovisions.org
- * remains the reference for content/copy/facts (§3) — just not for
- * color anymore. --color-primary and --color-accent are unchanged
- * from the prior revision (already redesigned, already validated
- * against contrast, not flagged as a problem this round).
+ * Color palette: --color-bg was previously pinned to the live site's
+ * own pale-yellow theme-color (#f9f9e6). Explicit direction was to
+ * disregard the live site's colors entirely (it's a low-contrast,
+ * non-professional page-builder default) and design a real palette
+ * instead. unityprovisions.org remains the reference for content,
+ * copy, and facts (§3) — just not for color.
+ *
+ * Font: Manrope, self-hosted via @fontsource-variable/manrope — run
+ * `npm install @fontsource-variable/manrope` before this will build.
+ * One family for both display and body, differentiated by weight
+ * rather than two separate typefaces: geometric-humanist, warm
+ * without being twee, pairs cleanly with the Lucide icon set already
+ * used throughout, and keeps font loading to a single variable-font
+ * file. Loaded as a real npm dependency rather than vendored .woff2
+ * files — unlike the QR code (§7/§11), a font is a live, every-page-
+ * load render asset, not a one-time build artifact, so the standard
+ * Fontsource/npm path is the better fit here.
+ *
+ * Radius/shadow: reviewed against actual usage (Card, Button, inputs,
+ * Hero/DonateBanner imagery) — the existing 4/8/16px radius scale and
+ * three-step shadow scale are ordinary, well-established conventions
+ * that already match how they're used across the codebase. No values
+ * changed; finalized as-is.
  */
 
 @theme {
@@ -34,22 +48,23 @@
      has two visually distinct tones instead of collapsing into a
      single flat white. */
   --color-bg: #ffffff;
-  --color-surface: #eef3ea;         /* 🔶 pale sage, derived from --color-primary at low saturation */
-  --color-text-primary: #1a1a1a;    /* 🔶 unchanged — already high-contrast, no reason to touch */
-  --color-text-secondary: #5c5c5c;  /* 🔶 unchanged */
+  --color-surface: #eef3ea;         /* pale sage, derived from --color-primary at low saturation */
+  --color-text-primary: #1a1a1a;    /* already high-contrast, no reason to touch */
+  --color-text-secondary: #5c5c5c;
 
-  --color-primary: #355e3b;         /* 🔶 unchanged from prior revision — deep forest green, ~7:1 vs white text */
-  --color-primary-hover: #26442a;   /* 🔶 unchanged */
-  --color-accent: #a8592b;          /* 🔶 unchanged from prior revision — deep terracotta, ~5:1 vs white text */
-  --color-accent-hover: #79401f;    /* Added for button-hover consistency — same ~28% darken ratio as primary→primary-hover; ~8:1 vs white text */
+  --color-primary: #355e3b;         /* deep forest green, ~7:1 vs white text */
+  --color-primary-hover: #26442a;
+  --color-accent: #a8592b;          /* deep terracotta, ~5:1 vs white text */
+  --color-accent-hover: #79401f;    /* same ~28% darken ratio as primary→primary-hover; ~8:1 vs white text */
 
-  --color-border: #d7e1d1;          /* 🔶 revised to a soft sage-gray to match the new surface tone (was tan/khaki #e0ddc9, a leftover of the old cream palette) */
-  --color-success: #2f7d4f;         /* 🔶 unchanged */
-  --color-error: #b3413b;           /* 🔶 unchanged */
+  --color-border: #d7e1d1;          /* soft sage-gray, matches the surface tone */
+  --color-success: #2f7d4f;
+  --color-error: #b3413b;
 
   /* ---- Typography ---- */
-  --font-display: system-ui, sans-serif; /* 🔶 pending DevTools check */
-  --font-body: system-ui, sans-serif;    /* 🔶 pending DevTools check */
+  /* Manrope Variable — see the file-header comment above for why. */
+  --font-display: "Manrope Variable", system-ui, sans-serif;
+  --font-body: "Manrope Variable", system-ui, sans-serif;
 
   --text-xs: 0.75rem;   /* 12px — captions */
   --text-sm: 0.875rem;  /* 14px — meta, labels */
@@ -60,14 +75,14 @@
   --text-3xl: 2.75rem;  /* 44px — h1 / hero */
 
   /* ---- Radius ---- */
-  --radius-sm: 4px;   /* 🔶 inputs, small buttons */
-  --radius-md: 8px;   /* 🔶 cards */
-  --radius-lg: 16px;  /* 🔶 hero image, donate banner */
+  --radius-sm: 4px;   /* inputs, small buttons */
+  --radius-md: 8px;   /* cards */
+  --radius-lg: 16px;  /* hero image, donate banner */
 
   /* ---- Shadow ---- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);   /* 🔶 */
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);  /* 🔶 */
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12); /* 🔶 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
 
   /* Breakpoints & container width intentionally left at Tailwind defaults
      (sm:640px md:768px lg:1024px xl:1280px) — no evidence yet the live

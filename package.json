@@ -15,6 +15,7 @@
     "@astrojs/check": "^0.9.9",
     "@astrojs/mdx": "^7.0.3",
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/manrope": "^5.3.0",
     "@iconify-json/lucide": "^1.2.117",
     "@iconify-json/simple-icons": "^1.2.90",
     "@tailwindcss/vite": "^4.3.3",
