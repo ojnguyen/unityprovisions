@@ -42,21 +42,13 @@ then Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** ContactForm (`ContactForm.astro`, Home) now submits
-via Formspree (§7/§10, resolved) — a real `fetch()` handler with
-success/error states, replacing the old no-op stub. 🔶
-`FORMSPREE_ENDPOINT` (in the component's `<script>`) is still a
-placeholder pending the project owner's Formspree account access —
-swap in the real value once available; until then the form no-ops
-with a `console.warn` instead of submitting anywhere. The reCAPTCHA
-placeholder box is removed — relying on Formspree's built-in spam
-filtering instead (§7/§10). Otherwise, Donate (`donate.astro`) is
-built and assembled (§9): `QRCodeDonate` (a real, decode-verified QR
-code + Zeffy fallback link) and `DocumentEmbed` (a direct embed of the
-org's real Google Sheet, §7/§10, resolved) are both in place. Next:
-the Cross-Cutting checklist (§9) — responsive check, accessibility
-pass, SEO, performance, cross-browser, comment cleanup — none of it
-started yet — plus swapping in the real Formspree endpoint above.
+**Continue here** *(replaced each session, not appended to — this is
+the current next step only, not a history):* 🔶 `ContactForm.astro`'s
+`FORMSPREE_ENDPOINT` is a placeholder, blocked on the project owner's
+Formspree account access (§7/§10) — swap in the real value once
+available. Otherwise, next up is the Cross-Cutting checklist (§9) —
+responsive check, accessibility pass, SEO, performance, cross-browser,
+comment cleanup — none of it started yet.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
