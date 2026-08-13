@@ -38,6 +38,9 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     <div id="contact-panel" hidden class="w-full max-w-xl">
       <Card padding="lg">
         <form id="contact-form" class="flex flex-col gap-5">
+          <!-- Formspree special field: sets the notification email's subject line. -->
+          <input type="hidden" name="_subject" value="New message from Unity Provisions website contact form" />
+
           <label class={labelClasses} for="contact-name">
             Name <span aria-hidden="true">*</span>
             <input
@@ -84,19 +87,10 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
             />
           </label>
 
-          <!--
-            🔶 reCAPTCHA placeholder. project-roadmap.md §10 lists the
-            submission backend (Formspree vs. a Cloudflare Function) as
-            an open decision — a real reCAPTCHA widget needs a site key
-            tied to whichever backend is chosen, so it can't be wired up
-            yet. This box just marks where it goes.
-          -->
-          <div
-            data-recaptcha-placeholder
-            class="flex items-center justify-center rounded-sm border border-dashed border-border px-3 py-6 text-center text-sm text-text-secondary"
-          >
-            reCAPTCHA will appear here once the submission backend is set up.
-          </div>
+          <!-- Shown only if the fetch() below fails or errors. role="alert" announces it to screen readers immediately. -->
+          <p id="contact-error" hidden role="alert" class="text-sm text-error">
+            Something went wrong sending your message. Please try again, or email us directly at contact@unityprovisions.org.
+          </p>
 
           <p class="text-xs text-text-secondary">* required field</p>
 
@@ -105,6 +99,20 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
             <Button type="button" variant="secondary">Cancel</Button>
           </div>
         </form>
+
+        <!--
+          Success state: swaps in for the form itself once Formspree
+          confirms the submission. Lives in the same Card, as a sibling
+          of <form> rather than inside it, so it's never picked up by
+          FormData(form) and never renders while the form is in use.
+        -->
+        <div id="contact-success" hidden tabindex="-1" class="flex flex-col items-center gap-3 py-4 text-center">
+          <Icon name="lucide:check-circle-2" aria-hidden="true" class="h-8 w-8 text-primary" />
+          <p class="text-text-primary">Thanks for reaching out — we'll get back to you soon.</p>
+          <div id="contact-success-close-wrapper">
+            <Button type="button" variant="secondary">Close</Button>
+          </div>
+        </div>
       </Card>
     </div>
   </div>
@@ -121,10 +129,12 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
   const triggerButton = triggerWrapper?.querySelector('button');
   const panel = document.getElementById('contact-panel');
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const errorMessage = document.getElementById('contact-error');
+  const successMessage = document.getElementById('contact-success');
 
   // Button.astro doesn't accept an id prop (see project-roadmap.md §7),
-  // so aria-expanded/aria-controls are set here at runtime instead of in
-  // the markup.
+  // so aria-expanded/aria-controls, and every button below, are found/
+  // targeted via querySelector instead of by id.
   triggerButton?.setAttribute('aria-expanded', 'false');
   triggerButton?.setAttribute('aria-controls', 'contact-panel');
 
@@ -140,18 +150,27 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     triggerWrapper?.removeAttribute('hidden');
     triggerButton?.setAttribute('aria-expanded', 'false');
     form?.reset();
+    form?.removeAttribute('hidden');
+    errorMessage?.setAttribute('hidden', '');
+    successMessage?.setAttribute('hidden', '');
     triggerButton?.focus();
   }
 
   triggerButton?.addEventListener('click', openForm);
 
-  // Cancel is the only type="button" inside the form, so this finds it
-  // without Button.astro needing an id prop — same kind of workaround
-  // used for it before (see project-roadmap.md §7), just applied here
-  // to a button that now closes the panel rather than only resetting
-  // fields on an already-visible form.
+  // Cancel is the only type="button" inside <form> itself, so this
+  // finds it without Button.astro needing an id prop — same workaround
+  // used throughout this component (see project-roadmap.md §7).
   const cancelButton = form?.querySelector('button[type="button"]');
   cancelButton?.addEventListener('click', closeForm);
+
+  // The success state's "Close" button lives outside <form> (see markup
+  // comment above), so it needs its own wrapper-id lookup rather than
+  // the form?.querySelector used for Cancel above.
+  const successCloseButton = document
+    .getElementById('contact-success-close-wrapper')
+    ?.querySelector('button');
+  successCloseButton?.addEventListener('click', closeForm);
 
   panel?.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
@@ -159,14 +178,58 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     }
   });
 
-  // The submission backend isn't chosen yet (project-roadmap.md §10),
-  // so this only stops the browser's default submit/reload and logs a
-  // reminder. Replace it with a real fetch() call to Formspree, or a
-  // POST to a Cloudflare Function, once that's decided.
-  form?.addEventListener('submit', (event) => {
+  // 🔶 Placeholder — swap in the real Formspree endpoint (from the
+  // form's Integration tab, looks like https://formspree.io/f/xxxxxxxx)
+  // once the project owner has Formspree account access. Until then,
+  // submissions no-op with a console warning instead of POSTing
+  // anywhere real. See project-roadmap.md §2/§7/§10.
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+  const isPlaceholderEndpoint = FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID');
+
+  const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
-    console.warn(
-      'ContactForm: submission backend not wired up yet (see project-roadmap.md §10).'
-    );
+    if (!form) return;
+
+    if (isPlaceholderEndpoint) {
+      console.warn(
+        'ContactForm: FORMSPREE_ENDPOINT is still a placeholder (see project-roadmap.md §2/§7/§10) — not submitting.'
+      );
+      return;
+    }
+
+    errorMessage?.setAttribute('hidden', '');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending…';
+    }
+
+    try {
+      // Accept: application/json makes Formspree respond with JSON
+      // instead of redirecting to its own hosted thank-you page —
+      // required for a same-page AJAX success/error flow.
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Formspree responded with ${response.status}`);
+      }
+
+      form.setAttribute('hidden', '');
+      successMessage?.removeAttribute('hidden');
+      successMessage?.focus();
+    } catch (error) {
+      console.error('ContactForm: submission failed', error);
+      errorMessage?.removeAttribute('hidden');
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send';
+      }
+    }
   });
 </script>

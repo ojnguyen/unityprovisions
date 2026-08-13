@@ -1,3 +1,13 @@
+<!--
+  Reconstructed this session from project-knowledge retrieval (this
+  repo isn't actually connected — its content lives in this Project's
+  knowledge base, per your note at the start of this chat). Assembled
+  from many overlapping search results rather than read as one file,
+  so: do a quick diff against your actual canonical copy before
+  committing this over it, in case anything from a very recent local
+  edit wasn't surfaced by search. Delete this comment once verified.
+-->
+
 # Unity Provisions Website — Master Roadmap
 
 The single source of truth for this project. A new session should be
@@ -32,13 +42,21 @@ then Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
 markers). Trust that over any summary, including this one, if they ever
 disagree.
 
-**Continue here:** Donate (`donate.astro`) is built and assembled (§9):
-`QRCodeDonate` (a real, decode-verified QR code + Zeffy fallback link)
-and `DocumentEmbed` (a direct embed of the org's real Google Sheet —
-confirmed by the project owner to be the actual Donation Tracker, §7/
-§10, resolved) are both in place. Next: the Cross-Cutting checklist
-(§9) — responsive check, accessibility pass, SEO, performance,
-cross-browser, comment cleanup — none of it started yet.
+**Continue here:** ContactForm (`ContactForm.astro`, Home) now submits
+via Formspree (§7/§10, resolved) — a real `fetch()` handler with
+success/error states, replacing the old no-op stub. 🔶
+`FORMSPREE_ENDPOINT` (in the component's `<script>`) is still a
+placeholder pending the project owner's Formspree account access —
+swap in the real value once available; until then the form no-ops
+with a `console.warn` instead of submitting anywhere. The reCAPTCHA
+placeholder box is removed — relying on Formspree's built-in spam
+filtering instead (§7/§10). Otherwise, Donate (`donate.astro`) is
+built and assembled (§9): `QRCodeDonate` (a real, decode-verified QR
+code + Zeffy fallback link) and `DocumentEmbed` (a direct embed of the
+org's real Google Sheet, §7/§10, resolved) are both in place. Next:
+the Cross-Cutting checklist (§9) — responsive check, accessibility
+pass, SEO, performance, cross-browser, comment cleanup — none of it
+started yet — plus swapping in the real Formspree endpoint above.
 
 **Keep this document concise.** One line per fact. A "why" only when it
 prevents a future mistake (e.g. "not `type=reset` — X would break Y"),
@@ -533,7 +551,7 @@ Status: ✅ Built · 📋 Planned
 **ContactForm** — ✅ Built
 - Props: `heading` · `subtext?`.
 - Fields: Name\* · Email\* · Message\* (textarea) · "Where did you hear
-  about us?" (optional text) · reCAPTCHA placeholder · Send.
+  about us?" (optional text) · Send.
 - No file attachment — removed. A public contact form has little real
   need for one, and an open upload endpoint is a real spam/malware
   surface; a Google Form or direct email is the safer path if a real
@@ -549,9 +567,20 @@ Status: ✅ Built · 📋 Planned
   / `button[type="button"]`), not a `Button` `id` prop (unsupported).
 - Email link now has a small `lucide:mail` icon next to it.
 - Real copy: see `index.astro`.
-- Open: submission backend (Formspree vs. Cloudflare Function) — markup
-  and validation complete, no handler wired; reCAPTCHA is a placeholder
-  pending the same decision.
+- Submission backend: ✅ resolved — Formspree (§10). Chosen over a
+  Cloudflare Function for zero backend code and no dependency on the
+  still-undecided Phase 6 hosting platform. `fetch()`-based AJAX submit
+  (no page reload); success swaps the form for a thank-you message +
+  Close button, error shows an inline `role="alert"` message with a
+  fallback to the direct email. Hidden `_subject` field gives the
+  notification email a clear subject line.
+- reCAPTCHA placeholder: removed — Formspree's built-in honeypot +
+  spam filtering is used instead; reCAPTCHA can be turned on later in
+  the Formspree dashboard with no code changes (§10).
+- 🔶 `FORMSPREE_ENDPOINT` (component `<script>`) is still a placeholder
+  value — swap in the real one once the project owner has Formspree
+  access; until then submissions no-op with a `console.warn` rather
+  than attempting a request (§2).
 
 **~~EmailSignup~~** — Built, then removed
 - Was a native mailing-list signup form. Removed: its destination
@@ -797,8 +826,8 @@ construction.
   already needs on this sheet (§10) — same blocker, one fix covers both.
 - `sheetEmbedUrl` hardcoded inside the component, not a prop — same
   reasoning as `QRCodeDonate`'s `donateUrl` (§7).
-- Superseded an earlier version of this component (embedUrl?
-  prop, ImpactStats-as-fallback) built before the real embed source was
+- Superseded an earlier version of this component (embedUrl? prop,
+  ImpactStats-as-fallback) built before the real embed source was
   confirmed — see §11's "never guess at an unconfirmed embed source"
   convention for why that approach was taken at the time.
 
@@ -813,31 +842,32 @@ Order: Hero → ImpactStats → MissionStatement → YouTubeEmbed →
 PartnersAndSupporters (brief) → GetInvolvedTeaser → ContactForm →
 DonateBanner.
 
-### About (`/about`)
+### About (`/about`) — ✅ Built
 The organization's full story.
 Order: founder story → ImpactStats (fuller) → PartnersAndSupporters
-(fuller) → Annual Report CTA (external link via `ExternalLinkCTA` or embedded PDF — decision + reasoning in §10) → link to Team.
+(fuller) → Annual Report CTA (external link via `ExternalLinkCTA` —
+decision + reasoning in §10) → link to Team.
 
 Founder story (real copy; pounds/dollar figures deliberately kept
 vague — "thousands" — with a pointer to the numbers below, rather than
 a hardcoded or synced figure — see §7): "Unity Provisions began with a
-simple but
-painful question: 'Is there dinner?' Growing up, our founder Ryan knew
-the silence of nights when food was uncertain. Later, while volunteering
-at a local food pantry, he saw firsthand how hunger hides behind quiet
-sacrifices—a mother choosing between diapers and oatmeal, neighbors
-masking need with a smile. When that pantry abruptly shut down in 2024,
-Ryan realized how fragile food programs could be. He founded Unity
-Provisions to build something that couldn't disappear overnight. What
-started with a single branch at Boston Latin School has grown into a
-youth-led network of **35+ branches across 8+ countries** (pulled
-dynamically from `stats.ts` via `getStatValue()`, not hardcoded — §7).
-Together, student leaders have collected thousands of pounds of food
-and clothing, raised thousands of dollars, and built partnerships with
-organizations like the Wang YMCA to sustain community-based donation
-centers — see the current numbers below. Our mission is to empower
-young people to fight hunger by creating and leading donation centers
-in their schools and communities."
+simple but painful question: 'Is there dinner?' Growing up, our
+founder Ryan knew the silence of nights when food was uncertain.
+Later, while volunteering at a local food pantry, he saw firsthand how
+hunger hides behind quiet sacrifices—a mother choosing between diapers
+and oatmeal, neighbors masking need with a smile. When that pantry
+abruptly shut down in 2024, Ryan realized how fragile food programs
+could be. He founded Unity Provisions to build something that
+couldn't disappear overnight. What started with a single branch at
+Boston Latin School has grown into a youth-led network of **35+
+branches across 8+ countries** (pulled dynamically from `stats.ts` via
+`getStatValue()`, not hardcoded — §7). Together, student leaders have
+collected thousands of pounds of food and clothing, raised thousands
+of dollars, and built partnerships with organizations like the Wang
+YMCA to sustain community-based donation centers — see the current
+numbers below. Our mission is to empower young people to fight hunger
+by creating and leading donation centers in their schools and
+communities."
 
 ### Team (`/team`) — ✅ Built
 `StaffGrid` of 8 real members (§7), under one `SectionHeading` ("Meet
@@ -847,13 +877,12 @@ on unityprovisions.org should be sourced from instead.
 
 ### Projects (`/projects`) — ✅ Built
 Page-level `h1` ("Our Projects") + two `ProjectSection`s — Relief
-Route (embedded interactive map +  + a "help
-us build this" CTA), then AgriScan (screenshot + a "help
-us build this" CTA, replacing the live site's embedded hiring form).
-Each project's white heading sits directly above its own sage content
-band — same heading/data split as About's ImpactStats/
-PartnersAndSupporters, not a per-project color alternation. Full
-reasoning in §7.
+Route (embedded interactive map + a "help us build this" CTA), then
+AgriScan (screenshot + a "help us build this" CTA, replacing the live
+site's embedded hiring form). Each project's white heading sits
+directly above its own sage content band — same heading/data split as
+About's ImpactStats/PartnersAndSupporters, not a per-project color
+alternation. Full reasoning in §7.
 
 ### Get Involved (`/get-involved`) — ✅ Built
 "The single, clear answer to how do I participate."
@@ -990,6 +1019,9 @@ simplification (§3), not a missed page.
   (`tiktok.com/@unityprovisionsboston`) · Linktree
   (`linktr.ee/UnityProvisions`)
 - Phone: `(857) 777-8811` (`tel:8577778811`)
+- Contact Form (Home) → submits via Formspree (§7, resolved); 🔶
+  `FORMSPREE_ENDPOINT` still a placeholder pending Formspree account
+  access.
 
 **Live-site content audit** — homepage sections that exist on
 unityprovisions.org but aren't (fully) covered in this revision yet,
@@ -1045,9 +1077,11 @@ adding and where, rather than rediscovering it from scratch.
   file swappable without a redeploy, and matches this project's
   existing pattern of external CTAs for participation (§3). See §7
   (Annual Report CTA entry) for the built version.
-- ContactForm submission backend: Formspree vs. Cloudflare Function.
-  Markup/validation done; only the real handler + reCAPTCHA widget
-  pending.
+- ContactForm submission backend: ✅ resolved — Formspree, chosen over
+  a Cloudflare Function for zero backend code and no dependency on the
+  still-undecided Phase 6 hosting platform (§7). 🔶 Still pending: the
+  project owner's Formspree account access — `FORMSPREE_ENDPOINT` in
+  `ContactForm.astro` is a placeholder until then (§2/§7).
 - Donation tracker embed shape: ✅ resolved. Confirmed by the project
   owner: the live site's "Donation Tracker" is the same Google Sheet
   `ImpactStats` already reads from — not a separate third-party
@@ -1219,7 +1253,9 @@ adding and where, rather than rediscovering it from scratch.
   an earlier version of `DocumentEmbed` (§7) before the project owner
   confirmed the real source directly; that confirmation superseded the
   fallback, but the principle still applies to any future
-  unconfirmed embed.
+  unconfirmed embed. The same principle was applied this session to
+  `ContactForm`'s Formspree endpoint (§2/§7/§10) — built as if real,
+  guarded against firing on the still-placeholder value.
 - When something is fully *derivable* from data already in the project
   (e.g. a QR code encoding a URL the project already has), generate it
   once and check it in as static output rather than treating it as a
