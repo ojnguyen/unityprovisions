@@ -137,6 +137,7 @@ src/
 ├── assets/
 │   ├── hero_image.jpg             — Hero's background photo (in use, index.astro)
 │   ├── ryan_nguyen.webp           — Founder photo (in use, about.astro)
+│   ├── biggest_event.webp         — "Our Biggest Event Yet" photo (in use, about.astro)
 │   ├── sodexo.jpg                 — Sodexo logo (in use, partners.ts)
 │   ├── ymca.jpg                   — Generic YMCA logo (in use, partners.ts — shared by Wang YMCA, Mystic Valley YMCA, and YMCA)
 │   ├── food4philly.jpg            — Food4Philly logo (in use, partners.ts)
@@ -242,8 +243,12 @@ deliberate, independent design decision; unityprovisions.org is out of
 scope as a color reference (§3).
 
 ### Typography
-`--font-display` / `--font-body`: both `system-ui`, pending real
-font-family values.
+`--font-display` / `--font-body`: both **Manrope Variable** (self-
+hosted via `@fontsource-variable/manrope`;`system-ui, sans-serif`
+fallback. One family for both, differentiated by weight rather than
+two typefaces — pairs cleanly with the Lucide icon set already used
+throughout, keeps font loading to a single variable-font file. ✅
+Resolved, no longer 🔶.
 
 | Token | Size | Use |
 |---|---|---|
@@ -271,7 +276,10 @@ overrides. Content max-width: `max-w-[90rem]` (1440px) — see
 ### Radius & Shadow
 `--radius-sm` (4px, inputs/small buttons) · `--radius-md` (8px, cards) ·
 `--radius-lg` (16px, hero/banner imagery). `--shadow-sm/md/lg` for
-elevation.
+elevation (0.06/0.08/0.12 alpha, increasing blur/spread). ✅ Resolved,
+no longer 🔶 — reviewed against actual usage across Card, Button,
+inputs, and Hero/DonateBanner imagery; values unchanged, just no
+longer flagged as guesses.
 
 ### Component Style Conventions
 - Buttons: primary (solid), secondary (outline), accent (solid, distinct
@@ -628,6 +636,29 @@ in this paragraph are pulled from `stats.ts` via `getStatValue()`
 (`utils/stats.ts`) — was hardcoded as "over 35 branches across
 multiple countries", now can't drift from `stats.ts`.
 
+**About's "Our Biggest Event Yet"** — built in `about.astro`, right
+after the founder story. Photo/prose layout mirrors the founder story
+above (no dedicated component — page-specific, used once, §2 process
+step 1). No icon badge — this section has its own visual anchor (the
+photo + prose), same §11 reasoning that rules a badge out for the
+founder story. Real copy: North Quincy branch collected and donated
+1,025 lbs of food to the Quincy Community Action Program, Dec 20, 2024
+— the largest single donation any branch has made to date (§10,
+live-site content audit, now addressed). ✅ Real photo in place:
+`src/assets/biggest_event.webp`, sized 600×400 (3:2) pending a look at
+the real crop — same pattern as `ryan_nguyen.webp`/`agriscan.webp`
+above. `loading="lazy"` (this section sits below the fold, unlike the
+founder photo above it).
+
+**About's 8-country caption** — a one-line caption under `ImpactStats`
+on `about.astro`, naming all 8 countries backing the "8+ countries"
+stat (US, Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England)
+— matches the live site's "Creating Opportunities" section (§10, now
+addressed). Not its own heading/section, no asymmetric-padding
+treatment — §11's asymmetric-padding rule is for a heading that
+introduces a full-bleed band; this is a trailing footnote on the band
+above it, not an introduction to what follows.
+
 **About's "Meet the Team" CTA** — built in `about.astro`, closing
 section: icon badge (`lucide:users`, same visual treatment as
 MissionStatement/GetInvolvedTeaser — see §11) + `SectionHeading` +
@@ -782,7 +813,7 @@ construction.
   once at authoring time by encoding `donateUrl` with a standard QR
   library (Python's `qrcode`, SVG output), decode-verified against the
   exact URL, then pasted in as static inline `<svg>` markup. Kept
-  static rather than adding a build-time npm dependency, since a
+  static rather than adding a build-time dependency, since a
   nonprofit's Zeffy campaign URL essentially never changes; regenerate
   and swap the `<path>` if it ever does. `fill` uses
   `--color-text-primary` (near-black) — dark enough to scan reliably
@@ -836,9 +867,10 @@ DonateBanner.
 
 ### About (`/about`) — ✅ Built
 The organization's full story.
-Order: founder story → ImpactStats (fuller) → PartnersAndSupporters
-(fuller) → Annual Report CTA (external link via `ExternalLinkCTA` —
-decision + reasoning in §10) → link to Team.
+Order: founder story → "Our Biggest Event Yet" → ImpactStats (fuller,
+with an 8-country caption) → PartnersAndSupporters (fuller) → Annual
+Report CTA (external link via `ExternalLinkCTA` — decision + reasoning
+in §10) → link to Team.
 
 Founder story (real copy; pounds/dollar figures deliberately kept
 vague — "thousands" — with a pointer to the numbers below, rather than
@@ -920,9 +952,9 @@ simplification (§3), not a missed page.
 
 ### Phase 4 — Shared Infrastructure (complete)
 - [x] Design Tokens
-- [~] Global Styles & Fonts (base styles shipped; real font-family
-      pending; palette fully redesigned across several sessions, still
-      🔶 as a deliberate design choice, not a live-site match — §6)
+- [x] Global Styles & Fonts (font, radius, and shadow tokens all
+      finalized — §6; palette fully redesigned across several
+      sessions, a deliberate design choice, not a live-site match)
 - [x] Utility Helpers
 - [x] UI Primitives: Button, SectionHeading, Card, ResponsiveImage,
       Container, ExternalLinkCTA
@@ -1018,17 +1050,16 @@ simplification (§3), not a missed page.
 **Live-site content audit** — homepage sections that exist on
 unityprovisions.org but aren't (fully) covered in this revision yet,
 confirmed via a live fetch this session (§3 — real-content check):
-- **"Our Biggest Event Yet"** — a single-event spotlight, not a running
-  stat: North Quincy branch collected and donated 1,025 lbs of food to
-  Quincy Community Action Program (Dec 20, 2024), with a photo. No
-  equivalent exists anywhere in this revision (Home, About, or
-  Projects) — needs a decision on where it'd live, plus a real photo
-  (§5 blocker: no project/event photography supplied yet).
+- **"Our Biggest Event Yet"** — ✅ addressed: placed on `about.astro`,
+  right after the founder story (§7/§8) — a concrete recent proof
+  point following naturally from the origin narrative, before the
+  page moves into aggregate numbers. ✅ Real photo now in place too
+  (§5, `biggest_event.webp`) — no longer blocked.
 - **"Creating Opportunities"** (live site's actual heading — not
-  "Created Opportunities") — the same 4 numbers already in `stats.ts`,
-  plus it names all 8 countries (US, Canada, India, UAE, Puerto Rico,
-  Pakistan, Morocco, England) — that list isn't captured anywhere in
-  this revision yet.
+  "Created Opportunities") — ✅ addressed: the 4 numbers were already
+  in `stats.ts`/`ImpactStats`; the 8-country list (US, Canada, India,
+  UAE, Puerto Rico, Pakistan, Morocco, England) is now a caption under
+  About's `ImpactStats` block (§7/§8).
 - **"Our Partners"** — same orgs already in `partners.ts` (Wang YMCA,
   Mystic Valley YMCA, Food4Philly). About's "fuller" pass (§7) now adds
   a group intro paragraph + a card grid, and real logos are now in
@@ -1038,9 +1069,8 @@ confirmed via a live fetch this session (§3 — real-content check):
 - **"Grants & Funding"** — ✅ addressed: `PartnersAndSupporters`'s
   "fuller" pass (§7) now renders an intro paragraph under "Supporters"
   explaining why the grants matter, same treatment as the live site.
-No action taken this session — logged so a future pass (a Home
-revisit, or while building About/Projects) can decide what's worth
-adding and where, rather than rediscovering it from scratch.
+Only "Our Partners"' per-org descriptions remain open, still blocked
+on verified per-org copy — logged so a future pass can pick it up.
 
 **Donate-page audit** — confirmed via live fetch while building
 `donate.astro` this session (§7 QRCodeDonate/DocumentEmbed):
