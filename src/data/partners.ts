@@ -1,10 +1,10 @@
 import type { Partner } from '@/types';
-import sodexoImage from '@assets/sodexo.jpg';
-import ymca from '@assets/ymca.jpg'
-import food4philly from '@assets/food4philly.jpg'
-import estherRSangerCenter from '@assets/esther_r_sanger_center.jpg'
-import walmart from '@assets/walmart.jpg'
-import google from '@assets/google.jpg'
+import sodexo from '@assets/partners-and-supporters/sodexo.jpg';
+import ymca from '@assets/partners-and-supporters/ymca.jpg';
+import food4philly from '@assets/partners-and-supporters/food4philly.jpg';
+import estherRSangerCenterForCompassion from '@assets/partners-and-supporters/esther-r-sanger-center-for-compassion.jpg';
+import walmart from '@assets/partners-and-supporters/walmart.jpg';
+import google from '@assets/partners-and-supporters/google.jpg';
 
 // Real partner and supporter organizations for Unity Provisions — see
 // project-roadmap.md §7 for source. Real logos are now in place for
@@ -17,10 +17,10 @@ export const partners: Partner[] = [
   { name: 'Wang YMCA', type: 'partner', logo: ymca },
   { name: 'Mystic Valley YMCA', type: 'partner', logo: ymca },
   { name: 'Food4Philly', type: 'partner', logo: food4philly },
-  { name: 'Esther R. Sanger Center for Compassion', type: 'supporter', logo: estherRSangerCenter },
+  { name: 'Esther R. Sanger Center for Compassion', type: 'supporter', logo: estherRSangerCenterForCompassion },
   { name: 'Stephen J. Brady Stop Hunger', type: 'supporter' },
   { name: 'YMCA', type: 'supporter', logo: ymca },
-  { name: 'Sodexo', type: 'supporter', logo: sodexoImage },
+  { name: 'Sodexo', type: 'supporter', logo: sodexo },
   { name: 'Walmart Spark Good', type: 'supporter', logo: walmart },
   { name: 'Google', type: 'supporter', logo: google },
 ];

@@ -1,15 +1,15 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import Container from '@components/ui/Container.astro';
-import SectionHeading from '@components/ui/SectionHeading.astro';
-import ResponsiveImage from '@components/ui/ResponsiveImage.astro';
-import ImpactStats from '@components/sections/ImpactStats.astro';
-import PartnersAndSupporters from '@components/sections/PartnersAndSupporters.astro';
-import ExternalLinkCTA from '@components/ui/ExternalLinkCTA.astro';
-import Button from '@components/ui/Button.astro';
+import Container from '@components/reusable/ui/Container.astro';
+import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
+import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
+import ImpactStats from '@components/reusable/sections/ImpactStats.astro';
+import PartnersAndSupporters from '@components/reusable/sections/PartnersAndSupporters.astro';
+import ExternalLinkCTA from '@components/reusable/ui/ExternalLinkCTA.astro';
+import Button from '@components/reusable/ui/Button.astro';
 import { Icon } from 'astro-icon/components';
-import ryanPhoto from '@assets/ryan_nguyen.webp';
-import bigEventPhoto from '@assets/biggest_event.webp';
+import ryanPhoto from '@assets/team/ryan-nguyen.webp';
+import bigEventPhoto from '@assets/projects-and-events/biggest-event.webp';
 import { stats } from '@data/stats';
 import { partners } from '@data/partners';
 import { getStatValue } from '@utils/stats';

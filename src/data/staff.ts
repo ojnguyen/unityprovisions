@@ -1,5 +1,5 @@
 import type { StaffMember } from '@/types';
-import ryanPhoto from '@assets/ryan_nguyen.webp';
+import ryanPhoto from '@assets/team/ryan-nguyen.webp';
 
 // Real Unity Provisions leadership roster — see project-roadmap.md §7
 // for source. No real headshots supplied yet (§5 asset blocker), so

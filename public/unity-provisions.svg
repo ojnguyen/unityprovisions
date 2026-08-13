@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Forest green background -->
+  <rect width="100" height="100" rx="16" fill="#355e3b"></rect>
+
+  <!-- Sage U -->
+  <path d="M28 28V55C28 68 36 76 50 76C64 76 72 68 72 55V28" stroke="#eef3ea" stroke-width="11" stroke-linecap="round"></path>
+
+  <!-- Terracotta leaf -->
+  <path d="M50 43
+       C50 29 59 19 74 18
+       C73 32 65 41 50 43Z" fill="#a8592b"></path>
+</svg>

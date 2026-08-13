@@ -1,0 +1,95 @@
+---
+import Container from '@components/reusable/ui/Container.astro';
+import Button from '@components/reusable/ui/Button.astro';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  headline: string;
+  tagline: string;
+  ctaLabel: string;
+  ctaHref: string;
+  /** Optional supporting line under the headline — one short sentence. */
+  subtext?: string;
+  /**
+   * Optional second, lower-emphasis action. Rendered as a white
+   * ghost/outline button, not `Button`'s `secondary` variant — that
+   * variant assumes a light page background (border-primary/
+   * text-primary), which would be invisible on a photo. Same reasoning
+   * DonateBanner uses for writing its own heading markup instead of
+   * reusing SectionHeading (§7).
+   */
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  /** Optional real photo for the hero background; falls back to a gradient. */
+  backgroundImage?: ImageMetadata;
+}
+
+const {
+  headline,
+  tagline,
+  ctaLabel,
+  ctaHref,
+  subtext,
+  secondaryCtaLabel,
+  secondaryCtaHref,
+  backgroundImage,
+} = Astro.props as Props;
+
+const hasSecondaryCta = Boolean(secondaryCtaLabel && secondaryCtaHref);
+---
+<div class="relative isolate overflow-hidden bg-text-primary">
+  {backgroundImage ? (
+    <div class="absolute inset-0 -z-10">
+      <Image
+        src={backgroundImage}
+        alt=""
+        width={1920}
+        height={1080}
+        loading="eager"
+        class="h-full w-full object-cover mask-y-from-accent"
+      />
+    </div>
+  ) : (
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-primary to-primary-hover">
+      <div class="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-white/10 blur-3xl"></div>
+      <div class="pointer-events-none absolute -right-16 bottom-0 h-96 w-96 rounded-full bg-accent/25 blur-3xl"></div>
+    </div>
+  )}
+
+  <Container as="section">
+    <div class="flex flex-col items-center gap-6 py-24 text-center md:py-32">
+      <p class="text-sm font-semibold uppercase tracking-wide text-white/80">
+        {tagline}
+      </p>
+      <!--
+        text-3xl only, no md: override — this design system's custom
+        --text-3xl (44px, see global.css) is already larger than
+        Tailwind's un-customized default text-4xl (36px), so a previous
+        "md:text-4xl" here was silently *shrinking* the headline on
+        desktop. Fixed by just not overriding it.
+      -->
+      <h1 class="max-w-3xl text-3xl font-bold text-white">
+        {headline}
+      </h1>
+      {subtext && (
+        <p class="max-w-xl text-lg text-white/85">
+          {subtext}
+        </p>
+      )}
+      <div class="flex flex-col items-center gap-3 sm:flex-row">
+        <Button href={ctaHref} variant="accent" size="lg">
+          {ctaLabel}
+        </Button>
+        {hasSecondaryCta && (
+          <a
+            href={secondaryCtaHref}
+            class="inline-flex items-center justify-center rounded-sm border border-white/70 px-6 py-3 text-lg font-medium text-white transition-colors duration-150 hover:bg-white/10"
+          >
+            {secondaryCtaLabel}
+          </a>
+        )}
+      </div>
+    </div>
+  </Container>
+</div>

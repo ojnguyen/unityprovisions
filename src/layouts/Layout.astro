@@ -1,7 +1,7 @@
 ---
 import "@styles/global.css";
-import Navbar from '@components/layout/Navbar.astro';
-import Footer from '@components/layout/Footer.astro';
+import Navbar from '@components/reusable/layout/Navbar.astro';
+import Footer from '@components/reusable/layout/Footer.astro';
 
 interface Props {
   title?: string;
@@ -26,7 +26,7 @@ const {
 
     <title>{title}</title>
 
-    <link rel="icon" href="/unity-provisions-icon.svg" />
+    <link rel="icon" href="/unity-provisions.svg" />
   </head>
 
   <body class="min-h-screen">

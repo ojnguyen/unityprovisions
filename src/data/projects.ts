@@ -1,5 +1,5 @@
 import type { Project } from '@/types';
-import agriscanImage from '@assets/agriscan.webp';
+import agriscanImage from '@assets/projects-and-events/agriscan.webp';
 
 // Real Unity Provisions projects. Copy is paraphrased from the live
 // site's dedicated Relief Route / AgriScan pages, not transcribed
