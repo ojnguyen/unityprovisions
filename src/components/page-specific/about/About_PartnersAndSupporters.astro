@@ -1,0 +1,31 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import PartnersAndSupporters from "@components/reusable/sections/PartnersAndSupporters.astro";
+
+import { partners } from "@data/partners";
+---
+
+<!-- [ABOUT] PARTNERS AND SUPPORTERS
+- Displays the organizations that support Unity Provisions, both through partnerships and funding.
+- 2 Sections:
+  1. Heading introducing the partners and supporters section.
+  2. The list of partners and supporters with their respective introductions.
+-->
+<Container as="section">
+  <div
+    class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6"
+  >
+    <SectionHeading
+      title="Who Helps Make This Possible"
+      subtext="The businesses, nonprofits, and community groups working alongside us."
+      align="center"
+    />
+  </div>
+</Container>
+
+<PartnersAndSupporters
+  partners={partners}
+  partnersIntro="These organizations give our branches space, logistics support, and guidance to keep donation centers running in their communities."
+  supportersIntro="Grants and funding from these organizations keep our donation centers stocked and help us open new branches where they're needed most."
+/>

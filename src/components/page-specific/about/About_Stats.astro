@@ -1,0 +1,38 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import ImpactStats from "@components/reusable/sections/ImpactStats.astro";
+
+import { stats } from "@data/stats";
+---
+
+<!--
+[ABOUT] STATS
+- Displays the key statistics for Unity Provisions, showing the impact of the organization across its branches worldwide.
+- 3 Sections: 
+  1. Heading introducing the statistics section.
+  2. The impact statistics themselves.
+  3. A caption listing the countries where Unity Provisions is active.
+-->
+<Container as="section">
+  <div
+    class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6"
+  >
+    <SectionHeading
+      title="The Numbers So Far"
+      subtext="Real numbers, updated live from branches around the world."
+      align="center"
+    />
+  </div>
+</Container>
+
+<ImpactStats stats={stats} />
+
+<Container as="section">
+  <div class="py-6 text-center md:py-8">
+    <p class="mx-auto max-w-2xl text-sm text-text-secondary">
+      Currently active in the United States, Canada, India, the UAE, Puerto
+      Rico, Pakistan, Morocco, and England.
+    </p>
+  </div>
+</Container>

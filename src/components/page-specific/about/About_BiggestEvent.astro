@@ -1,0 +1,45 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import ResponsiveImage from "@components/reusable/ui/ResponsiveImage.astro";
+
+import bigEventPhoto from "@assets/projects-and-events/biggest-event.webp";
+---
+
+<!--
+[ABOUT] BIGGEST EVENT
+- Highlights the North Quincy branch's December 2024 donation drive, the largest single donation by any Unity Provisions branch to date.
+-->
+<Container as="section">
+  <div class="flex flex-col gap-6 py-12 md:py-16">
+    <SectionHeading eyebrow="Recent Highlight" title="Our Biggest Event Yet" />
+
+    <div class="flex flex-col gap-8 md:flex-row md:items-start">
+      <div class="mx-auto w-full max-w-[400px] shrink-0 md:mx-0">
+        <ResponsiveImage
+          src={bigEventPhoto}
+          alt="Photo from the North Quincy branch's December 2024 donation drive for the Quincy Community Action Program"
+          width={600}
+          height={400}
+          radius="md"
+        />
+        <p class="mt-3 text-center text-sm text-text-secondary md:text-left">
+          North Quincy branch, December 2024
+        </p>
+      </div>
+
+      <div class="flex max-w-2xl flex-col gap-4 text-lg text-text-secondary">
+        <p>
+          In December 2024, our North Quincy branch collected and donated 1,025
+          pounds of food to the Quincy Community Action Program — the single
+          largest donation any Unity Provisions branch has made to date.
+        </p>
+        <p>
+          It's a snapshot of what one branch, and one determined group of
+          students, can do — and a preview of what's possible as more branches
+          like it open around the world.
+        </p>
+      </div>
+    </div>
+  </div>
+</Container>
