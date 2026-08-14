@@ -1,33 +1,11 @@
 ---
-import Layout from '@layouts/Layout.astro';
-import Container from '@components/reusable/ui/Container.astro';
-import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
-import StaffGrid from '@components/reusable/staff/StaffGrid.astro';
-import { staff } from '@data/staff';
+import Layout from "@layouts/Layout.astro";
+import TeamHeading from "@components/page-specific/team/Team_Heading.astro";
 ---
 
 <Layout
   title="Team — Unity Provisions"
   description="Meet the student leaders running Unity Provisions' branches, events, and operations."
 >
-  <!--
-    Heading + StaffGrid live inside one Container/section, not split
-    into a separate heading block above a full-bleed band — StaffGrid
-    has no wrapping bg-surface div, so it isn't a full-bleed band and
-    the §11 asymmetric-padding rule doesn't apply here. Same reasoning
-    rules out an icon badge above this heading: that convention (§11)
-    is reserved for a bare heading with no other visual anchor, and
-    the 8-card grid right below already is one.
-  -->
-  <Container as="section">
-    <div class="flex flex-col items-center gap-8 py-12 text-center md:py-16">
-      <SectionHeading
-        as="h1"
-        title="Meet the Team"
-        subtext="The students leading branches, planning events, and keeping Unity Provisions moving forward — one donation center at a time."
-        align="center"
-      />
-      <StaffGrid members={staff} />
-    </div>
-  </Container>
+  <TeamHeading />
 </Layout>

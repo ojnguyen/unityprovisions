@@ -1,30 +1,17 @@
 ---
-import Layout from '@layouts/Layout.astro';
-import Container from '@components/reusable/ui/Container.astro';
-import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
-import QRCodeDonate from '@components/reusable/donate/QRCodeDonate.astro';
-import DocumentEmbed from '@components/reusable/donate/DocumentEmbed.astro';
+import Layout from "@layouts/Layout.astro";
+import QRCodeDonate from "@components/reusable/donate/QRCodeDonate.astro";
+import DocumentEmbed from "@components/reusable/donate/DocumentEmbed.astro";
+import WhiteSpace from "@components/reusable/ui/WhiteSpace.astro";
+
+import DonateHeading from "@components/page-specific/donate/Donate_Heading.astro";
 ---
 
 <Layout
   title="Donate — Unity Provisions"
   description="Support Unity Provisions and see exactly where your gift goes."
 >
-  <!--
-    Page-level h1, same pattern as Projects/Get Involved (§6: exactly
-    one h1 per page) — QRCodeDonate and DocumentEmbed each render their
-    own h2 below.
-  -->
-  <Container as="section">
-    <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
-      <SectionHeading
-        as="h1"
-        title="Donate"
-        subtext="Every gift helps a branch open its doors and keep its shelves stocked — and here's exactly where it goes."
-        align="center"
-      />
-    </div>
-  </Container>
+  <DonateHeading />
 
   <QRCodeDonate
     heading="Give"
@@ -37,9 +24,5 @@ import DocumentEmbed from '@components/reusable/donate/DocumentEmbed.astro';
     subtext="Every donation and pound collected, tracked in real time and open for anyone to see."
   />
 
-  <!--
-    Plain white spacer — DocumentEmbed now ends on its own sage embed
-    band, and Footer is sage too (project-roadmap.md §11).
-  -->
-  <div class="py-12 md:py-16"></div>
+  <WhiteSpace />
 </Layout>

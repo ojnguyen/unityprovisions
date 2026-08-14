@@ -1,0 +1,31 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import ExternalLinkCTA from "@components/reusable/ui/ExternalLinkCTA.astro";
+import { Icon } from "astro-icon/components";
+import { contactListFormUrl } from "@data/footer";
+---
+
+<!--
+[GET-INVOLVED] CONTACT LIST
+- Renders the Contact List section for the Get Involved page, including the heading, subtext, and CTA for joining the email list.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+    <span
+      class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"
+    >
+      <Icon name="lucide:mail" aria-hidden="true" class="h-6 w-6" />
+    </span>
+    <SectionHeading
+      title="Stay Connected"
+      subtext="Join our email list to hear about new branches, events, and ways to help — no commitment required."
+      align="center"
+    />
+    <ExternalLinkCTA
+      label="Join Our Email List"
+      href={contactListFormUrl}
+      icon="lucide:arrow-up-right"
+    />
+  </div>
+</Container>

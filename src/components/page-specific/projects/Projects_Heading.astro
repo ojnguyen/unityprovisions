@@ -1,0 +1,19 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+---
+
+<!--
+[PROJECTS] HEADING
+- Renders the main heading for the Projects page, providing context for the sections below.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+    <SectionHeading
+      as="h1"
+      title="Our Projects"
+      subtext="Two tools in progress: an interactive map to help people find food resources, and a low-cost way to help them grow more of their own."
+      align="center"
+    />
+  </div>
+</Container>

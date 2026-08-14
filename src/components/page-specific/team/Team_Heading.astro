@@ -1,0 +1,22 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import StaffGrid from "@components/reusable/staff/StaffGrid.astro";
+import { staff } from "@data/staff";
+---
+
+<!--
+[TEAM] HEADING
+- Displays the heading for the team page, introducing the student leaders and the staff grid below.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-8 py-12 text-center md:py-16">
+    <SectionHeading
+      as="h1"
+      title="Meet the Team"
+      subtext="The students leading branches, planning events, and keeping Unity Provisions moving forward — one donation center at a time."
+      align="center"
+    />
+    <StaffGrid members={staff} />
+  </div>
+</Container>

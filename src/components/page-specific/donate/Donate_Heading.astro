@@ -1,0 +1,19 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+---
+
+<!--
+[DONATE] HEADING
+- Renders the heading section for the Donate page, including the main title and subtext.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+    <SectionHeading
+      as="h1"
+      title="Donate"
+      subtext="Every gift helps a branch open its doors and keep its shelves stocked — and here's exactly where it goes."
+      align="center"
+    />
+  </div>
+</Container>

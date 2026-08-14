@@ -1,0 +1,62 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import ExternalLinkCTA from "@components/reusable/ui/ExternalLinkCTA.astro";
+import { Icon } from "astro-icon/components";
+import { getStatValue } from "@utils/stats";
+
+// Pulled from stats.ts using getStatValue()
+const branchCount = getStatValue("branches"); // "35+"
+const countryCount = getStatValue("countries"); // "8+"
+
+// Branch Founder support list (a list of support items for branch founders)
+const branchFounderSupport = [
+  "Help getting approval from your school or community",
+  "Guidance for planning and running events",
+  "Access to reimbursements through our YMCA partnership",
+  "Ready-to-use promotional materials and planning tools",
+  "Opportunities for funding to grow your ideas",
+];
+---
+
+<!--
+[GET-INVOLVED] BRANCH FOUNDER
+- Renders the Branch Founder section for the Get Involved page, including the heading, checklist, paragraph with branch/country counts, and CTA.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-8 py-12 text-center md:py-16">
+    <SectionHeading
+      eyebrow="Branch Founder"
+      title="Turn Your Passion Into Impact"
+      align="center"
+    />
+
+    <ul class="flex w-full max-w-2xl flex-col gap-3 text-left">
+      {
+        branchFounderSupport.map((item) => (
+          <li class="flex items-start gap-3 text-lg text-text-secondary">
+            <Icon
+              name="lucide:check"
+              aria-hidden="true"
+              class="mt-1 h-5 w-5 shrink-0 text-primary"
+            />
+            <span>{item}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="max-w-2xl text-lg text-text-secondary">
+      You won't be building this alone — you'll be joining a global network of {
+        branchCount
+      } branches across {countryCount}
+      countries, all working toward the same mission.
+    </p>
+
+    <ExternalLinkCTA
+      label="Apply"
+      href="https://forms.gle/qfwhsPP61RrAd1cW7"
+      icon="lucide:arrow-up-right"
+    />
+  </div>
+</Container>

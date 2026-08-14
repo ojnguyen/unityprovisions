@@ -1,0 +1,19 @@
+---
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+---
+
+<!--
+[GET-INVOLVED] HEADING
+- Renders the heading section for the Get Involved page, including the main title and subtext.
+-->
+<Container as="section">
+  <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
+    <SectionHeading
+      as="h1"
+      title="Get Involved"
+      subtext="Whatever your time and skills allow, there's a place for you in the fight against hunger."
+      align="center"
+    />
+  </div>
+</Container>
