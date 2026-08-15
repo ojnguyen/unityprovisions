@@ -207,7 +207,7 @@ src/
 │       │   ├── About_Stats.astro                   ✅ ImpactStats + 8-country caption
 │       │   ├── About_PartnersAndSupporters.astro   ✅
 │       │   ├── About_AnnualReport.astro            ✅
-│       │   └── About_Team.astro                    ✅ — now wired in, closing section (§7/§8)
+│       │   └── About_Team.astro                    ✅ closing section (§7/§8)
 │       ├── team/
 │       │   └── Team_Heading.astro                  ✅ heading + StaffGrid
 │       ├── projects/
@@ -411,10 +411,10 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   inference). Matches exact label text `"Total (lbs)"`/`"Money
   Collected ($)"` in column B; falls back to `stats.ts` + a
   `console.warn` if unreachable/unshared. 🔶 Blocker: sheet needs
-  "Anyone with the link – Viewer" sharing (§10). Live homepage (checked
-  this sync) reports 6,180+ lbs / $21,376+ / 35+ branches / 8 countries
-  — behind `stats.ts`'s fallback values; not manually synced, since the
-  sheet is the intended source of truth once shared correctly.
+  "Anyone with the link – Viewer" sharing (§10). Live homepage reports
+  6,180+ lbs / $21,376+ / 35+ branches / 8 countries — behind
+  `stats.ts`'s fallback values; not manually synced, since the sheet is
+  the intended source of truth once shared correctly.
 - **MissionStatement** — `heading`, `body`(required), `icon?`. Real
   copy verified word-for-word against the live site's "Our Mission"
   section — exact match.
@@ -457,7 +457,7 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 - **StaffCard/StaffGrid** — `StaffMember` (`name/role` required,
   `email?/photo?`); `members: StaffMember[]`. `photo` optional — falls
   back to a placeholder avatar (`lucide:user`, 160×160) when unset.
-  Ryan Nguyen now has a real photo; the other 7 don't yet. Card
+  Ryan Nguyen has a real photo; the other 7 don't yet. Card
   `bg="surface"`. Email renders as a visible `mailto:` link with a small
   `lucide:mail` icon, same treatment as About's contact email and
   Footer's phone link. Grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`,
@@ -491,8 +491,7 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 
 ### Page-Specific — `src/components/page-specific/`
 
-Used exactly once each; doesn't isolate a reusable concern. Previously
-lived as inline page content — now split into their own files.
+Used exactly once each; doesn't isolate a reusable concern.
 
 **about/**
 - **About_Heading** — the founder story: h1 "Is There Dinner?" (eyebrow
@@ -512,9 +511,8 @@ lived as inline page content — now split into their own files.
   download, and HTTPS/header quirks or browser updates can silently
   break the embed. A plain link avoids all of that and keeps the file
   swappable without a redeploy.
-- **About_Team** — ✅ now wired into `about.astro` as the page's closing
-  section. Icon badge + `SectionHeading` ("Meet the People Behind It")
-  + `Button` → `/team`.
+- **About_Team** — closing section of `about.astro`. Icon badge +
+  `SectionHeading` ("Meet the People Behind It") + `Button` → `/team`.
 
 **team/**
 - **Team_Heading** — h1 "Meet the Team" + `StaffGrid`.
@@ -553,8 +551,6 @@ in `index.astro` — no page-specific folder.
 ### About (`/about`) — ✅
 `About_Heading` (founder story) → `About_BiggestEvent` → `About_Stats`
 → `About_PartnersAndSupporters` → `About_AnnualReport` → `About_Team`.
-`About_Team` was built but initially left unwired — now included as
-the closing section (§2/§7).
 
 ### Team (`/team`) — ✅
 `Team_Heading` — h1 + `StaffGrid` of 8 real members.
@@ -602,11 +598,11 @@ pages into one (§3).
     - [x] DonateBanner
     - [x] Assemble `index.astro`
 - [x] **2. About** (`about.astro`):
-    - [x] Founder story section (now `About_Heading.astro`)
-    - [x] ImpactStats, reused (now `About_Stats.astro`)
-    - [x] PartnersAndSupporters, reused (now `About_PartnersAndSupporters.astro`)
-    - [x] Annual Report reference (now `About_AnnualReport.astro`)
-    - [x] Team link (now `About_Team.astro` — wired in this sync)
+    - [x] `About_Heading.astro` — founder story
+    - [x] `About_Stats.astro` — ImpactStats
+    - [x] `About_PartnersAndSupporters.astro`
+    - [x] `About_AnnualReport.astro`
+    - [x] `About_Team.astro` — Team link
     - [x] Assemble `about.astro`
 - [x] **3. Team** (`team.astro`):
     - [x] StaffCard
@@ -624,10 +620,6 @@ pages into one (§3).
     - [x] QRCodeDonate
     - [x] DocumentEmbed
     - [x] Assemble `donate.astro`
-
-Restructured into `reusable/`+`page-specific/` since initial build
-(§5) — the checklist above tracks the same underlying work, now living
-in different files.
 
 ### Cross-Cutting (every page) — not started
 - [ ] Responsive check at each breakpoint
