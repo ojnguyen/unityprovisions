@@ -1,8 +1,10 @@
 ---
 import { cn } from '@utils/cn';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   as?: 'h1' | 'h2' | 'h3';
+  icon?: string;
   eyebrow?: string;
   title: string;
   subtext?: string;
@@ -10,8 +12,9 @@ interface Props {
 }
 
 // as: HeadingTag renames the "as" prop to "HeadingTag" for clarity; <HeadingTag> will be used in the JSX below to render the appropriate heading level.
-const { 
+const {
     as: HeadingTag = 'h2',
+    icon,
     eyebrow,
     title,
     subtext,
@@ -24,19 +27,40 @@ const headingSizes: Record<'h1' | 'h2' | 'h3', string> = {
   h3: 'text-xl',
 };
 
-const wrapperClasses = cn(
-  'flex flex-col gap-2',
-  align === 'center' ? 'items-center text-center' : 'items-start text-left'
-);
+// Shared between both wrapper levels below so the icon badge and the
+// eyebrow/title/subtext text both align the same way — matches how
+// every icon-badge section already behaved before this was centralized
+// here (see project-roadmap.md §7).
+const alignClasses = align === 'center' ? 'items-center text-center' : 'items-start text-left';
+
+// Outer wrapper: icon badge (if any) sits above the text group, with a
+// bigger gap (gap-6) than the tight gap-2 within the text group itself
+// — same two-tier spacing every icon-badge section already used before
+// this moved here. When icon is omitted, this wrapper has exactly one
+// child (the text group div below), so gap-6 has nothing to apply
+// between and produces no visible spacing — output is unchanged for
+// every pre-existing non-icon caller of this component.
+const wrapperClasses = cn('flex flex-col gap-6', alignClasses);
+
+// Inner wrapper: the original eyebrow/title/subtext group, functionally
+// unchanged from before this component had icon support.
+const textGroupClasses = cn('flex flex-col gap-2', alignClasses);
 
 const headingClasses = cn('font-bold text-text-primary', headingSizes[HeadingTag]);
 ---
 <div class={wrapperClasses}>
-  {eyebrow && (
-    <p class="text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>
+  {icon && (
+    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <Icon name={icon} aria-hidden="true" class="h-6 w-6" />
+    </span>
   )}
-  <HeadingTag class={headingClasses}>{title}</HeadingTag>
-  {subtext && (
-    <p class="text-lg text-text-secondary max-w-2xl">{subtext}</p>
-  )}
+  <div class={textGroupClasses}>
+    {eyebrow && (
+      <p class="text-sm font-semibold uppercase tracking-wide text-primary">{eyebrow}</p>
+    )}
+    <HeadingTag class={headingClasses}>{title}</HeadingTag>
+    {subtext && (
+      <p class="text-lg text-text-secondary max-w-2xl">{subtext}</p>
+    )}
+  </div>
 </div>

@@ -50,7 +50,12 @@ blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* accessibility (input
+the current next step only, not a history):* apply the icon-badge
+architecture change — `SectionHeading.astro` (new `icon?` prop),
+`MissionStatement.astro`, `GetInvolvedTeaser.astro`, `About_Team.astro`,
+`Get-Involved_ContactList.astro`, and `index.astro` (Get Involved's
+icon changed to `lucide:handshake`) — see §6/§7. Delivered as files,
+not yet confirmed applied to the actual repo. Accessibility (input
 border contrast) and SEO (OG tags/canonical URL) fixes are applied —
 see §6/§9. Responsive check, Performance check, and Cross-browser spot
 check all still need a live or dev-server URL to test against — none
@@ -327,7 +332,12 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   heading+subtext+button sections with **no other visual anchor**
   (MissionStatement, GetInvolvedTeaser, About's Team CTA, Get Involved's
   Stay Connected). Sections with their own anchor (photo, band,
-  checklist, grid) skip the badge.
+  checklist, grid) skip the badge. Each section's icon should be
+  distinct from every other section's — a repeated icon reads as those
+  two sections being related when they aren't. Current assignments:
+  `lucide:heart` (Our Mission), `lucide:handshake` (Get Involved),
+  `lucide:users` (Meet the People Behind It), `lucide:mail` (Stay
+  Connected). Check this list before adding a new icon-badge section.
 - `SectionHeading`'s `eyebrow` is opt-in — only when it adds real
   information the title doesn't already carry. The founder story's "Our
   Story" and Get Involved's "Branch Founder" eyebrows are the
@@ -366,9 +376,17 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   `size?: sm|md|lg`(md), `href?`, `type?`(button), `target?/rel?`.
   `<a>` if `href` set, else `<button>`. No `type="reset"`/`id` —
   components needing one instance use `querySelector` (see ContactForm).
-- **SectionHeading** — `as?`(h2), `eyebrow?`, `title`(required),
+- **SectionHeading** — `as?`(h2), `icon?`, `eyebrow?`, `title`(required),
   `subtext?`, `align?`(left). Text colors hardcoded — components on
-  colored backgrounds write custom heading markup instead.
+  colored backgrounds write custom heading markup instead. Renders the
+  circular icon badge (§6) internally when `icon` is passed — this
+  replaced 4 separate hand-rolled copies of the same badge markup
+  (`MissionStatement`, `GetInvolvedTeaser`, `About_Team`,
+  `Get-Involved_ContactList`, all below), which now just forward `icon`
+  through instead. Two nested wrappers internally: the icon sits above
+  an inner `eyebrow`/`title`/`subtext` group, so the badge gets its own
+  larger gap without disturbing the tighter spacing between the text
+  elements. Omitting `icon` renders identically to before this existed.
 - **Card** — `padding?`(md), `bg?: surface|bg`(surface). No `class`
   pass-through — wrap in an outer `<div>` for width constraints.
 - **ResponsiveImage** — wraps `astro:assets`'s `<Image/>`. `src`,
@@ -418,9 +436,9 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   6,180+ lbs / $21,376+ / 35+ branches / 8 countries — behind
   `stats.ts`'s fallback values; not manually synced, since the sheet is
   the intended source of truth once shared correctly.
-- **MissionStatement** — `heading`, `body`(required), `icon?`. Real
-  copy verified word-for-word against the live site's "Our Mission"
-  section — exact match.
+- **MissionStatement** — `heading`, `body`(required), `icon?` (forwarded
+  straight to `SectionHeading`, §7). Real copy verified word-for-word
+  against the live site's "Our Mission" section — exact match.
 - **YouTubeEmbed** — `videoId`, `title` (both required). Click-to-load
   facade (thumbnail + play button) — nothing from YouTube loads until
   clicked, then swaps in a real `youtube-nocookie.com` iframe (avoids
@@ -434,8 +452,11 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   Home's compact badge row into About's fuller card-grid treatment.
   Full-bleed sage band. Verified against live site: partner/supporter
   lists match `partners.ts`.
-- **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`.
-  `href="/get-involved"` hardcoded, `variant="primary"`.
+- **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`
+  (forwarded to `SectionHeading`, §7). `href="/get-involved"`
+  hardcoded, `variant="primary"`. Home passes `lucide:handshake`,
+  distinct from `About_Team`'s `lucide:users` — see the distinct-icon
+  rule in §6.
 - **ContactForm** — `heading`, `subtext?`. Fields: Name*/Email*/
   Message*/optional "where'd you hear about us"/Send. No file
   attachment (spam/security surface for a small org). Collapsed behind
@@ -514,8 +535,9 @@ Used exactly once each; doesn't isolate a reusable concern.
   download, and HTTPS/header quirks or browser updates can silently
   break the embed. A plain link avoids all of that and keeps the file
   swappable without a redeploy.
-- **About_Team** — closing section of `about.astro`. Icon badge +
-  `SectionHeading` ("Meet the People Behind It") + `Button` → `/team`.
+- **About_Team** — closing section of `about.astro`. `SectionHeading`
+  (`icon="lucide:users"`, "Meet the People Behind It") + `Button` →
+  `/team`.
 
 **team/**
 - **Team_Heading** — h1 "Meet the Team" + `StaffGrid`.
@@ -528,10 +550,11 @@ Used exactly once each; doesn't isolate a reusable concern.
 - **Get-Involved_BranchFounder** — eyebrow "Branch Founder", title
   "Turn Your Passion Into Impact", 5-item checklist, global-network
   paragraph (counts via `getStatValue()`), Apply CTA → Google Form.
-- **Get-Involved_ContactList** — icon badge + heading + subtext + "Join
-  Our Email List" CTA → `contactListFormUrl` (same form as Footer).
-  Renamed from "Volunteer" — the form is a general contact-list signup,
-  not volunteer-specific, and the old label overpromised.
+- **Get-Involved_ContactList** — `SectionHeading` (`icon="lucide:mail"`)
+  + heading + subtext + "Join Our Email List" CTA →
+  `contactListFormUrl` (same form as Footer). Renamed from "Volunteer"
+  — the form is a general contact-list signup, not volunteer-specific,
+  and the old label overpromised.
 
 **donate/**
 - **Donate_Heading** — h1 "Donate" + subtext.

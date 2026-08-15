@@ -2,7 +2,6 @@
 import Container from "@components/reusable/ui/Container.astro";
 import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
 import Button from "@components/reusable/ui/Button.astro";
-import { Icon } from "astro-icon/components";
 ---
 
 <!-- [ABOUT] TEAM
@@ -10,12 +9,8 @@ import { Icon } from "astro-icon/components";
 -->
 <Container as="section">
   <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
-    <span
-      class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"
-    >
-      <Icon name="lucide:users" aria-hidden="true" class="h-6 w-6" />
-    </span>
     <SectionHeading
+      icon="lucide:users"
       title="Meet the People Behind It"
       subtext="The students leading branches, running events, and keeping this whole thing moving."
       align="center"
