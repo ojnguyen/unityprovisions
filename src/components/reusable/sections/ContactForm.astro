@@ -15,8 +15,14 @@ interface Props {
 // component. Real copy is supplied by index.astro at assembly time.
 const { heading, subtext } = Astro.props as Props;
 
+// border-border-interactive (not border-border) + bg-bg (not bg-surface):
+// --color-border only clears ~1.2-1.35:1 against bg/surface, well under
+// WCAG 1.4.11's 3:1 minimum for interactive-element boundaries, and a
+// bg-surface input inside this panel's bg-surface Card had no fill
+// contrast against its own container either. See global.css and
+// project-roadmap.md §6/§9 for the audit that found this.
 const inputClasses = cn(
-  'w-full rounded-sm border border-border bg-surface px-3 py-2 text-base text-text-primary'
+  'w-full rounded-sm border border-border-interactive bg-bg px-3 py-2 text-base text-text-primary'
 );
 
 const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primary';

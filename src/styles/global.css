@@ -20,6 +20,15 @@
  * instead. unityprovisions.org remains the reference for content,
  * copy, and facts (§3) — just not for color.
  *
+ * --color-border-interactive: added for WCAG 1.4.11 (non-text
+ * contrast) — --color-border alone is only ~1.2–1.35:1 against bg/
+ * surface, well under the 3:1 required for interactive-element
+ * boundaries like form inputs. This token is a darker value in the
+ * same sage-gray family that clears 3:1 against both. Use it for
+ * anything interactive (inputs, selects, textareas); keep plain
+ * --color-border for purely decorative dividers/frames (Card edges,
+ * image borders), which aren't subject to 1.4.11.
+ *
  * Font: Manrope, self-hosted via @fontsource-variable/manrope — run
  * `npm install @fontsource-variable/manrope` before this will build.
  * One family for both display and body, differentiated by weight
@@ -57,7 +66,8 @@
   --color-accent: #a8592b;          /* deep terracotta, ~5:1 vs white text */
   --color-accent-hover: #79401f;    /* same ~28% darken ratio as primary→primary-hover; ~8:1 vs white text */
 
-  --color-border: #d7e1d1;          /* soft sage-gray, matches the surface tone */
+  --color-border: #d7e1d1;          /* soft sage-gray, matches the surface tone — decorative only, ~1.2-1.35:1, not WCAG-1.4.11-safe */
+  --color-border-interactive: #729266; /* darker sage-green — 3.49:1 vs bg, 3.10:1 vs surface, clears WCAG 1.4.11 */
   --color-success: #2f7d4f;
   --color-error: #b3413b;
 

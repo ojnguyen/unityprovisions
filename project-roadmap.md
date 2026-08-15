@@ -50,12 +50,13 @@ blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* 🔶 `ContactForm.astro`'s
-`FORMSPREE_ENDPOINT` is a placeholder, blocked on the project owner's
-Formspree account access (§7/§10) — swap in the real value once
-available. Otherwise, next up is the Cross-Cutting checklist (§9) —
-responsive check, accessibility pass, SEO, performance, cross-browser,
-comment cleanup — none of it started yet.
+the current next step only, not a history):* accessibility (input
+border contrast) and SEO (OG tags/canonical URL) fixes are applied —
+see §6/§9. Responsive check, Performance check, and Cross-browser spot
+check all still need a live or dev-server URL to test against — none
+of that's possible from this environment. Separately:
+`ContactForm.astro`'s `FORMSPREE_ENDPOINT` is still a placeholder,
+blocked on the project owner's Formspree account access (§7/§10).
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -107,8 +108,7 @@ comment cleanup — none of it started yet.
 - Tailwind CSS v4, CSS-first (`@theme` in `global.css`; no
   `tailwind.config.mjs`; `@tailwindcss/vite` in `astro.config.mjs`).
 - Integrations: `sitemap()`, `mdx()`, `astro-icon()`. Icons: Lucide +
-  Simple Icons via astro-icon — used across most sections now, not
-  just Navbar/Footer.
+  Simple Icons via astro-icon, used across most sections.
 - Path aliases (`tsconfig.json`): `@components/*`, `@layouts/*`,
   `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, `@/types`. No
   `baseUrl` (deprecated in TS 6.0) — every alias has its own
@@ -347,8 +347,11 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
 - Mobile nav: full keyboard operability + correct focus management.
 - Viewport meta includes `initial-scale=1` — required for `md:`
   breakpoints to behave correctly on real phones.
-- Contrast spot-checked ad hoc during palette work so far — full
-  systematic pass still open (§9).
+- Contrast: full systematic pass done (audit doc), every real text
+  combination clears WCAG AA (most AAA). `ContactForm`'s inputs use
+  `--color-border-interactive` (`#729266`) and `bg-bg` — a separate
+  token from the decorative `--color-border`, since interactive-element
+  boundaries need 3:1 contrast under WCAG 1.4.11.
 
 ---
 
@@ -375,10 +378,10 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 - **ExternalLinkCTA** — wraps `Button`, hardcodes
   `target="_blank" rel="noopener noreferrer"`. `label`, `href`, `icon?`.
   Reserved for isolated CTAs, not dense link rows.
-- **WhiteSpace** — `<div class="py-12 md:py-16">`. Formalizes what was
-  previously a copy-pasted inline spacer; used when a page's last
-  section is sage so it doesn't merge into Footer's sage (Projects,
-  Donate use it; About and Get Involved don't need it — both end white).
+- **WhiteSpace** — `<div class="py-12 md:py-16">`. Used when a page's
+  last section is sage so it doesn't merge into Footer's sage
+  (Projects, Donate use it; About and Get Involved don't need it —
+  both end white).
 
 **layout/**
 - **Navbar** — 6 nav items + orgName. Separate desktop/mobile `<ul>` —
@@ -621,14 +624,18 @@ pages into one (§3).
     - [x] DocumentEmbed
     - [x] Assemble `donate.astro`
 
-### Cross-Cutting (every page) — not started
-- [ ] Responsive check at each breakpoint
-- [ ] Accessibility pass (contrast spot-checked ad hoc so far — full
-      systematic pass still open)
-- [ ] SEO (title, meta description, OG tags, canonical URL, heading
-      hierarchy, alt text)
-- [ ] Performance check (image optimization, Lighthouse)
-- [ ] Cross-browser spot check
+### Cross-Cutting (every page) — in progress
+- [x] Accessibility pass — contrast is a full systematic check (§6,
+      `accessibility-seo-audit.md`). Keyboard/screen-reader walkthroughs
+      still need a live URL — not part of this item.
+- [x] SEO (title, meta description, OG tags, canonical URL, heading
+      hierarchy, alt text) — all in place; `Layout.astro` sets the OG
+      tags, Twitter Card tags, and canonical URL.
+- [ ] Responsive check at each breakpoint — needs a live/dev-server URL
+- [ ] Performance check (image optimization, Lighthouse) — no
+      anti-patterns found in code; real Lighthouse run needs a
+      live/dev-server URL
+- [ ] Cross-browser spot check — needs a live/dev-server URL
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
@@ -733,9 +740,8 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
   fabricated one is worse than no embed at all. Build the component to
   accept it as an optional prop and fall back to something real and
   verifiable in the meantime, not a placeholder box or a guessed URL.
-  Applied previously to `DocumentEmbed` (before the real source was
-  confirmed) and to `ContactForm`'s Formspree endpoint (built as if
-  real, guarded against firing on the still-placeholder value).
+  `ContactForm`'s Formspree endpoint follows this: built as if real,
+  guarded against firing on the still-placeholder value.
 - When something is fully derivable from data already in the project
   (e.g. a QR code from a known URL), generate it once, check it in as
   static output, and verify it round-trips — don't wait on a supplied
