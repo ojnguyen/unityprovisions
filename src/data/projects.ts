@@ -27,7 +27,7 @@ export const projects: Project[] = [
   {
     title: 'Relief Route',
     description:
-      "Relief Route is an interactive map that surfaces donation centers, food banks, and other food resources that are easy to miss — including hours and what each location currently needs most. It's still being built, with the goal of making it simpler for people to find real help nearby.",
+      "Relief Route is an interactive map designed to make food resources easier to find. It brings together donation centers, food banks, and other community resources that can be difficult to discover, along with information such as hours and current donation needs. Relief Route is still in development. Our goal is to make it easier for people to find food assistance and other support in their communities.",
     embedUrl: 'https://reliefroute.unityprovisions.org/',
     ctaLabel: 'Help Build Relief Route',
     ctaHref:
@@ -37,7 +37,7 @@ export const projects: Project[] = [
   {
     title: 'AgriScan',
     description:
-      "AgriScan is a low-cost crop optimization tool still in development, aimed at small farms, home gardens, and communities with limited resources. It pairs a database of what different crops need — water, sunlight, soil pH — with real field readings to suggest ways to improve plant health and cut waste. Each unit covers about an acre and can be combined for larger plots, and it's simple enough to set up in a backyard, school garden, or community plot. We're actively building this out and could use extra hands — reach out if you'd like to help.",
+      "AgriScan is a low-cost, easy-to-use crop optimization tool we're developing for small farms, home gardens, and communities with limited resources. It combines a database of crop needs (including water, sunlight, and soil pH) with field data to provide practical suggestions for improving plant health and reducing waste. Each unit can cover up to one acre and can be connected with others for larger growing areas. It is designed to be simple to set up and use in places such as backyards, school gardens, and community plots. Our goal is to make practical farming tools more accessible, reduce water use, and help address hunger at the root.",
     image: agriscanImage,
     ctaLabel: 'Help Build AgriScan',
     ctaHref:

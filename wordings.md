@@ -87,7 +87,7 @@
 
 - **Meet the People Behind It**
   - Title: Meet the People Behind It
-  - Subtext: The students and mentors helping lead branches, organize events, and keep Unity Provisions moving.
+  - Subtext: A closer look at the students and mentors behind Unity Provisions.
   - Button: Meet the Team → /team
 
 ---
