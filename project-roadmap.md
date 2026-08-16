@@ -50,18 +50,12 @@ blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* apply the icon-badge
-architecture change — `SectionHeading.astro` (new `icon?` prop),
-`MissionStatement.astro`, `GetInvolvedTeaser.astro`, `About_Team.astro`,
-`Get-Involved_ContactList.astro`, and `index.astro` (Get Involved's
-icon changed to `lucide:handshake`) — see §6/§7. Delivered as files,
-not yet confirmed applied to the actual repo. Accessibility (input
-border contrast) and SEO (OG tags/canonical URL) fixes are applied —
-see §6/§9. Responsive check, Performance check, and Cross-browser spot
-check all still need a live or dev-server URL to test against — none
-of that's possible from this environment. Separately:
-`ContactForm.astro`'s `FORMSPREE_ENDPOINT` is still a placeholder,
-blocked on the project owner's Formspree account access (§7/§10).
+the current next step only, not a history):* Responsive check,
+Performance check, and Cross-browser spot check all still need a live
+or dev-server URL to test against — none of that's possible from this
+environment. Separately: `ContactForm.astro`'s `FORMSPREE_ENDPOINT` is
+still a placeholder, blocked on the project owner's Formspree account
+access (§7/§10).
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -160,7 +154,7 @@ src/
 │   ├── components/hero.jpg                                — Hero background (index.astro)
 │   ├── team/ryan-nguyen.webp                               — Ryan Nguyen headshot (About + Team)
 │   ├── projects-and-events/
-│   │   ├── biggest-event.webp                              — About "Biggest Event Yet" photo
+│   │   ├── biggest-event.webp                              — North Quincy branch's Dec 2024 donation photo
 │   │   └── agriscan.webp                                   — AgriScan screenshot (projects.ts)
 │   ├── partners-and-supporters/
 │   │   ├── sodexo.jpg
@@ -425,7 +419,7 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   `DonateBanner`.
 - **ImpactStats** — stat grid, 2/4 stats live from a Google Sheet.
   `stats: Stat[]`. Full-bleed sage band. No heading on Home; About wraps
-  its own `SectionHeading` ("Numbers So Far") with asymmetric padding.
+  its own `SectionHeading` ("Our Impact") with asymmetric padding.
   Live sheet: ID `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid
   `638911803`, range `B1:C6` (must stay scoped to the summary block —
   widening it into the donation log below breaks Google's column-type
@@ -548,7 +542,7 @@ Used exactly once each; doesn't isolate a reusable concern.
 **get-involved/**
 - **Get-Involved_Heading** — h1 "Get Involved" + subtext.
 - **Get-Involved_BranchFounder** — eyebrow "Branch Founder", title
-  "Turn Your Passion Into Impact", 5-item checklist, global-network
+  "Build Something That Lasts", 5-item checklist, global-network
   paragraph (counts via `getStatValue()`), Apply CTA → Google Form.
 - **Get-Involved_ContactList** — `SectionHeading` (`icon="lucide:mail"`)
   + heading + subtext + "Join Our Email List" CTA →
