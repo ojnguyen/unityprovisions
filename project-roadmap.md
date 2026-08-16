@@ -1,5 +1,5 @@
 <!--
-Synced against this Project's knowledge base on Aug 14, 2026 (the repo
+Synced against this Project's knowledge base on Aug 16, 2026 (the repo
 isn't actually live-connected — its content lives in Project Knowledge,
 reconstructed from search results, not read as one file). Diff against
 your local copy before treating this as canonical if you've made edits
@@ -53,9 +53,9 @@ if they ever disagree.
 the current next step only, not a history):* Responsive check,
 Performance check, and Cross-browser spot check all still need a live
 or dev-server URL to test against — none of that's possible from this
-environment. Separately: `ContactForm.astro`'s `FORMSPREE_ENDPOINT` is
-still a placeholder, blocked on the project owner's Formspree account
-access (§7/§10).
+environment. `ContactForm.astro`'s Formspree endpoint is now live
+(`https://formspree.io/f/xbgravll`, §7/§10) — worth a real end-to-end
+submission test once a live/dev-server URL exists.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -324,14 +324,15 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   not `Button`'s `secondary` variant (assumes a light page background).
 - Icon badges (circular `bg-primary/10` Iconify) are reserved for bare
   heading+subtext+button sections with **no other visual anchor**
-  (MissionStatement, GetInvolvedTeaser, About's Team CTA, Get Involved's
-  Stay Connected). Sections with their own anchor (photo, band,
-  checklist, grid) skip the badge. Each section's icon should be
-  distinct from every other section's — a repeated icon reads as those
-  two sections being related when they aren't. Current assignments:
-  `lucide:heart` (Our Mission), `lucide:handshake` (Get Involved),
-  `lucide:users` (Meet the People Behind It), `lucide:mail` (Stay
-  Connected). Check this list before adding a new icon-badge section.
+  (MissionStatement, GetInvolvedTeaser, About's Team CTA, About's Annual
+  Report, Get Involved's Stay Connected). Sections with their own anchor
+  (photo, band, checklist, grid) skip the badge. Each section's icon
+  should be distinct from every other section's — a repeated icon reads
+  as those two sections being related when they aren't. Current
+  assignments: `lucide:heart` (Our Mission), `lucide:handshake` (Get
+  Involved), `lucide:users` (Meet the People Behind It), `lucide:book-open`
+  (Annual Report), `lucide:mail` (Stay Connected). Check this list
+  before adding a new icon-badge section.
 - `SectionHeading`'s `eyebrow` is opt-in — only when it adds real
   information the title doesn't already carry. The founder story's "Our
   Story" and Get Involved's "Branch Founder" eyebrows are the
@@ -454,9 +455,14 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 - **ContactForm** — `heading`, `subtext?`. Fields: Name*/Email*/
   Message*/optional "where'd you hear about us"/Send. No file
   attachment (spam/security surface for a small org). Collapsed behind
-  "Drop Us a Line!" (same disclosure pattern as Navbar). 🔶
-  `FORMSPREE_ENDPOINT` placeholder — no-ops with a console warning until
-  the real value is supplied.
+  "Drop Us a Line!" (same disclosure pattern as Navbar). Submits via a
+  hand-written `fetch()` POST to Formspree (`Accept: application/json`
+  for a same-page JSON response instead of a redirect) — this is
+  functionally the same technique Formspree's own AJAX guide
+  recommends, just without their `@formspree/ajax` package, since the
+  custom success/error UI and focus management here already cover what
+  that package would provide. Endpoint is live:
+  `https://formspree.io/f/xbgravll` (§10).
 - **DonateBanner** — `heading/subtext/ctaLabel`(required, no defaults —
   same prop shape as `GetInvolvedTeaser`, its closest sibling: both are
   closing-teaser bands whose destination is hardcoded inside the
@@ -522,13 +528,17 @@ Used exactly once each; doesn't isolate a reusable concern.
   Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England).
 - **About_PartnersAndSupporters** — fuller `PartnersAndSupporters` with
   intro paragraphs for both groups.
-- **About_AnnualReport** — `ExternalLinkCTA` → FlipHTML5 flipbook
+- **About_AnnualReport** — `SectionHeading` (`icon="lucide:book-open"`)
+  + `ExternalLinkCTA` → FlipHTML5 flipbook
   (`https://online.fliphtml5.com/uvjxy/tupw/`), not an embedded PDF.
   Embedded PDFs (`<iframe>`/`<object>`) are inconsistent on mobile — iOS
   Safari and Chrome for Android often show blank space or force a
   download, and HTTPS/header quirks or browser updates can silently
   break the embed. A plain link avoids all of that and keeps the file
-  swappable without a redeploy.
+  swappable without a redeploy. Was previously the only bare
+  heading+subtext+CTA section without an icon badge (§6) — the
+  `book-open` icon moved here from the CTA itself rather than
+  duplicating an icon in one small section.
 - **About_Team** — closing section of `about.astro`. `SectionHeading`
   (`icon="lucide:users"`, "Meet the People Behind It") + `Button` →
   `/team`.
@@ -685,10 +695,9 @@ pages into one (§3).
   (`tiktok.com/@unityprovisionsboston`) · Linktree
   (`linktr.ee/UnityProvisions`)
 - Phone: `(857) 777-8811`
-- Contact Form → Formspree, chosen over a Cloudflare Function for zero
-  backend code and no dependency on the still-undecided Phase 6 hosting
-  platform. 🔶 `FORMSPREE_ENDPOINT` still a placeholder, blocked on the
-  project owner's account access.
+- Contact Form → Formspree (`https://formspree.io/f/xbgravll`), chosen
+  over a Cloudflare Function for zero backend code and no dependency on
+  the still-undecided Phase 6 hosting platform. ✅ endpoint live.
 - Donation tracker = same Google Sheet as `ImpactStats`
   (`14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`), confirmed by the
   project owner — not a separate third-party service. `DocumentEmbed`
@@ -757,8 +766,8 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
   fabricated one is worse than no embed at all. Build the component to
   accept it as an optional prop and fall back to something real and
   verifiable in the meantime, not a placeholder box or a guessed URL.
-  `ContactForm`'s Formspree endpoint follows this: built as if real,
-  guarded against firing on the still-placeholder value.
+  `ContactForm`'s Formspree endpoint followed this while pending, now
+  resolved with the real endpoint (§7/§10).
 - When something is fully derivable from data already in the project
   (e.g. a QR code from a known URL), generate it once, check it in as
   static output, and verify it round-trips — don't wait on a supplied

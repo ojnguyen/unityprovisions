@@ -184,26 +184,15 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     }
   });
 
-  // 🔶 Placeholder — swap in the real Formspree endpoint (from the
-  // form's Integration tab, looks like https://formspree.io/f/xxxxxxxx)
-  // once the project owner has Formspree account access. Until then,
-  // submissions no-op with a console warning instead of POSTing
-  // anywhere real. See project-roadmap.md §2/§7/§10.
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
-  const isPlaceholderEndpoint = FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID');
+  // Formspree endpoint (from the form's Integration tab) — live as of
+  // project-roadmap.md §7/§10.
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xbgravll';
 
   const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!form) return;
-
-    if (isPlaceholderEndpoint) {
-      console.warn(
-        'ContactForm: FORMSPREE_ENDPOINT is still a placeholder (see project-roadmap.md §2/§7/§10) — not submitting.'
-      );
-      return;
-    }
 
     errorMessage?.setAttribute('hidden', '');
     if (submitButton) {
