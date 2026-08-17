@@ -13,16 +13,14 @@ interface Props {
 const { title, subtext, eyebrow } = Astro.props as Props;
 ---
 <!--
-  Interior-page title band — bg-primary, custom heading markup rather than
-  SectionHeading (its text colors are hardcoded for light backgrounds; same
-  reasoning Hero/DonateBanner already use, §7). Shorter than Hero
-  (py-16/20 vs py-24/32) and no CTA row — Home keeps the only full hero.
-  White-on-primary is verified 7.46:1 (AAA) in accessibility-seo-audit.md,
-  so no new contrast work needed. Always centered — every current caller
-  wants centered text, including About (moved from left-aligned to match
-  the other five pages, a deliberate consistency change, §7).
+  Variant: vertical gradient, primary -> primary-hover. Deliberately
+  top-to-bottom (not Hero's diagonal from-primary via-primary
+  to-primary-hover + blur blobs) and no decoration, so this doesn't
+  read as "Hero without a photo" on interior pages (§6/§7). The two
+  stops are close in value (~1.45:1 contrast between them) — this
+  reads as gentle depth, not a strong visible transition.
 -->
-<div class="bg-primary">
+<div class="bg-linear-to-l from-primary-hover/90 to-primary-hover">
   <Container as="section">
     <div class="flex flex-col items-center gap-2 py-16 text-center md:py-20">
       {eyebrow && (

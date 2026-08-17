@@ -50,9 +50,12 @@ blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* Responsive check,
-Performance check, and Cross-browser spot check all still need a live
-or dev-server URL to test against — none of that's possible from this
+the current next step only, not a history):* `PageHeader` component
+built and wired into About/Team/Projects/Get-Involved/Donate (Aug 17,
+2026) — drop the new/changed files in, then visually verify the
+`bg-primary` band once there's a live/dev-server URL. Responsive check,
+Performance check, and Cross-browser spot check all still need that
+same live or dev-server URL — none of that's possible from this
 environment.
 
 **Per-component process:**
@@ -189,7 +192,9 @@ src/
 │   │   │   ├── PartnersAndSupporters.astro ✅ — Home, About
 │   │   │   ├── GetInvolvedTeaser.astro     ✅ — Home
 │   │   │   ├── ContactForm.astro           ✅ — Home
-│   │   │   └── DonateBanner.astro          ✅ — Home
+│   │   │   ├── DonateBanner.astro          ✅ — Home
+│   │   │   └── PageHeader.astro            ✅ — About, Team, Projects,
+│   │   │                                       Get Involved, Donate
 │   │   ├── staff/
 │   │   │   ├── StaffCard.astro             ✅ — Team
 │   │   │   └── StaffGrid.astro             ✅ — Team
@@ -201,22 +206,22 @@ src/
 │   │
 │   └── page-specific/
 │       ├── about/
-│       │   ├── About_Heading.astro                ✅ founder story (h1, photo, prose)
+│       │   ├── About_Heading.astro                ✅ PageHeader + founder story (photo, prose)
 │       │   ├── About_BiggestEvent.astro            ✅
 │       │   ├── About_Stats.astro                   ✅ ImpactStats + 8-country caption
 │       │   ├── About_PartnersAndSupporters.astro   ✅
 │       │   ├── About_AnnualReport.astro            ✅
 │       │   └── About_Team.astro                    ✅ closing section (§7/§8)
 │       ├── team/
-│       │   └── Team_Heading.astro                  ✅ heading + StaffGrid
+│       │   └── Team_Heading.astro                  ✅ PageHeader + StaffGrid
 │       ├── projects/
-│       │   └── Projects_Heading.astro              ✅
+│       │   └── Projects_Heading.astro              ✅ PageHeader wrapper
 │       ├── get-involved/
-│       │   ├── Get-Involved_Heading.astro          ✅
+│       │   ├── Get-Involved_Heading.astro          ✅ PageHeader wrapper
 │       │   ├── Get-Involved_BranchFounder.astro    ✅
 │       │   └── Get-Involved_ContactList.astro      ✅
 │       └── donate/
-│           └── Donate_Heading.astro                ✅
+│           └── Donate_Heading.astro                ✅ PageHeader wrapper
 │
 ├── data/
 │   ├── navigation.ts     ✅ 6-item nav + orgName
@@ -313,11 +318,18 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   alone. The heading stays in its own white block above it, using
   **asymmetric** padding (`pt-12 md:pt-16 pb-4 md:pb-6`) to visually
   attach to what follows, rather than floating equidistant between it
-  and whatever comes before. Doesn't apply when the heading is part of
-  its own self-contained, already-padded section (heading + button in
-  one block, e.g. MissionStatement) or when no full-bleed band
-  immediately follows (e.g. About's closing blocks).
-- **Photo legibility:** a CSS `mask-image` (Hero's `mask-y-from-accent`
+  and whatever comes before.
+- **Interior page titles (`bg-linear-to-l from-primary-hover/90 to-primary-hover`)**
+  — every page except Home uses `PageHeader` (§7) for its title band: a
+  subtle horizontal gradient, white text, centered, `py-16 md:py-20`.
+  Shorter than Home's `Hero` (`py-24 md:py-32`) and no CTA row, so
+  Home's full photo hero stays the site's one "biggest" visual
+  statement — interior pages get a consistent, smaller, color-only echo
+  of it instead of repeating it. Added Aug 17, 2026 to replace flat
+  white per-page heading blocks; switched same day from a flat
+  `bg-primary` fill to this gradient after a direct visual comparison
+  on the live page.
+  - **Photo legibility:** a CSS `mask-image` (Hero's `mask-y-from-accent`
   utility class) is the established pattern for text-over-photo
   sections — not a gradient-overlay `<div>`.
 - A light-colored control on a dark/photo background is hand-written,
@@ -437,7 +449,11 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   widening it into the donation log below breaks Google's column-type
   inference). Matches exact label text `"Total (lbs)"`/`"Money
   Collected ($)"` in column B; falls back to `stats.ts` + a
-  `console.warn` if unreachable/unshared. Live homepage reports
+  `console.warn` if unreachable/unshared. Sheet sharing confirmed set
+  to "Anyone with the link – Viewer" by the project owner (Aug 17,
+  2026) — no longer blocked on sharing; end-to-end live-fetch
+  verification still needs a live/dev-server URL, same as
+  Responsive/Performance/Cross-browser (§9). Live homepage reports
   6,180+ lbs / $21,376+ / 35+ branches / 8 countries — behind
   `stats.ts`'s fallback values; not manually synced, since the sheet is
   the intended source of truth once shared correctly.
@@ -486,6 +502,26 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   trust. Serves a different purpose than Hero/Navbar's donate CTAs: a
   second ask, positioned deliberately after a full read-through, once
   the earlier CTAs are scrolled out of view — not a redundant duplicate.
+- **PageHeader** — `title`(required), `subtext?`, `eyebrow?`.
+  `bg-linear-to-l from-primary-hover/90 to-primary-hover` band (a
+  subtle horizontal gradient — switched from flat `bg-primary` on Aug
+  17, 2026 after a direct visual comparison on the live page), white
+  text, centered — the interior-page title treatment for
+  About/Team/Projects/Get-Involved/Donate. Custom heading markup, not
+  `SectionHeading` (same reasoning as `Hero`/`DonateBanner`). Shorter
+  than `Hero` (`py-16 md:py-20` vs `py-24 md:py-32`), no CTA row —
+  `Hero` remains the only full-height/photo treatment, reserved for
+  Home. Base tone is now `primary-hover`, the same token `DonateBanner`
+  uses — a deliberate, moodier shift from the original `primary` fill.
+  White text already verified 10.81:1 AAA against solid `primary-hover`
+  (`accessibility-seo-audit.md`); the 90%-opacity end is slightly
+  lighter (blends toward the white page background) but still clears
+  AAA by estimate (~8:1) — not independently re-audited, worth a real
+  spot-check alongside the still-open Responsive/Performance/
+  Cross-browser items (§9). Replaces each page's previous hand-rolled
+  `Container`+`SectionHeading` heading block — About's was previously
+  left-aligned; now centered like the other four, a deliberate
+  consistency change. Added Aug 17, 2026.
 
 **staff/**
 - **StaffCard/StaffGrid** — `StaffMember` (`name/role` required,
@@ -528,10 +564,10 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 Used exactly once each; doesn't isolate a reusable concern.
 
 **about/**
-- **About_Heading** — the founder story: h1 "Is There Dinner?" (eyebrow
-  "Our Story") + photo/prose. Pounds/dollars kept deliberately vague,
-  pointing to `ImpactStats` below; branch/country counts via
-  `getStatValue()`. Photo: `ryanPhoto`, 400×500.
+- **About_Heading** — `PageHeader` (eyebrow "Our Story", h1 "Is There
+  Dinner?") + the founder story below: photo/prose. Pounds/dollars kept
+  deliberately vague, pointing to `ImpactStats` below; branch/country
+  counts via `getStatValue()`. Photo: `ryanPhoto`, 400×500.
 - **About_BiggestEvent** — North Quincy branch's 1,025 lb Dec 2024
   donation. Photo: `bigEventPhoto`, 600×400, lazy-loaded.
 - **About_Stats** — `ImpactStats` (fuller) + 8-country caption (US,
@@ -554,13 +590,13 @@ Used exactly once each; doesn't isolate a reusable concern.
   `/team`.
 
 **team/**
-- **Team_Heading** — h1 "Meet the Team" + `StaffGrid`.
+- **Team_Heading** — `PageHeader` ("Meet the Team") + `StaffGrid`.
 
 **projects/**
-- **Projects_Heading** — h1 "Our Projects" + subtext.
+- **Projects_Heading** — `PageHeader` ("Our Projects") wrapper.
 
 **get-involved/**
-- **Get-Involved_Heading** — h1 "Get Involved" + subtext.
+- **Get-Involved_Heading** — `PageHeader` ("Get Involved") wrapper.
 - **Get-Involved_BranchFounder** — eyebrow "Branch Founder", title
   "Build Something That Lasts", 5-item checklist, global-network
   paragraph (counts via `getStatValue()`), Apply CTA → Google Form.
@@ -571,7 +607,7 @@ Used exactly once each; doesn't isolate a reusable concern.
   and the old label overpromised.
 
 **donate/**
-- **Donate_Heading** — h1 "Donate" + subtext.
+- **Donate_Heading** — `PageHeader` ("Donate") wrapper.
 
 ---
 
@@ -589,11 +625,12 @@ mirrored in this doc as well.*
 in `index.astro` — no page-specific folder.
 
 ### About (`/about`) — ✅
-`About_Heading` (founder story) → `About_BiggestEvent` → `About_Stats`
-→ `About_PartnersAndSupporters` → `About_AnnualReport` → `About_Team`.
+`About_Heading` (`PageHeader` + founder story) → `About_BiggestEvent`
+→ `About_Stats` → `About_PartnersAndSupporters` → `About_AnnualReport`
+→ `About_Team`.
 
 ### Team (`/team`) — ✅
-`Team_Heading` — h1 + `StaffGrid` of 8 real members.
+`Team_Heading` — `PageHeader` + `StaffGrid` of 8 real members.
 
 ### Projects (`/projects`) — ✅
 `Projects_Heading` → `ProjectSection` ×2 (Relief Route — live `iframe`
@@ -672,10 +709,15 @@ pages into one (§3).
 - [ ] Performance check (image optimization, Lighthouse) — no
       anti-patterns found in code; real Lighthouse run needs a
       live/dev-server URL
-- [ ] Cross-browser spot check — needs a live/dev-server URL
+- [ ] Cross-browser spot check — needs a live/dev-server target
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
+- [x] Interior page headers unified via new `PageHeader` component
+      (`bg-primary` band, replaces per-page flat-white heading blocks)
+      — About/Team/Projects/Get-Involved/Donate all updated; Home's
+      photo `Hero` is unchanged and remains the site's only full hero
+      treatment.
 
 ### Phase 6 — Deployment — not started
 - [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
@@ -721,7 +763,9 @@ watch for: (1) the live match requires exact label text `"Total (lbs)"`
 if the wording ever changes; (2) the sheet's query range (`B1:C6`) must
 stay scoped to the summary block — widening it into the donation log
 immediately below breaks Google's column-type inference (this already
-happened once during development).
+happened once during development). Sharing confirmed set to "Anyone
+with the link – Viewer" by the project owner (Aug 17, 2026) — this is
+no longer a blocker.
 
 **Live-site content audit** (all addressed unless noted): "Our Biggest
 Event Yet" ✅ · "Creating Opportunities" (8-country list) ✅ · "Our
