@@ -1,6 +1,6 @@
 ---
 import Container from "@components/reusable/ui/Container.astro";
-import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import PageHeader from "@components/reusable/sections/PageHeader.astro";
 import ResponsiveImage from "@components/reusable/ui/ResponsiveImage.astro";
 
 import { getStatValue } from "@utils/stats";
@@ -11,56 +11,55 @@ const branchCount = getStatValue("branches"); // "35+"
 const countryCount = getStatValue("countries"); // "8+"
 ---
 
-<!-- 
+<!--
 [ABOUT] HEADING
-- The founder story section, featuring the founder's photo and the origin narrative.
-- Uses the branch and country counts pulled from stats.ts via getStatValue() for dynamic content.
+- The founder story section: PageHeader (§7) carries the title band, photo +
+  prose follow in their own white section below, unchanged in content from
+  before this used PageHeader — only the top band and alignment changed.
 -->
+<PageHeader eyebrow="Our Story" title="Is There Dinner?" />
+
 <Container as="section">
-  <div class="flex flex-col gap-6 py-12 md:py-16">
-    <SectionHeading as="h1" eyebrow="Our Story" title="Is There Dinner?" />
+  <div class="flex flex-col gap-8 py-12 md:flex-row md:items-start md:py-16">
+    <div class="mx-auto w-full max-w-[280px] shrink-0 md:mx-0">
+      <ResponsiveImage
+        src={ryanPhoto}
+        alt="Ryan Nguyen, founder and CEO of Unity Provisions"
+        width={400}
+        height={500}
+        radius="md"
+        loading="eager"
+      />
+      <p class="mt-3 text-center text-sm text-text-secondary md:text-left">
+        Ryan Nguyen — Founder &amp; CEO
+      </p>
+    </div>
 
-    <div class="flex flex-col gap-8 md:flex-row md:items-start">
-      <div class="mx-auto w-full max-w-[280px] shrink-0 md:mx-0">
-        <ResponsiveImage
-          src={ryanPhoto}
-          alt="Ryan Nguyen, founder and CEO of Unity Provisions"
-          width={400}
-          height={500}
-          radius="md"
-          loading="eager"
-        />
-        <p class="mt-3 text-center text-sm text-text-secondary md:text-left">
-          Ryan Nguyen — Founder &amp; CEO
-        </p>
-      </div>
-
-      <div class="flex max-w-3xl flex-col gap-4 text-lg text-text-secondary">
-        <p>
-          Unity Provisions began with a simple but painful question: "Is there dinner?" 
-          Growing up, our founder Ryan knew what it was like when food was uncertain.
-        </p>
-        <p>
-          Later, while volunteering at a local food pantry, he saw how hunger could 
-          hide behind quiet sacrifices: a parent choosing between groceries and 
-          other necessities, or a neighbor masking their need with a smile. 
-          When that pantry abruptly closed in 2024, Ryan saw just how fragile 
-          food assistance programs could be.
-        </p>
-        <p>
-          He founded Unity Provisions to build something that could last. 
-          What began as a single branch at Boston Latin School has grown 
-          into a youth-led network of {branchCount} branches across {countryCount} countries. 
-          Student leaders have collected thousands of pounds of food and 
-          clothing, raised thousands of dollars, and built partnerships 
-          with organizations such as the Wang YMCA to keep community-based 
-          donation centers running.
-        </p>
-        <p>
-          Today, Unity Provisions works to make sure no child, family, or 
-          community has to wonder again, "Is there dinner?"
-        </p>
-      </div>
+    <div class="flex max-w-3xl flex-col gap-4 text-lg text-text-secondary">
+      <p>
+        Unity Provisions began with a simple but painful question: "Is there dinner?"
+        Growing up, our founder Ryan knew what it was like when food was uncertain.
+      </p>
+      <p>
+        Later, while volunteering at a local food pantry, he saw how hunger could
+        hide behind quiet sacrifices: a parent choosing between groceries and
+        other necessities, or a neighbor masking their need with a smile.
+        When that pantry abruptly closed in 2024, Ryan saw just how fragile
+        food assistance programs could be.
+      </p>
+      <p>
+        He founded Unity Provisions to build something that could last.
+        What began as a single branch at Boston Latin School has grown
+        into a youth-led network of {branchCount} branches across {countryCount} countries.
+        Student leaders have collected thousands of pounds of food and
+        clothing, raised thousands of dollars, and built partnerships
+        with organizations such as the Wang YMCA to keep community-based
+        donation centers running.
+      </p>
+      <p>
+        Today, Unity Provisions works to make sure no child, family, or
+        community has to wonder again, "Is there dinner?"
+      </p>
     </div>
   </div>
 </Container>

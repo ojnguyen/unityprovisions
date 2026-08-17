@@ -1,0 +1,37 @@
+---
+import Container from '@components/reusable/ui/Container.astro';
+
+interface Props {
+  /** Page h1. */
+  title: string;
+  /** Optional supporting line under the title. */
+  subtext?: string;
+  /** Optional small label above the title (e.g. "Our Story"). */
+  eyebrow?: string;
+}
+
+const { title, subtext, eyebrow } = Astro.props as Props;
+---
+<!--
+  Interior-page title band — bg-primary, custom heading markup rather than
+  SectionHeading (its text colors are hardcoded for light backgrounds; same
+  reasoning Hero/DonateBanner already use, §7). Shorter than Hero
+  (py-16/20 vs py-24/32) and no CTA row — Home keeps the only full hero.
+  White-on-primary is verified 7.46:1 (AAA) in accessibility-seo-audit.md,
+  so no new contrast work needed. Always centered — every current caller
+  wants centered text, including About (moved from left-aligned to match
+  the other five pages, a deliberate consistency change, §7).
+-->
+<div class="bg-primary">
+  <Container as="section">
+    <div class="flex flex-col items-center gap-2 py-16 text-center md:py-20">
+      {eyebrow && (
+        <p class="text-sm font-semibold uppercase tracking-wide text-white/75">{eyebrow}</p>
+      )}
+      <h1 class="text-3xl font-bold text-white">{title}</h1>
+      {subtext && (
+        <p class="max-w-xl text-lg text-white/85">{subtext}</p>
+      )}
+    </div>
+  </Container>
+</div>

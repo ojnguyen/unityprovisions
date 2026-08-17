@@ -1,19 +1,13 @@
 ---
-import Container from "@components/reusable/ui/Container.astro";
-import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
+import PageHeader from "@components/reusable/sections/PageHeader.astro";
 ---
 
 <!--
 [DONATE] HEADING
-- Renders the heading section for the Donate page, including the main title and subtext.
+- PageHeader (§7) carries the title band; QRCodeDonate and DocumentEmbed
+  follow, assembled directly in donate.astro.
 -->
-<Container as="section">
-  <div class="flex flex-col items-center gap-2 py-12 text-center md:py-16">
-    <SectionHeading
-      as="h1"
-      title="Donate"
-      subtext="Your support helps Unity Provisions keep donation centers running and make it possible to reach more communities."
-      align="center"
-    />
-  </div>
-</Container>
+<PageHeader
+  title="Donate"
+  subtext="Your support helps Unity Provisions keep donation centers running and make it possible to reach more communities."
+/>

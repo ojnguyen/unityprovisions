@@ -437,8 +437,7 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   widening it into the donation log below breaks Google's column-type
   inference). Matches exact label text `"Total (lbs)"`/`"Money
   Collected ($)"` in column B; falls back to `stats.ts` + a
-  `console.warn` if unreachable/unshared. 🔶 Blocker: sheet needs
-  "Anyone with the link – Viewer" sharing (§10). Live homepage reports
+  `console.warn` if unreachable/unshared. Live homepage reports
   6,180+ lbs / $21,376+ / 35+ branches / 8 countries — behind
   `stats.ts`'s fallback values; not manually synced, since the sheet is
   the intended source of truth once shared correctly.
@@ -722,8 +721,7 @@ watch for: (1) the live match requires exact label text `"Total (lbs)"`
 if the wording ever changes; (2) the sheet's query range (`B1:C6`) must
 stay scoped to the summary block — widening it into the donation log
 immediately below breaks Google's column-type inference (this already
-happened once during development). Also currently blocked on the sheet
-being shared as "Anyone with the link – Viewer."
+happened once during development).
 
 **Live-site content audit** (all addressed unless noted): "Our Biggest
 Event Yet" ✅ · "Creating Opportunities" (8-country list) ✅ · "Our
