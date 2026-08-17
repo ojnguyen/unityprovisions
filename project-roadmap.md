@@ -53,9 +53,7 @@ if they ever disagree.
 the current next step only, not a history):* Responsive check,
 Performance check, and Cross-browser spot check all still need a live
 or dev-server URL to test against — none of that's possible from this
-environment. `ContactForm.astro`'s Formspree endpoint is now live
-(`https://formspree.io/f/xbgravll`, §7/§10) — worth a real end-to-end
-submission test once a live/dev-server URL exists.
+environment.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -151,7 +149,9 @@ submission test once a live/dev-server URL exists.
 ```
 src/
 ├── assets/
-│   ├── components/hero.jpg                                — Hero background (index.astro)
+│   ├── components/hero.jpg                                 — Hero background (index.astro)
+│   ├── icons/logo.webp                                     — Navbar logo mark (§7)
+│   │
 │   ├── team/ryan-nguyen.webp                               — Ryan Nguyen headshot (About + Team)
 │   ├── projects-and-events/
 │   │   ├── biggest-event.webp                              — North Quincy branch's Dec 2024 donation photo
@@ -345,7 +345,8 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
 - `:focus-visible` — 2px solid primary, 2px offset, global.
 - One `<h1>` per page. Real `alt` text (decorative image nested inside
   an already-labeled control excepted, e.g. Hero's background,
-  YouTubeEmbed's thumbnail). All decorative icons `aria-hidden`.
+  YouTubeEmbed's thumbnail, Navbar's logo mark). All decorative icons
+  `aria-hidden`.
 - Every form input has a real `<label>`. Icon-only controls get
   `aria-label`.
 - `<a>`/`<button>` never substituted for each other.
@@ -397,18 +398,23 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   both end white).
 
 **layout/**
-- **Navbar** — 6 nav items + orgName. Separate desktop/mobile `<ul>` —
-  a class always wins the cascade over a JS-toggled `hidden` attribute,
-  so combining them into one list breaks the JS toggle. Disclosure
-  pattern (`aria-expanded`/`controls`, focus-to-first-link, Escape).
-  Donate renders as an accent `Button`, so it doesn't get active-page
-  styling. No "Email List" nav item (the live site has one) —
-  reachable via Footer and Get Involved's Stay Connected only.
-- **Footer** — nav links, Email List/Linktree, socials, phone,
-  copyright (`new Date().getFullYear()`). Plain `<a>`, not
-  `ExternalLinkCTA` (too heavy for a dense link row).
-
-**sections/**
+- **Navbar** — 6 nav items + orgName + logo mark. Separate
+  desktop/mobile `<ul>` — a class always wins the cascade over a
+  JS-toggled `hidden` attribute, so combining them into one list breaks
+  the JS toggle. Disclosure pattern (`aria-expanded`/`controls`,
+  focus-to-first-link, Escape). Donate renders as an accent `Button`,
+  so it doesn't get active-page styling. No "Email List" nav item (the
+  live site has one) — reachable via Footer and Get Involved's Stay
+  Connected only. Logo mark (`astro:assets` `<Image>`,
+  `@assets/icons/logo.webp`) sits inside the same `/` link as
+  `orgName`, `alt=""` (decorative — the link's accessible name already
+  comes from the visible org-name text, §6). This is Unity Provisions'
+  real logo — a sketched spoon-and-branches illustration, supplied as
+  white line art on transparent and recolored here to
+  `--color-primary` (only the fill color was changed; the linework is
+  the original supplied artwork, trimmed to its content bounding box).
+  Kept as `.webp` (lossless, alpha preserved) rather than converted to
+  PNG, matching the format it was supplied in. Displayed at 203px tall 170px wide, along with `h-14`.
 - **Hero** — Home's `<h1>`. `headline/tagline/ctaLabel/ctaHref`
   (required), `subtext?`, `secondaryCtaLabel?/secondaryCtaHref?`
   (paired), `backgroundImage?`. Real photo in use
@@ -418,6 +424,11 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   distracting). Still no `SectionHeading` — needs custom white-text
   styling on a colored/photo background, same reasoning as
   `DonateBanner`.
+- **Footer** — nav links, Email List/Linktree, socials, phone,
+  copyright (`new Date().getFullYear()`). Plain `<a>`, not
+  `ExternalLinkCTA` (too heavy for a dense link row).
+
+**sections/**
 - **ImpactStats** — stat grid, 2/4 stats live from a Google Sheet.
   `stats: Stat[]`. Full-bleed sage band. No heading on Home; About wraps
   its own `SectionHeading` ("Our Impact") with asymmetric padding.
@@ -461,7 +472,7 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   functionally the same technique Formspree's own AJAX guide
   recommends, just without their `@formspree/ajax` package, since the
   custom success/error UI and focus management here already cover what
-  that package would provide. Endpoint is live:
+  that package would provide. Endpoint is live and confirmed working:
   `https://formspree.io/f/xbgravll` (§10).
 - **DonateBanner** — `heading/subtext/ctaLabel`(required, no defaults —
   same prop shape as `GetInvolvedTeaser`, its closest sibling: both are
@@ -697,7 +708,8 @@ pages into one (§3).
 - Phone: `(857) 777-8811`
 - Contact Form → Formspree (`https://formspree.io/f/xbgravll`), chosen
   over a Cloudflare Function for zero backend code and no dependency on
-  the still-undecided Phase 6 hosting platform. ✅ endpoint live.
+  the still-undecided Phase 6 hosting platform. ✅ endpoint live and
+  confirmed working end-to-end.
 - Donation tracker = same Google Sheet as `ImpactStats`
   (`14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`), confirmed by the
   project owner — not a separate third-party service. `DocumentEmbed`
