@@ -3,7 +3,7 @@ import Container from '@components/reusable/ui/Container.astro';
 import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import ExternalLinkCTA from '@components/reusable/ui/ExternalLinkCTA.astro';
-import type { ImageMetadata } from 'astro';
+import { getImageDimensions } from '@utils/images';
 import type { Project } from '@/types';
 
 type Props = Project;
@@ -39,11 +39,7 @@ const hasContent = Boolean(image || embedUrl || (ctaLabel && ctaHref));
 // the actual goal).
 const STRING_IMAGE_FALLBACK = { width: 800, height: 500 };
 
-function getImageDimensions(src: ImageMetadata | string): { width: number; height: number } {
-  return typeof src === 'string' ? STRING_IMAGE_FALLBACK : { width: src.width, height: src.height };
-}
-
-const imageDims = image ? getImageDimensions(image) : null;
+const imageDims = image ? getImageDimensions(image, STRING_IMAGE_FALLBACK) : null;
 ---
 <!--
   Two sibling blocks, not one wrapped section — same shape as About's

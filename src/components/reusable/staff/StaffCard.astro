@@ -2,7 +2,7 @@
 import Card from '@components/reusable/ui/Card.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import { Icon } from 'astro-icon/components';
-import type { ImageMetadata } from 'astro';
+import { getImageDimensions } from '@utils/images';
 import type { StaffMember } from '@/types';
 
 type Props = StaffMember;
@@ -27,11 +27,7 @@ const { name, role, email, photo } = Astro.props as Props;
 // never be cropped.
 const STRING_PHOTO_FALLBACK = { width: 320, height: 400 };
 
-function getPhotoDimensions(src: ImageMetadata | string): { width: number; height: number } {
-  return typeof src === 'string' ? STRING_PHOTO_FALLBACK : { width: src.width, height: src.height };
-}
-
-const photoDims = photo ? getPhotoDimensions(photo) : null;
+const photoDims = photo ? getImageDimensions(photo, STRING_PHOTO_FALLBACK) : null;
 ---
 <Card padding="md" bg="surface">
   <div class="flex flex-col items-center gap-3 text-center">
