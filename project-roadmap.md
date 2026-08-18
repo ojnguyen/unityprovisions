@@ -42,19 +42,26 @@ Participation and giving happen via clearly labeled external links
 ## 2. How to Resume This Project
 
 **Current phase:** Phase 5 (Build Pages) is complete — all six pages
-built. Next up: the Cross-Cutting checklist (§9), entirely unstarted,
-then Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
+built. Next up: the Cross-Cutting checklist (§9), in progress, then
+Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
 
 **Status source of truth:** §5's file tree (✅ Built / 📋 Planned / 🔶
 blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* Navbar and `PageHeader`
-are both built and wired in (§7). Remaining: visually verify the
-`PageHeader` band and the Navbar's active-pill-over-Hero-photo
-combination, plus the Responsive/Performance/Cross-browser checks —
-all need a live/dev-server URL, none possible from this environment.
+the current next step only, not a history):* Every local `<img>` in the
+codebase has been converted to `ResponsiveImage`/`astro:assets` and
+live-verified against a real dev server (§7 — ResponsiveImage,
+PartnersAndSupporters, StaffCard, ProjectSection, About_Heading,
+About_BiggestEvent, YouTubeEmbed; shared logic extracted to
+`utils/images.ts`). `sharp` had to be installed for local images to
+render at all (§4) — check that first if local images ever go blank
+again. Remaining: visually verify the `PageHeader` band and the
+Navbar's active-pill-over-Hero-photo combination, plus the Responsive/
+Cross-browser checks and a real Lighthouse run — all still need a
+live/dev-server URL beyond the dev-server checks already done this
+session.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -107,6 +114,14 @@ all need a live/dev-server URL, none possible from this environment.
   `tailwind.config.mjs`; `@tailwindcss/vite` in `astro.config.mjs`).
 - Integrations: `sitemap()`, `mdx()`, `astro-icon()`. Icons: Lucide +
   Simple Icons via astro-icon, used across most sections.
+- **Image domains:** `astro.config.mjs`'s `image.domains` allowlists
+  `i.ytimg.com` (YouTubeEmbed's remote thumbnail, §7) — Astro's Image
+  pipeline refuses any remote domain not listed here.
+- **Sharp** is a required dependency for `astro:assets`/`<Image>` to
+  generate anything locally — confirmed missing and installed this
+  session. Without it, every local image silently fails at render time
+  (`Could not find Sharp` in the dev server log, not a build/type
+  error) — check for this first if local images ever go blank again.
 - Path aliases (`tsconfig.json`): `@components/*`, `@layouts/*`,
   `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, `@/types`. No
   `baseUrl` (deprecated in TS 6.0) — every alias has its own
@@ -118,6 +133,11 @@ all need a live/dev-server URL, none possible from this environment.
   by label (e.g. `'branches'`, `'countries'`) — used by page copy that
   references those counts, so it can't drift out of sync with
   `stats.ts`.
+- `utils/images.ts`'s `getImageDimensions(src, fallback)` resolves the
+  real width/height to request from `ResponsiveImage` for an
+  `ImageMetadata | string` prop — real dimensions read directly off a
+  local import, or the caller's fallback for a plain string src. Shared
+  by PartnersAndSupporters, StaffCard, and ProjectSection (§7).
 - **Live data:** `ImpactStats` live-updates 2 of its 4 stats from a
   public Google Sheet via `gviz/tq` (JSONP `<script>`, not `fetch()` —
   gviz blocks CORS). Keeps the site fully static — no SSR, no API keys.
@@ -242,7 +262,10 @@ src/
 ├── styles/global.css     ✅
 ├── utils/
 │   ├── cn.ts              ✅
-│   └── stats.ts           ✅ getStatValue()
+│   ├── stats.ts           ✅ getStatValue()
+│   └── images.ts          ✅ getImageDimensions() — real ImageMetadata
+│                              dims, or a caller-supplied fallback for a
+│                              string src (§4/§7)
 └── types.ts               ✅
 ```
 
@@ -351,6 +374,18 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   use it.
 - If a page's last section before Footer is sage, insert `WhiteSpace`
   (§7) so the two sage bands don't visually merge.
+- **Images (`ResponsiveImage`, §7):** request `width`/`height` at the
+  image's own real, generous resolution — its full native size for a
+  local import, comfortably above any real display size for a remote
+  one — never a size tuned to the display box. Display size is a
+  separate, per-caller CSS concern: a fixed box + `object-contain`
+  (never crops — logos) or `object-cover` (crops to fill — headshots)
+  for a grid/row that needs uniform items, or `w-full h-auto` for a
+  single image that should scale to its container. Conflating request
+  size with display size, in either direction, is a real, already-hit
+  bug: too-small a request upscales into visible blur on high-DPI
+  screens; leaving width unconstrained in CSS while requesting a large
+  size produces uneven, spread-out layout.
 
 ### Accessibility
 - `:focus-visible` — 2px solid primary, 2px offset, global.
@@ -397,7 +432,12 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 - **Card** — `padding?`(md), `bg?: surface|bg`(surface). No `class`
   pass-through — wrap in an outer `<div>` for width constraints.
 - **ResponsiveImage** — wraps `astro:assets`'s `<Image/>`. `src`,
-  `alt`(required), `width`, `height`, `radius?`(md), `loading?`(lazy).
+  `alt`, `width`, `height` all required, for both a local `ImageMetadata`
+  src and a remote `string` src; `radius?`(md), `loading?`(lazy),
+  `class?` (merged in after the radius class). `width`/`height` should
+  be the image's real, generous resolution, not its display size —
+  see §6 "Images" for why, and PartnersAndSupporters/StaffCard/
+  ProjectSection below for the per-context display-size treatment.
 - **Container** — `as?`(div), `maxWidth?`(`max-w-[90rem]`). No `id` —
   wrap in an outer `<div id>` if a scroll anchor is needed.
 - **ExternalLinkCTA** — wraps `Button`, hardcodes
@@ -473,10 +513,10 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   to "Anyone with the link – Viewer" by the project owner (Aug 17,
   2026) — no longer blocked on sharing; end-to-end live-fetch
   verification still needs a live/dev-server URL, same as
-  Responsive/Performance/Cross-browser (§9). Live homepage reports
-  6,180+ lbs / $21,376+ / 35+ branches / 8 countries — behind
-  `stats.ts`'s fallback values; not manually synced, since the sheet is
-  the intended source of truth once shared correctly.
+  Responsive/Cross-browser (§9). Live homepage reports 6,180+ lbs /
+  $21,376+ / 35+ branches / 8 countries — behind `stats.ts`'s fallback
+  values; not manually synced, since the sheet is the intended source
+  of truth once shared correctly.
 - **MissionStatement** — `heading`, `body`(required), `icon?` (forwarded
   straight to `SectionHeading`, §7). Real copy verified word-for-word
   against the live site's "Our Mission" section — exact match.
@@ -487,12 +527,24 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   improvement over the live site's eager iframe. Wrapped in
   `<div id="watch-our-story">` — the scroll target for Hero's secondary
   CTA — rather than giving `Container` an `id` prop, to keep its API
-  generic. Thumbnail `alt=""` (decorative, inside a labeled button).
+  generic. Thumbnail renders via `ResponsiveImage`, not a plain `<img>`
+  — `hqdefault.jpg`'s real, fixed 480×360 passed explicitly (a known
+  size, not read via `getImageDimensions()`, since this is a single
+  hardcoded remote URL, not a per-item local/string choice). Requires
+  `i.ytimg.com` in `astro.config.mjs`'s `image.domains` (§4). `alt=""`
+  (decorative, inside a labeled button).
 - **PartnersAndSupporters** — `partners`(required),
   `partnersIntro?/supportersIntro?` — presence of intro copy switches
   Home's compact badge row into About's fuller card-grid treatment.
   Full-bleed sage band. Verified against live site: partner/supporter
-  lists match `partners.ts`.
+  lists match `partners.ts`. Logos render via `ResponsiveImage`, not a
+  plain `<img>` — each generated at its own real native resolution
+  (`utils/images.ts`'s `getImageDimensions()`, reading `.width`/
+  `.height` off local `ImageMetadata`; a plain-string logo, unused by
+  any real data today, falls back to a 240×80 box), displayed in a
+  fixed `h-12 w-12` (grid) / `h-10 w-10` (badge row) box with
+  `object-contain` — never crops a logo, and keeps spacing even
+  regardless of each file's real shape or resolution.
 - **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`
   (forwarded to `SectionHeading`, §7). `href="/get-involved"`
   hardcoded, `variant="primary"`. Home passes `lucide:handshake`,
@@ -537,11 +589,11 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   (`accessibility-seo-audit.md`); the 90%-opacity end is slightly
   lighter (blends toward the white page background) but still clears
   AAA by estimate (~8:1) — not independently re-audited, worth a real
-  spot-check alongside the still-open Responsive/Performance/
-  Cross-browser items (§9). Replaces each page's previous hand-rolled
-  `Container`+`SectionHeading` heading block — About's was previously
-  left-aligned; now centered like the other four, a deliberate
-  consistency change. Added Aug 17, 2026.
+  spot-check alongside the still-open Responsive/Cross-browser items
+  (§9). Replaces each page's previous hand-rolled `Container`+
+  `SectionHeading` heading block — About's was previously left-aligned;
+  now centered like the other four, a deliberate consistency change.
+  Added Aug 17, 2026.
 
 **staff/**
 - **StaffCard/StaffGrid** — `StaffMember` (`name/role` required,
@@ -556,6 +608,13 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   grid needed). Starts at 1 column, not 2 like `PartnersAndSupporters`'s
   org-card grid — a staff card carries more content (photo+name+role+
   email) than an org badge, so it needs the extra width on small screens.
+  Photo renders via `ResponsiveImage` at its own real native resolution
+  (`getImageDimensions()`, same as PartnersAndSupporters; a plain-string
+  photo, unused today, falls back to a 320×400 box), displayed in the
+  same 160px (`h-40 w-40`) box as the fallback icon, `object-cover` —
+  not PartnersAndSupporters' `object-contain`, since cropping a
+  headshot to fill a square avatar is the normal, desired look, unlike
+  a logo, which must never be cropped.
 
 **projects/**
 - **ProjectSection** — `Project`-typed props. White heading block
@@ -569,7 +628,14 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   mobile. Don't assume a future third-party/self-hosted embed gets the
   same direct treatment without asking first — `YouTubeEmbed`'s facade
   pattern is still the fallback default for anything not explicitly
-  confirmed this way.
+  confirmed this way. Screenshot renders via `ResponsiveImage` at its
+  own real native resolution (`getImageDimensions()`; a plain-string
+  image falls back to an 800×500 box), not the old shared fixed
+  800×500 (which risked cropping a screenshot whose real shape wasn't
+  8:5) — displayed at `w-full h-auto`, no `object-fit`, since a single
+  prominent screenshot should scale to its wrapper at its own real
+  aspect ratio rather than fit a uniform box like the logos/photos
+  above.
 
 **donate/**
 - **QRCodeDonate** — `heading/subtext/ctaLabel`(required). `donateUrl`
@@ -587,9 +653,18 @@ Used exactly once each; doesn't isolate a reusable concern.
 - **About_Heading** — `PageHeader` (eyebrow "Our Story", h1 "Is There
   Dinner?") + the founder story below: photo/prose. Pounds/dollars kept
   deliberately vague, pointing to `ImpactStats` below; branch/country
-  counts via `getStatValue()`. Photo: `ryanPhoto`, 400×500.
+  counts via `getStatValue()`. Photo: `ryanPhoto`, requested at its own
+  real native resolution (`ryanPhoto.width`/`.height`, read directly
+  off its `ImageMetadata`) — same pattern as About_BiggestEvent/
+  StaffCard/PartnersAndSupporters/ProjectSection (§6 "Images"),
+  `loading="eager"` since it's above the fold.
 - **About_BiggestEvent** — North Quincy branch's 1,025 lb Dec 2024
-  donation. Photo: `bigEventPhoto`, 600×400, lazy-loaded.
+  donation. Photo: `bigEventPhoto`, requested at its own real native
+  resolution (read directly off its `ImageMetadata`, not the old
+  hardcoded 600×400), lazy-loaded (`ResponsiveImage`'s default).
+  Display size handled entirely by its existing `max-w-[400px]`
+  wrapper + Tailwind's default `max-width:100%`/`height:auto` — no
+  separate class needed, same pattern as the founder photo's wrapper.
 - **About_Stats** — `ImpactStats` (fuller) + 8-country caption (US,
   Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England).
 - **About_PartnersAndSupporters** — fuller `PartnersAndSupporters` with
@@ -726,9 +801,13 @@ pages into one (§3).
       hierarchy, alt text) — all in place; `Layout.astro` sets the OG
       tags, Twitter Card tags, and canonical URL.
 - [ ] Responsive check at each breakpoint — needs a live/dev-server URL
-- [ ] Performance check (image optimization, Lighthouse) — no
-      anti-patterns found in code; real Lighthouse run needs a
-      live/dev-server URL
+- [ ] Performance check (image optimization, Lighthouse) — every local
+      `<img>` converted to `ResponsiveImage`/`astro:assets` this
+      session (§7), each now requesting its own real resolution with
+      display size handled separately in CSS — a real bug pattern
+      (blur, uneven spacing) worked through and fixed, not just a
+      code-read pass. Actual Lighthouse scoring still needs a
+      live/dev-server URL.
 - [ ] Cross-browser spot check — needs a live/dev-server target
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
@@ -821,6 +900,10 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
 - Page copy referencing a `stats.ts` number uses `getStatValue(label)`
   — not for the two live-synced stats (pounds/dollars), which stay
   dynamic via `ImpactStats`'s own client-side script instead.
+- A shared prop shape used by 2+ call sites belongs in `utils/`, not
+  copy-pasted per component — `getImageDimensions()` (§4/§7) replaced
+  three near-identical local helper functions in PartnersAndSupporters,
+  StaffCard, and ProjectSection.
 - §7 entries describe what was actually built, not what was planned —
   update them in the same edit whenever implementation deviates.
 - Empty placeholder files are intentional — §5's ✅/📋/🔶 markers are
@@ -833,8 +916,9 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
 - Full-bleed background bands, sage-for-content-only,
   asymmetric-padding-for-intro-headings, icon-badge-only-for-
   anchor-less-sections, fixed-hover-token (never opacity blend),
-  mask-image-not-gradient-overlay-for-photo-legibility — all
-  established patterns (§6).
+  mask-image-not-gradient-overlay-for-photo-legibility, request-
+  generous-real-resolution-separate-from-display-size-for-images (§6)
+  — all established patterns.
 - Relief Route's direct `<iframe>` (ProjectSection, §7) is a confirmed,
   project-owner-approved exception to the click-to-load facade default
   — don't extend it to a future embed without asking first.
