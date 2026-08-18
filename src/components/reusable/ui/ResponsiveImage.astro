@@ -10,8 +10,18 @@ interface Props {
   height: number;
   radius?: 'sm' | 'md' | 'lg' | 'none';
   loading?: 'eager' | 'lazy';
+  /** Extra classes merged in after the radius class — e.g. positioning/sizing/object-fit. */
+  class?: string;
 }
 
+// width/height are the pixel dimensions Astro actually generates the
+// output file at — not necessarily the CSS display size. Pass numbers
+// comfortably larger than the biggest size this image will ever be
+// shown at (its layout box, at any breakpoint, on any screen density),
+// not a tight match to it: browsers downscale a larger source cleanly,
+// but upscale a too-small one into visible blur (hit this with
+// About_Heading's founder photo and PartnersAndSupporters' logos,
+// §7 — both fixed by sizing generously rather than exactly).
 const {
   src,
   alt,
@@ -19,6 +29,7 @@ const {
   height,
   radius = 'md',
   loading = 'lazy',
+  class: className,
 } = Astro.props as Props;
 
 const radiusSizes: Record<'sm' | 'md' | 'lg' | 'none', string> = {
@@ -28,27 +39,13 @@ const radiusSizes: Record<'sm' | 'md' | 'lg' | 'none', string> = {
   none: '',
 };
 
-const classes = cn(radiusSizes[radius]);
+const classes = cn(radiusSizes[radius], className);
 
 // Below, the duplicated-looking JSX in each branch is intentional and not actually redundant:
 // TypeScript treats them as two separate call sites, each satisfying a different half of <Image />'s union type.
 ---
 {typeof src === 'string' ? (
-  <Image
-    src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    loading={loading}
-    class={classes}
-  />
+  <Image src={src} alt={alt} width={width} height={height} loading={loading} class={classes} />
 ) : (
-  <Image
-    src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    loading={loading}
-    class={classes}
-  />
+  <Image src={src} alt={alt} width={width} height={height} loading={loading} class={classes} />
 )}

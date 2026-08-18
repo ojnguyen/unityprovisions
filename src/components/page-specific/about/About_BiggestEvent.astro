@@ -16,11 +16,20 @@ import bigEventPhoto from "@assets/projects-and-events/biggest-event.webp";
 
     <div class="flex flex-col gap-8 md:flex-row md:items-start">
       <div class="mx-auto w-full max-w-[400px] shrink-0 md:mx-0">
+        <!--
+          width/height read straight off bigEventPhoto's own real
+          ImageMetadata, not a hardcoded 600x400 — same fix as
+          About_Heading's founder photo (§7): ResponsiveImage generates
+          from the real, full native resolution so the source stays
+          sharp, while this wrapper's max-w-[400px] + Tailwind's
+          default max-width:100%/height:auto (no class override needed
+          here, same as About_Heading) handles the actual display size.
+        -->
         <ResponsiveImage
           src={bigEventPhoto}
           alt="Photo from the North Quincy branch's December 2024 donation drive for the Quincy Community Action Program"
-          width={600}
-          height={400}
+          width={bigEventPhoto.width}
+          height={bigEventPhoto.height}
           radius="md"
         />
         <p class="mt-3 text-center text-sm text-text-secondary md:text-left">

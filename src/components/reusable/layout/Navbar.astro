@@ -3,7 +3,7 @@ import { navigation, orgName } from '@data/navigation';
 import Container from '@components/reusable/ui/Container.astro';
 import Button from '@components/reusable/ui/Button.astro';
 import { Icon } from 'astro-icon/components';
-import { Image } from 'astro:assets';
+import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import logoMark from '@assets/icons/logo.webp';
 
 const currentPath = Astro.url.pathname;
@@ -41,11 +41,12 @@ const currentPath = Astro.url.pathname;
     <nav aria-label="Primary">
       <div class="flex items-center justify-between py-4 transition-[padding] duration-300 group-data-[scrolled=true]:py-2">
         <a href="/" class="flex items-center gap-3 text-xl font-bold text-text-primary">
-          <Image
+          <ResponsiveImage
             src={logoMark}
             alt=""
-            width={170}
-            height={203}
+            width={logoMark.width}
+            height={logoMark.height}
+            loading="eager"
             class="h-14 w-auto transition-[height] duration-300 group-data-[scrolled=true]:h-10"
           />
           {orgName}

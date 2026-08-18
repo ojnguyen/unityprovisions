@@ -1,6 +1,7 @@
 ---
 import Container from '@components/reusable/ui/Container.astro';
 import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
+import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 
 interface Props {
   videoId: string;
@@ -9,7 +10,12 @@ interface Props {
 
 const { videoId, title } = Astro.props as Props;
 
-// URL from YouTube's public thumbnail service
+// URL from YouTube's public thumbnail service. hqdefault.jpg is always
+// exactly 480x360 for any video — a real, fixed size, not a guess — so
+// it's safe to pass as explicit width/height to ResponsiveImage below.
+// Requires i.ytimg.com to be allowlisted in astro.config.mjs's
+// `image.domains` — Astro's Image pipeline refuses to process any
+// remote domain that isn't explicitly listed there.
 const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 ---
 <!--
@@ -32,10 +38,13 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
           class="group absolute inset-0 flex h-full w-full items-center justify-center"
           aria-label={`Play video: ${title}`}
         >
-          <img
+          <ResponsiveImage
             src={thumbnailUrl}
             alt=""
+            width={480}
+            height={360}
             loading="lazy"
+            radius="none"
             class="absolute inset-0 h-full w-full object-cover"
           />
           <span class="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 transition-transform duration-150 group-hover:scale-110">

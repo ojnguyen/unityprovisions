@@ -12,5 +12,13 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
+  // i.ytimg.com: YouTubeEmbed's click-to-load facade thumbnail
+  // (YouTubeEmbed.astro) is a remote image — Astro's Image pipeline
+  // refuses to process any remote domain that isn't explicitly
+  // allowlisted here.
+  image: {
+    domains: ['i.ytimg.com'],
+  },
+
   integrations: [sitemap(), mdx(), icon()]
 });

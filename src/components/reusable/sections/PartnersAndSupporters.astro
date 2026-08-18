@@ -1,6 +1,7 @@
 ---
 import Container from '@components/reusable/ui/Container.astro';
 import Card from '@components/reusable/ui/Card.astro';
+import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import { Icon } from 'astro-icon/components';
 import type { ImageMetadata } from 'astro';
 import type { Partner } from '@/types';
@@ -33,14 +34,27 @@ const groups = [
   { label: 'Supporters', orgs: supporterOrgs, intro: supportersIntro },
 ].filter((group) => group.orgs.length > 0);
 
-// Partner.logo can be a local `src/assets/...` import (ImageMetadata,
-// processed by Vite) or a plain string URL/path — both need to end up
-// as a plain src string for the <img> tags below. Kept as plain <img>
-// (not ResponsiveImage/astro:assets <Image>) since real logo aspect
-// ratios vary per organization and guessing a fixed width/height for
-// the optimizer risks distorting one.
-function resolveLogoSrc(logo: ImageMetadata | string): string {
-  return typeof logo === 'string' ? logo : logo.src;
+// Logos render through ResponsiveImage (astro:assets), each generated
+// at its own real, full native resolution — not a shared guessed size
+// — so the source Astro works from is always sharp. A local
+// `src/assets/...` import already carries its full real width/height
+// on the ImageMetadata object itself, so this reads `.width`/`.height`
+// straight off it.
+//
+// Display size is a completely separate concern, handled in CSS below
+// via a FIXED width+height (h-12/w-24, h-10/w-20) + object-contain —
+// not just a fixed height with width left to size itself. A logo's
+// real, un-guessed proportions are still fully preserved (object-
+// contain never stretches; a logo narrower or wider than the box just
+// gets letterboxed within it), but the box itself is now identical for
+// every logo, so spacing between them is even and predictable
+// regardless of each source file's real resolution or aspect ratio —
+// leaving that to auto-size (relying on the browser's un-forced "auto"
+// width) is what produced the widely uneven spacing this replaces.
+const STRING_LOGO_FALLBACK = { width: 240, height: 80 };
+
+function getLogoDimensions(logo: ImageMetadata | string): { width: number; height: number } {
+  return typeof logo === 'string' ? STRING_LOGO_FALLBACK : { width: logo.width, height: logo.height };
 }
 ---
 <div class="border-y border-border bg-surface">
@@ -60,31 +74,49 @@ function resolveLogoSrc(logo: ImageMetadata | string): string {
 
           {group.intro ? (
             <div class="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-              {group.orgs.map((org) => (
-                <Card padding="md" bg="bg">
-                  <div class="flex flex-col items-center gap-2 text-center">
-                    {org.logo ? (
-                      <img src={resolveLogoSrc(org.logo)} alt={org.name} class="h-12 object-contain" />
-                    ) : (
-                      <Icon name="lucide:building-2" aria-hidden="true" class="h-8 w-8 text-primary/60" />
-                    )}
-                    <span class="text-sm font-medium text-text-primary">{org.name}</span>
-                  </div>
-                </Card>
-              ))}
+              {group.orgs.map((org) => {
+                const dims = org.logo ? getLogoDimensions(org.logo) : null;
+                return (
+                  <Card padding="md" bg="bg">
+                    <div class="flex flex-col items-center gap-2 text-center">
+                      {org.logo && dims ? (
+                        <ResponsiveImage
+                          src={org.logo}
+                          alt={org.name}
+                          width={dims.width}
+                          height={dims.height}
+                          radius="none"
+                          class="h-12 w-12 object-contain"
+                        />
+                      ) : (
+                        <Icon name="lucide:building-2" aria-hidden="true" class="h-8 w-8 text-primary/60" />
+                      )}
+                      <span class="text-sm font-medium text-text-primary">{org.name}</span>
+                    </div>
+                  </Card>
+                );
+              })}
             </div>
           ) : (
             <div class="flex flex-wrap items-center justify-center gap-3">
-              {group.orgs.map((org) => (
-                org.logo ? (
-                  <img src={resolveLogoSrc(org.logo)} alt={org.name} class="h-10 object-contain" />
+              {group.orgs.map((org) => {
+                const dims = org.logo ? getLogoDimensions(org.logo) : null;
+                return org.logo && dims ? (
+                  <ResponsiveImage
+                    src={org.logo}
+                    alt={org.name}
+                    width={dims.width}
+                    height={dims.height}
+                    radius="none"
+                    class="h-10 w-10 object-contain"
+                  />
                 ) : (
                   <span class="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 text-sm text-text-secondary">
                     <Icon name="lucide:building-2" aria-hidden="true" class="h-3.5 w-3.5 text-primary/60" />
                     {org.name}
                   </span>
-                )
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

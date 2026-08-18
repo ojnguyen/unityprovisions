@@ -3,6 +3,7 @@ import Container from '@components/reusable/ui/Container.astro';
 import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import ExternalLinkCTA from '@components/reusable/ui/ExternalLinkCTA.astro';
+import type { ImageMetadata } from 'astro';
 import type { Project } from '@/types';
 
 type Props = Project;
@@ -20,6 +21,29 @@ const {
 } = Astro.props as Props;
 
 const hasContent = Boolean(image || embedUrl || (ctaLabel && ctaHref));
+
+// ResponsiveImage is asked to generate the screenshot at its own real,
+// full native resolution — not the old shared fixed 800x500 — so the
+// source stays sharp, and a screenshot whose real shape isn't 8:5
+// never gets silently cropped to force that ratio (Astro's default
+// fit crops when width+height don't match the source).
+//
+// Display size is a separate, CSS-only concern, and a different shape
+// of fix than PartnersAndSupporters/StaffCard (§7): there's no
+// uniform-grid box to hit here, just one large screenshot that should
+// scale to fill its wrapper (w-full max-w-3xl, below) at its own real
+// aspect ratio — so w-full h-auto on the image itself, no object-fit,
+// no fixed height. Forcing a fixed box here would crop or letterbox
+// the screenshot, which is the wrong call for a single prominent image
+// (unlike a row of logos or an avatar grid, where a uniform box was
+// the actual goal).
+const STRING_IMAGE_FALLBACK = { width: 800, height: 500 };
+
+function getImageDimensions(src: ImageMetadata | string): { width: number; height: number } {
+  return typeof src === 'string' ? STRING_IMAGE_FALLBACK : { width: src.width, height: src.height };
+}
+
+const imageDims = image ? getImageDimensions(image) : null;
 ---
 <!--
   Two sibling blocks, not one wrapped section — same shape as About's
@@ -43,14 +67,15 @@ const hasContent = Boolean(image || embedUrl || (ctaLabel && ctaHref));
   <div class="border-y border-border bg-surface">
     <Container as="section">
       <div class="flex flex-col items-center gap-6 py-10 text-center md:py-14">
-        {image && (
+        {image && imageDims && (
           <div class="w-full max-w-3xl overflow-hidden rounded-md border border-border">
             <ResponsiveImage
               src={image}
               alt={imageAlt ?? `Screenshot of ${title}`}
-              width={800}
-              height={500}
+              width={imageDims.width}
+              height={imageDims.height}
               radius="none"
+              class="w-full h-auto"
             />
           </div>
         )}
