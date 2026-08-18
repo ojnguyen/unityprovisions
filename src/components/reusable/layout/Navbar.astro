@@ -207,6 +207,13 @@ const currentPath = Astro.url.pathname;
   const SCROLL_ENTER = 50; // px — must exceed this to become "scrolled"
   const SCROLL_EXIT = 10; // px — must drop below this to leave "scrolled"
 
+  // Checks the current scroll position and updates the header's data-scrolled
+  // attribute when it crosses a threshold. Once the page scrolls past 50px,
+  // the header enters the scrolled state; once it returns below 10px, it leaves
+  // that state. The separate enter/exit thresholds create a small dead zone so
+  // the state does not rapidly flip back and forth when scrolling near one
+  // boundary. JavaScript only changes the attribute—the Tailwind classes above
+  // handle all of the resulting visual changes.
   function updateScrolled() {
     const isScrolled = header?.getAttribute('data-scrolled') === 'true';
     const scrollY = window.scrollY;
@@ -217,6 +224,15 @@ const currentPath = Astro.url.pathname;
       header?.setAttribute('data-scrolled', 'false');
     }
   }
+
+  // Prevents the scroll handler from scheduling multiple updates before the browser
+  // has had a chance to render the next frame. The first scroll event schedules
+  // updateScrolled() with requestAnimationFrame and sets ticking to true; any
+  // additional scroll events before that frame are ignored. Once updateScrolled()
+  // runs, ticking is reset to false so the next frame can be scheduled. This keeps
+  // scroll handling synchronized with the browser's rendering cycle instead of
+  // running updateScrolled() for every individual scroll event.
+  // Kind of like a MUTEX lock
 
   let ticking = false;
   window.addEventListener(
