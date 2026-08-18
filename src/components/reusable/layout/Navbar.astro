@@ -233,7 +233,6 @@ const currentPath = Astro.url.pathname;
   // scroll handling synchronized with the browser's rendering cycle instead of
   // running updateScrolled() for every individual scroll event.
   // Kind of like a MUTEX lock
-
   let ticking = false;
   window.addEventListener(
     'scroll',
