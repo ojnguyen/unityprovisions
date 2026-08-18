@@ -8,15 +8,75 @@ import logoMark from '@assets/icons/logo.webp';
 
 const currentPath = Astro.url.pathname;
 ---
-<header class="bg-surface shadow-sm">
+<!--
+  Condenses + goes translucent past SCROLL_THRESHOLD (script below), via a
+  `data-scrolled` attribute + Tailwind's `group-data-[scrolled=true]:`
+  variant — no class-swapping in JS, JS only flips one attribute.
+
+  Base stays bg-surface (sage) — kept deliberately, to preserve the
+  Navbar/Footer pairing (both sage, bookending the page; §6). Only the
+  SCROLLED state's tint changed.
+
+  Scrolled tint is bg-text-secondary/30, not bg-transparent, bg-bg/80
+  (2nd attempt), or bg-surface/70 (1st attempt). Two earlier attempts
+  both failed the same way: any translucent tint drawn from the site's
+  own two content-band colors (sage or white, §6) visually merges into
+  whichever band happens to be scrolling underneath it — sage-on-sage
+  merged into sage bands, and white-on-white would merge into white
+  bands. `--color-text-secondary` (#5c5c5c) is a neutral gray already
+  in the palette — not a full hue away from either sage or white — used
+  here instead of an untracked Tailwind default (gray-500) specifically
+  to stay inside global.css's @theme tokens, matching how every other
+  color decision in this project is sourced. shadow-sm stays on in BOTH
+  states (doesn't drop when scrolled) — that persistent edge, not
+  color-matching, is what actually guarantees the nav/content boundary
+  stays visible regardless of which band is underneath.
+-->
+<header
+  id="site-header"
+  data-scrolled="false"
+  class="group sticky top-0 z-50 bg-surface shadow-sm transition-[background-color] duration-300 data-[scrolled=true]:bg-text-secondary/30 data-[scrolled=true]:backdrop-blur-sm"
+>
   <Container>
     <nav aria-label="Primary">
-      <div class="flex items-center justify-between py-4">
+      <div class="flex items-center justify-between py-4 transition-[padding] duration-300 group-data-[scrolled=true]:py-2">
         <a href="/" class="flex items-center gap-3 text-xl font-bold text-text-primary">
-          <Image src={logoMark} alt="" width={170} height={203} class="h-14 w-auto" />
+          <Image
+            src={logoMark}
+            alt=""
+            width={170}
+            height={203}
+            class="h-14 w-auto transition-[height] duration-300 group-data-[scrolled=true]:h-10"
+          />
           {orgName}
         </a>
 
+        <!--
+          Active link gets a bg-border-interactive/40 pill with plain
+          text-text-primary — swapped from the earlier bg-text-secondary/30
+          neutral gray because border-interactive (#729266, muted
+          sage-green) fits the site's green palette instead of reading as
+          flat gray. Still a solid-enough fill, not a color match, so it
+          doesn't depend on the header's own background state (solid sage
+          vs. translucent+blurred over Hero/PageHeader/body) — same
+          principle that fixed the two earlier attempts (a border-primary
+          outline, exactly as invisible as green text against a blurred
+          green backdrop; and a harsh bg-bg+text-primary white/green
+          pill).
+
+          Inactive links get hover:bg-border-interactive/10 — a lighter
+          fill, not a color change. The old hover:text-primary (green
+          text) had the same bug the active link used to have: hovering a
+          link while the header is translucent over a green PageHeader
+          band made the hover text vanish into the green backdrop. A
+          fill-based hover instead of a text-color change means hover and
+          active now share one visual language (fill weight, not color)
+          and neither depends on what's scrolling underneath. Active/hover
+          are set 30 points apart (40 vs. 10), not the initial 25/15 —
+          at this muted a green, a 10-point gap wasn't visually
+          distinguishable; 30 points reads clearly as two different
+          states.
+        -->
         <ul class="hidden md:flex md:items-center md:gap-6">
           {navigation.map((item) => {
             const isActive = item.href === currentPath;
@@ -33,8 +93,8 @@ const currentPath = Astro.url.pathname;
                     aria-current={isActive ? 'page' : undefined}
                     class={
                       isActive
-                        ? 'font-medium text-primary'
-                        : 'font-medium text-text-primary hover:text-primary'
+                        ? 'rounded-full bg-border-interactive/40 px-3 py-1 font-medium text-text-primary'
+                        : 'rounded-full px-3 py-1 font-medium text-text-primary hover:bg-border-interactive/10'
                     }
                   >
                     {item.label}
@@ -76,8 +136,8 @@ const currentPath = Astro.url.pathname;
                   aria-current={isActive ? 'page' : undefined}
                   class={
                     isActive
-                      ? 'block py-3 font-medium text-primary'
-                      : 'block py-3 font-medium text-text-primary hover:text-primary'
+                      ? 'block rounded-md bg-border-interactive/40 px-3 py-3 font-medium text-text-primary'
+                      : 'block rounded-md px-3 py-3 font-medium text-text-primary hover:bg-border-interactive/10'
                   }
                 >
                   {item.label}
@@ -129,4 +189,52 @@ const currentPath = Astro.url.pathname;
       toggle?.focus();
     }
   });
+
+  // Condense + fade the sticky header once the page scrolls past a small
+  // threshold. Only flips a `data-scrolled` attribute — every visual
+  // change (padding, background opacity, blur, logo size) lives in
+  // Tailwind's group-data-[scrolled=true]: variants on the markup above,
+  // not here. rAF-throttled so this doesn't run on every scroll event.
+  //
+  // Pixel hysteresis only — two thresholds, not one. A single cutoff
+  // means any scroll settling near that exact pixel (mouse-wheel steps,
+  // trackpad micro-jitter) flips the state every frame. The dead zone
+  // between SCROLL_EXIT and SCROLL_ENTER means the current state just
+  // holds unless there's real movement past one edge of it. (A 150ms
+  // time debounce was tried on top of this same day and removed — 50/10
+  // alone was already enough.)
+  const header = document.getElementById('site-header');
+  const SCROLL_ENTER = 50; // px — must exceed this to become "scrolled"
+  const SCROLL_EXIT = 10; // px — must drop below this to leave "scrolled"
+
+  function updateScrolled() {
+    const isScrolled = header?.getAttribute('data-scrolled') === 'true';
+    const scrollY = window.scrollY;
+
+    if (!isScrolled && scrollY > SCROLL_ENTER) {
+      header?.setAttribute('data-scrolled', 'true');
+    } else if (isScrolled && scrollY < SCROLL_EXIT) {
+      header?.setAttribute('data-scrolled', 'false');
+    }
+  }
+
+  let ticking = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateScrolled();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  // Set the correct state immediately (e.g. the page loaded already
+  // scrolled — a reload mid-page, or the browser restoring scroll
+  // position — not just at the very top).
+  header?.setAttribute('data-scrolled', String(window.scrollY > SCROLL_ENTER));
 </script>

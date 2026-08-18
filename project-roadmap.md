@@ -50,13 +50,11 @@ blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
 **Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* `PageHeader` component
-built and wired into About/Team/Projects/Get-Involved/Donate (Aug 17,
-2026) — drop the new/changed files in, then visually verify the
-`bg-primary` band once there's a live/dev-server URL. Responsive check,
-Performance check, and Cross-browser spot check all still need that
-same live or dev-server URL — none of that's possible from this
-environment.
+the current next step only, not a history):* Navbar and `PageHeader`
+are both built and wired in (§7). Remaining: visually verify the
+`PageHeader` band and the Navbar's active-pill-over-Hero-photo
+combination, plus the Responsive/Performance/Cross-browser checks —
+all need a live/dev-server URL, none possible from this environment.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -269,6 +267,7 @@ Defined once in `global.css`'s `@theme` block.
 | `--color-accent` | `#a8592b` | Deep terracotta, ~5:1 vs white text |
 | `--color-accent-hover` | `#79401f` | ~8:1 vs white text |
 | `--color-border` | `#d7e1d1` | |
+| `--color-border-interactive` | `#729266` | Muted sage-green — interactive-element boundaries + Navbar active/hover fills (§7) |
 | `--color-success` | `#2f7d4f` | Unreviewed |
 | `--color-error` | `#b3413b` | Unreviewed |
 
@@ -426,7 +425,28 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   `--color-primary` (only the fill color was changed; the linework is
   the original supplied artwork, trimmed to its content bounding box).
   Kept as `.webp` (lossless, alpha preserved) rather than converted to
-  PNG, matching the format it was supplied in. Displayed at 203px tall 170px wide, along with `h-14`.
+  PNG, matching the format it was supplied in. Displayed at 203px tall
+  170px wide, along with `h-14`.
+
+  Sticky (`position: sticky; top-0; z-50`). A single `data-scrolled`
+  attribute on the `<header>` drives every visual change via
+  `group-data-[scrolled=true]:` Tailwind variants, flipped by an
+  rAF-throttled scroll listener using pixel hysteresis (50px to enter
+  "scrolled", 10px to exit) to avoid flicker at the threshold. On
+  scroll: padding `py-4`→`py-2`, logo `h-14`→`h-10`, background
+  `bg-surface`→`bg-text-secondary/30` + `backdrop-blur-sm`. `shadow-sm`
+  stays on in both states — that's what keeps the nav/content boundary
+  visible regardless of what's scrolling underneath (sage, white, Hero
+  photo, `PageHeader` gradient), not the tint color itself.
+  `--color-text-secondary` (§6) is used for the tint because it's a
+  neutral hue distinct from the site's own sage/white content bands.
+
+  Active nav link: `bg-border-interactive/40` pill (`rounded-full`
+  desktop, `rounded-md` mobile), plain `text-text-primary`. Inactive
+  links: `hover:bg-border-interactive/10`. Both are fills, not text
+  color changes, so they stay legible regardless of what's behind the
+  translucent header. Not `bg-accent/30` — `--color-accent` is reserved
+  for CTA semantics (the Donate button).
 - **Hero** — Home's `<h1>`. `headline/tagline/ctaLabel/ctaHref`
   (required), `subtext?`, `secondaryCtaLabel?/secondaryCtaHref?`
   (paired), `backgroundImage?`. Real photo in use
@@ -718,6 +738,8 @@ pages into one (§3).
       — About/Team/Projects/Get-Involved/Donate all updated; Home's
       photo `Hero` is unchanged and remains the site's only full hero
       treatment.
+- [x] Sticky, condensing Navbar — translucent scrolled state,
+      `border-interactive`-based active/hover link indicators (§7).
 
 ### Phase 6 — Deployment — not started
 - [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
