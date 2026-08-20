@@ -22,40 +22,52 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
   id="watch-our-story" is the scroll target for Hero's optional
   secondary CTA / scroll-cue (see Hero.astro) — added here rather than
   giving Container an id prop, so Container's API stays generic (§7).
+
+  White heading block (asymmetric padding) + separate full-bleed sage
+  band for the actual content — same pattern as ProjectSection/
+  QRCodeDonate/DocumentEmbed: sage is reserved for a section's actual
+  "content" (here, the video facade), never the heading alone (§6/§11).
 -->
 <div id="watch-our-story">
   <Container as="section">
-    <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
+    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
       <SectionHeading title={title} align="center" />
-      <div
-        class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black"
-        data-youtube-facade
-        data-video-id={videoId}
-        data-title={title}
-      >
-        <button
-          type="button"
-          class="group absolute inset-0 flex h-full w-full items-center justify-center"
-          aria-label={`Play video: ${title}`}
-        >
-          <ResponsiveImage
-            src={thumbnailUrl}
-            alt=""
-            width={480}
-            height={360}
-            loading="lazy"
-            radius="none"
-            class="absolute inset-0 h-full w-full object-cover"
-          />
-          <span class="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 transition-transform duration-150 group-hover:scale-110">
-            <svg viewBox="0 0 24 24" class="h-6 w-6 translate-x-0.5 fill-text-primary" aria-hidden="true">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </span>
-        </button>
-      </div>
     </div>
   </Container>
+
+  <div class="border-y border-border bg-surface">
+    <Container as="section">
+      <div class="flex flex-col items-center gap-6 py-10 md:py-14">
+        <div
+          class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black"
+          data-youtube-facade
+          data-video-id={videoId}
+          data-title={title}
+        >
+          <button
+            type="button"
+            class="group absolute inset-0 flex h-full w-full items-center justify-center"
+            aria-label={`Play video: ${title}`}
+          >
+            <ResponsiveImage
+              src={thumbnailUrl}
+              alt=""
+              width={480}
+              height={360}
+              loading="lazy"
+              radius="none"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+            <span class="relative z-10 flex h-16 w-16 items-center justify-center rounded-full bg-white/90 transition-transform duration-150 group-hover:scale-110">
+              <svg viewBox="0 0 24 24" class="h-6 w-6 translate-x-0.5 fill-text-primary" aria-hidden="true">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </Container>
+  </div>
 </div>
 
 <script>

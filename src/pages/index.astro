@@ -1,5 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro';
+import Container from '@components/reusable/ui/Container.astro';
+import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
 import Hero from '@components/reusable/sections/Hero.astro';
 import ImpactStats from '@components/reusable/sections/ImpactStats.astro';
 import MissionStatement from '@components/reusable/sections/MissionStatement.astro';
@@ -38,6 +40,27 @@ import heroImage from '@assets/components/hero.jpg'
     title="Watch Our Story"
   />
 
+  <!--
+    Plain heading for PartnersAndSupporters' brief Home treatment —
+    previously a bare sage band with no heading, no accessible landmark
+    naming what the logos are, and (since YouTubeEmbed picked up its
+    own sage band this session) sitting directly against another sage
+    band with nothing between them. This block solves both at once, the
+    same way every other asymmetric-padding heading on the site
+    introduces its own content below it (ProjectSection, QRCodeDonate,
+    About_Stats, etc.) — so the standalone WhiteSpace buffer tried
+    earlier this session was removed as redundant once this heading
+    took over that job. No subtext/icon — matches About's fuller
+    version's title ("Our Community of Support") in spirit but stays
+    deliberately lighter, consistent with every other "brief" vs
+    "fuller" Home/About pairing (§7).
+  -->
+  <Container as="section">
+    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
+      <SectionHeading title="Our Partners & Supporters" align="center" />
+    </div>
+  </Container>
+
   <PartnersAndSupporters partners={partners} />
 
   <GetInvolvedTeaser
@@ -46,6 +69,14 @@ import heroImage from '@assets/components/hero.jpg'
     subtext="Whether you want to start a branch, volunteer your time, or stay connected, there's a place for you at Unity Provisions."
     ctaLabel="Learn More"
   />
+
+  <!--
+    Divider rule (§11) — GetInvolvedTeaser and ContactForm read as the
+    same section shape (centered heading + single primary action) even
+    though ContactForm also has a small mailto line; "look alike," not
+    "byte-identical," is the bar.
+  -->
+  <div class="border-t border-border"></div>
 
   <ContactForm
     heading="Contact Us"

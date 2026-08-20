@@ -879,6 +879,11 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
 
 - Tailwind v4 CSS-first; `tsconfig.json` explicit `./src/...` aliases,
   no `baseUrl`.
+- Prefer scale-based spacing utilities (h-100) over pixel arbitrary 
+  values (h-[400px]) whenever the unmodified default --spacing 
+  scale (§6) already lands on the same value — arbitrary brackets stay 
+  reserved for genuinely off-scale values (max-w-[90rem], gradient stops, 
+  mask-y-from-accent).
 - `cn()` zero-dependency; add `tailwind-merge` only for a real
   class-conflict need.
 - `types.ts` = shared cross-component types; component-local types stay
