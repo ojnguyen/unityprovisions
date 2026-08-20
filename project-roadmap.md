@@ -1,5 +1,5 @@
 <!--
-Synced against this Project's knowledge base on Aug 16, 2026 (the repo
+Synced against this Project's knowledge base on Aug 20, 2026 (the repo
 isn't actually live-connected — its content lives in Project Knowledge,
 reconstructed from search results, not read as one file). Diff against
 your local copy before treating this as canonical if you've made edits
@@ -14,13 +14,10 @@ any other context. **Keep it that way, and keep it concise** — facts
 and current decisions, not narrative history.
 
 **How to keep it that way when editing:** one line per fact. A "why"
-only when it prevents a future mistake (e.g. "not `type=reset` — X
-would break Y"), condensed to a sentence, not a paragraph. A "why," a
-verification record ("checked against the live site"), or a specific
-implementation gotcha should be trimmed to one line when this doc gets
-edited — never deleted outright. There's a real difference between
-cutting *narration* ("this session we...", a superseded "was X" value)
-and cutting a *fact or rationale* — only the former is fair game.
+only when it prevents a future mistake, condensed to a sentence, not a
+paragraph. State a convention once, in the section it belongs to, and
+reference it (`§6`, `§11`) everywhere else it applies — don't restate
+the rationale at every point of use.
 
 ---
 
@@ -42,26 +39,25 @@ Participation and giving happen via clearly labeled external links
 ## 2. How to Resume This Project
 
 **Current phase:** Phase 5 (Build Pages) is complete — all six pages
-built. Next up: the Cross-Cutting checklist (§9), in progress, then
-Phase 6 (Deployment). Phase 4 (Shared Infrastructure) is complete.
+built. Currently in the Cross-Cutting checklist (§9), then Phase 6
+(Deployment). Phase 4 (Shared Infrastructure) is complete.
 
 **Status source of truth:** §5's file tree (✅ Built / 📋 Planned / 🔶
 blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
-**Continue here** *(replaced each session, not appended to — this is
-the current next step only, not a history):* Every local `<img>` in the
-codebase has been converted to `ResponsiveImage`/`astro:assets` and
-live-verified against a real dev server (§7 — ResponsiveImage,
-PartnersAndSupporters, StaffCard, ProjectSection, About_Heading,
-About_BiggestEvent, YouTubeEmbed; shared logic extracted to
-`utils/images.ts`). `sharp` had to be installed for local images to
-render at all (§4) — check that first if local images ever go blank
-again. Remaining: visually verify the `PageHeader` band and the
-Navbar's active-pill-over-Hero-photo combination, plus the Responsive/
-Cross-browser checks and a real Lighthouse run — all still need a
-live/dev-server URL beyond the dev-server checks already done this
-session.
+**Continue here** *(replaced each session, not appended to):* A
+`Divider` UI primitive (§7) is now placed at every white-white section
+seam site-wide (§11) — three sections initially missed the associated
+top-padding trim (`ContactForm`, `About_Team`, `Get-Involved_ContactList`)
+and have been fixed. `PageHeader`'s §7 entry also had real detail
+restored after a prior full-document regeneration in this chat had
+dropped it — worth diffing any regeneration, including this one,
+against the actual repo rather than trusting it by default.
+
+Remaining: Responsive/Performance/Cross-browser checks and comment
+cleanup (§9) — all still need a live/dev-server URL, or for comment
+cleanup, a style example from the project owner.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -118,10 +114,10 @@ session.
   `i.ytimg.com` (YouTubeEmbed's remote thumbnail, §7) — Astro's Image
   pipeline refuses any remote domain not listed here.
 - **Sharp** is a required dependency for `astro:assets`/`<Image>` to
-  generate anything locally — confirmed missing and installed this
-  session. Without it, every local image silently fails at render time
-  (`Could not find Sharp` in the dev server log, not a build/type
-  error) — check for this first if local images ever go blank again.
+  generate anything locally. Without it, every local image silently
+  fails at render time (`Could not find Sharp` in the dev server log,
+  not a build/type error) — check for this first if local images ever
+  go blank again.
 - Path aliases (`tsconfig.json`): `@components/*`, `@layouts/*`,
   `@styles/*`, `@data/*`, `@utils/*`, `@assets/*`, `@/types`. No
   `baseUrl` (deprecated in TS 6.0) — every alias has its own
@@ -159,7 +155,8 @@ session.
   `Get-Involved`). Examples: `About_Heading.astro`,
   `Get-Involved_BranchFounder.astro`.
 - Home has **no** `page-specific/home/` folder — every Home section is
-  a `reusable/sections/` component, assembled directly in `index.astro`.
+  a `reusable/sections/` component (plus one inline heading block and
+  two `Divider`s), assembled directly in `index.astro`.
 - **Assets:** dash-case filenames (e.g.
   `esther-r-sanger-center-for-compassion.jpg`), camelCase import
   identifiers (e.g. `ryanPhoto`). Organized into semantic subfolders
@@ -173,21 +170,21 @@ src/
 │   ├── components/hero.jpg                                 — Hero background (index.astro)
 │   ├── icons/logo.webp                                     — Navbar logo mark (§7)
 │   │
-│   ├── team/ryan-nguyen.webp                               — Ryan Nguyen headshot (About + Team)
+│   ├── team/ryan-nguyen.webp                                — Ryan Nguyen headshot (About + Team)
 │   ├── projects-and-events/
-│   │   ├── biggest-event.webp                              — North Quincy branch's Dec 2024 donation photo
-│   │   └── agriscan.webp                                   — AgriScan screenshot (projects.ts)
+│   │   ├── biggest-event.webp                               — North Quincy branch's Dec 2024 donation photo
+│   │   └── agriscan.webp                                    — AgriScan screenshot (projects.ts)
 │   ├── partners-and-supporters/
 │   │   ├── sodexo.jpg
-│   │   ├── ymca.jpg                                        — shared: Wang YMCA, Mystic Valley YMCA, YMCA
+│   │   ├── ymca.jpg                                         — shared: Wang YMCA, Mystic Valley YMCA, YMCA
 │   │   ├── food4philly.jpg
 │   │   ├── esther-r-sanger-center-for-compassion.jpg
 │   │   ├── walmart.jpg
 │   │   └── google.jpg
 │   │   (Stephen J. Brady Stop Hunger has no logo yet — text badge)
-│   └── donate/                                             — empty, intentionally: the QR is generated
-│                                                              inline as static SVG (§7 QRCodeDonate), not
-│                                                              a supplied image — nothing belongs here.
+│   └── donate/                                              — empty, intentionally: the QR is generated
+│                                                               inline as static SVG (§7 QRCodeDonate), not
+│                                                               a supplied image — nothing belongs here.
 │
 ├── components/
 │   ├── reusable/
@@ -198,7 +195,8 @@ src/
 │   │   │   ├── ResponsiveImage.astro       ✅
 │   │   │   ├── Container.astro             ✅
 │   │   │   ├── ExternalLinkCTA.astro       ✅
-│   │   │   └── WhiteSpace.astro            ✅ — plain white spacer
+│   │   │   ├── WhiteSpace.astro            ✅ — plain white spacer
+│   │   │   └── Divider.astro               ✅ — full-bleed hairline (§11)
 │   │   ├── layout/
 │   │   │   ├── Navbar.astro                ✅
 │   │   │   └── Footer.astro                ✅
@@ -320,9 +318,11 @@ assuming it's bigger.
 ### Spacing, Radius, Shadow
 Tailwind default breakpoints, no overrides. Content max-width
 `max-w-[90rem]` (1440px, `Container.astro`). Radius: sm 4px / md 8px /
-lg 16px. Shadow: sm/md/lg at 0.06/0.08/0.12 alpha. Both reviewed
-against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
-— final values, not placeholder guesses.
+lg 16px. Shadow: sm/md/lg at 0.06/0.08/0.12 alpha. Prefer scale-based
+spacing utilities (`h-100`) over pixel arbitrary values (`h-[400px]`)
+whenever the unmodified default `--spacing` scale already lands on the
+same value — arbitrary brackets stay reserved for genuinely off-scale
+values (`max-w-[90rem]`, gradient stops, `mask-y-from-accent`).
 
 ### Component Style Conventions
 - **Buttons:** primary (solid) / secondary (outline) / accent (solid) —
@@ -337,20 +337,23 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   `bg-primary` bands.
 - **Sage (`bg-surface`)** is reserved for a section's actual **content**
   (a data grid, screenshot, embed, QR code) — never a heading block
-  alone. The heading stays in its own white block above it, using
-  **asymmetric** padding (`pt-12 md:pt-16 pb-4 md:pb-6`) to visually
-  attach to what follows, rather than floating equidistant between it
-  and whatever comes before.
+  alone. The heading stays in its own white block above it.
+- **Heading top padding:** `pt-12 md:pt-16` when preceded by a
+  color-band transition (a sage band or gradient band like `PageHeader`/
+  `Hero` ending); trimmed to `pt-8 md:pt-10` when preceded by a
+  `Divider` (§11) instead, so the hairline reads as attached to what
+  follows rather than floating in the gap. Bottom padding is unaffected
+  either way — only the section *after* a boundary ever gets its top
+  trimmed. A symmetric `py-12 md:py-16` section becomes `pt-8 pb-12
+  md:pt-10 md:pb-16` if it later needs the trim; an already-asymmetric
+  `pt-12 pb-4 md:pt-16 md:pb-6` one just changes its `pt`/`md:pt` values.
 - **Interior page titles (`bg-linear-to-l from-primary-hover/90 to-primary-hover`)**
   — every page except Home uses `PageHeader` (§7) for its title band: a
   subtle horizontal gradient, white text, centered, `py-16 md:py-20`.
   Shorter than Home's `Hero` (`py-24 md:py-32`) and no CTA row, so
   Home's full photo hero stays the site's one "biggest" visual
   statement — interior pages get a consistent, smaller, color-only echo
-  of it instead of repeating it. Added Aug 17, 2026 to replace flat
-  white per-page heading blocks; switched same day from a flat
-  `bg-primary` fill to this gradient after a direct visual comparison
-  on the live page.
+  of it instead of repeating it.
   - **Photo legibility:** a CSS `mask-image` (Hero's `mask-y-from-accent`
   utility class) is the established pattern for text-over-photo
   sections — not a gradient-overlay `<div>`.
@@ -361,31 +364,26 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   (MissionStatement, GetInvolvedTeaser, About's Team CTA, About's Annual
   Report, Get Involved's Stay Connected). Sections with their own anchor
   (photo, band, checklist, grid) skip the badge. Each section's icon
-  should be distinct from every other section's — a repeated icon reads
-  as those two sections being related when they aren't. Current
-  assignments: `lucide:heart` (Our Mission), `lucide:handshake` (Get
-  Involved), `lucide:users` (Meet the People Behind It), `lucide:book-open`
-  (Annual Report), `lucide:mail` (Stay Connected). Check this list
-  before adding a new icon-badge section.
+  should be distinct from every other section's. Current assignments:
+  `lucide:heart` (Our Mission), `lucide:handshake` (Get Involved),
+  `lucide:users` (Meet the People Behind It), `lucide:book-open`
+  (Annual Report), `lucide:mail` (Stay Connected). Home's Partners &
+  Supporters heading deliberately skips the badge — it has its own
+  visual anchor (the logo grid below).
 - `SectionHeading`'s `eyebrow` is opt-in — only when it adds real
   information the title doesn't already carry. The founder story's "Our
   Story" and Get Involved's "Branch Founder" eyebrows are the
-  deliberate exceptions (each adds real info); Home's sections never
-  use it.
+  deliberate exceptions; Home's sections never use it.
 - If a page's last section before Footer is sage, insert `WhiteSpace`
   (§7) so the two sage bands don't visually merge.
 - **Images (`ResponsiveImage`, §7):** request `width`/`height` at the
   image's own real, generous resolution — its full native size for a
   local import, comfortably above any real display size for a remote
   one — never a size tuned to the display box. Display size is a
-  separate, per-caller CSS concern: a fixed box + `object-contain`
-  (never crops — logos) or `object-cover` (crops to fill — headshots)
-  for a grid/row that needs uniform items, or `w-full h-auto` for a
-  single image that should scale to its container. Conflating request
-  size with display size, in either direction, is a real, already-hit
-  bug: too-small a request upscales into visible blur on high-DPI
-  screens; leaving width unconstrained in CSS while requesting a large
-  size produces uneven, spread-out layout.
+  separate CSS concern: a fixed box + `object-contain` (logos,
+  never crops) or `object-cover` (headshots, crops to fill) for a
+  grid/row that needs uniform items, or `w-full h-auto` for a single
+  image that should scale to its container.
 
 ### Accessibility
 - `:focus-visible` — 2px solid primary, 2px offset, global.
@@ -393,17 +391,25 @@ against actual usage (Card, Button, inputs, Hero/DonateBanner imagery)
   an already-labeled control excepted, e.g. Hero's background,
   YouTubeEmbed's thumbnail, Navbar's logo mark). All decorative icons
   `aria-hidden`.
+- Alt text shouldn't lead with "photo of," "image of," or "picture
+  of" — a screen reader already announces the element is an image.
+  Astro's own accessibility check flags this. (`ProjectSection`'s
+  `` `Screenshot of ${title}` `` fallback alt may hit the same check
+  once exercised; not yet changed.)
 - Every form input has a real `<label>`. Icon-only controls get
   `aria-label`.
 - `<a>`/`<button>` never substituted for each other.
 - Mobile nav: full keyboard operability + correct focus management.
 - Viewport meta includes `initial-scale=1` — required for `md:`
   breakpoints to behave correctly on real phones.
-- Contrast: full systematic pass done (audit doc), every real text
-  combination clears WCAG AA (most AAA). `ContactForm`'s inputs use
-  `--color-border-interactive` (`#729266`) and `bg-bg` — a separate
-  token from the decorative `--color-border`, since interactive-element
-  boundaries need 3:1 contrast under WCAG 1.4.11.
+- Contrast: full systematic pass done (`accessibility-seo-audit.md`),
+  every real text combination clears WCAG AA (most AAA). `ContactForm`'s
+  inputs use `--color-border-interactive` (`#729266`) and `bg-bg` — a
+  separate token from the decorative `--color-border`, since
+  interactive-element boundaries need 3:1 contrast under WCAG 1.4.11.
+- Every content section should have a heading a screen-reader user can
+  navigate by — a bare logo/image grid with no heading is a real gap
+  even when each individual image has good `alt` text.
 
 ---
 
@@ -421,23 +427,14 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 - **SectionHeading** — `as?`(h2), `icon?`, `eyebrow?`, `title`(required),
   `subtext?`, `align?`(left). Text colors hardcoded — components on
   colored backgrounds write custom heading markup instead. Renders the
-  circular icon badge (§6) internally when `icon` is passed — this
-  replaced 4 separate hand-rolled copies of the same badge markup
-  (`MissionStatement`, `GetInvolvedTeaser`, `About_Team`,
-  `Get-Involved_ContactList`, all below), which now just forward `icon`
-  through instead. Two nested wrappers internally: the icon sits above
-  an inner `eyebrow`/`title`/`subtext` group, so the badge gets its own
-  larger gap without disturbing the tighter spacing between the text
-  elements. Omitting `icon` renders identically to before this existed.
+  circular icon badge (§6) internally when `icon` is passed.
 - **Card** — `padding?`(md), `bg?: surface|bg`(surface). No `class`
   pass-through — wrap in an outer `<div>` for width constraints.
 - **ResponsiveImage** — wraps `astro:assets`'s `<Image/>`. `src`,
-  `alt`, `width`, `height` all required, for both a local `ImageMetadata`
-  src and a remote `string` src; `radius?`(md), `loading?`(lazy),
+  `alt`, `width`, `height` all required; `radius?`(md), `loading?`(lazy),
   `class?` (merged in after the radius class). `width`/`height` should
   be the image's real, generous resolution, not its display size —
-  see §6 "Images" for why, and PartnersAndSupporters/StaffCard/
-  ProjectSection below for the per-context display-size treatment.
+  see §6 "Images."
 - **Container** — `as?`(div), `maxWidth?`(`max-w-[90rem]`). No `id` —
   wrap in an outer `<div id>` if a scroll anchor is needed.
 - **ExternalLinkCTA** — wraps `Button`, hardcodes
@@ -447,6 +444,15 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   last section is sage so it doesn't merge into Footer's sage
   (Projects, Donate use it; About and Get Involved don't need it —
   both end white).
+- **Divider** — no props. `<div class="border-t border-border">`,
+  full-bleed hairline. Placed at any section seam whose two touching
+  edges are both white, regardless of whether either section contains
+  sage elsewhere in itself (§11). Current placements: `About_Heading`/
+  `About_BiggestEvent`, `About_BiggestEvent`/`About_Stats`,
+  `About_Stats`/`About_PartnersAndSupporters`, `About_AnnualReport`/
+  `About_Team`, Home's `MissionStatement`/`YouTubeEmbed`, Home's
+  `GetInvolvedTeaser`/`ContactForm`, `Get-Involved_BranchFounder`/
+  `Get-Involved_ContactList`.
 
 **layout/**
 - **Navbar** — 6 nav items + orgName + logo mark. Separate
@@ -459,14 +465,12 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   Connected only. Logo mark (`astro:assets` `<Image>`,
   `@assets/icons/logo.webp`) sits inside the same `/` link as
   `orgName`, `alt=""` (decorative — the link's accessible name already
-  comes from the visible org-name text, §6). This is Unity Provisions'
-  real logo — a sketched spoon-and-branches illustration, supplied as
-  white line art on transparent and recolored here to
-  `--color-primary` (only the fill color was changed; the linework is
-  the original supplied artwork, trimmed to its content bounding box).
-  Kept as `.webp` (lossless, alpha preserved) rather than converted to
-  PNG, matching the format it was supplied in. Displayed at 203px tall
-  170px wide, along with `h-14`.
+  comes from the visible org-name text, §6). Real Unity Provisions
+  logo — a sketched spoon-and-branches illustration, supplied as white
+  line art on transparent and recolored here to `--color-primary`
+  (only the fill color changed; linework is the original supplied
+  artwork). Kept as `.webp` (lossless, alpha preserved). Displayed at
+  `h-14` (203×170 real size).
 
   Sticky (`position: sticky; top-0; z-50`). A single `data-scrolled`
   attribute on the `<header>` drives every visual change via
@@ -476,9 +480,8 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   scroll: padding `py-4`→`py-2`, logo `h-14`→`h-10`, background
   `bg-surface`→`bg-text-secondary/30` + `backdrop-blur-sm`. `shadow-sm`
   stays on in both states — that's what keeps the nav/content boundary
-  visible regardless of what's scrolling underneath (sage, white, Hero
-  photo, `PageHeader` gradient), not the tint color itself.
-  `--color-text-secondary` (§6) is used for the tint because it's a
+  visible regardless of what's scrolling underneath, not the tint color
+  itself. `--color-text-secondary` is used for the tint because it's a
   neutral hue distinct from the site's own sage/white content bands.
 
   Active nav link: `bg-border-interactive/40` pill (`rounded-full`
@@ -487,93 +490,72 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   color changes, so they stay legible regardless of what's behind the
   translucent header. Not `bg-accent/30` — `--color-accent` is reserved
   for CTA semantics (the Donate button).
-- **Hero** — Home's `<h1>`. `headline/tagline/ctaLabel/ctaHref`
-  (required), `subtext?`, `secondaryCtaLabel?/secondaryCtaHref?`
-  (paired), `backgroundImage?`. Real photo in use
-  (`@assets/components/hero.jpg`) with `mask-y-from-accent` legibility
-  mask, gradient fallback otherwise. `text-3xl` only, no `md:` override
-  (typography gotcha, §6). No scroll-cue arrow (removed — read as
-  distracting). Still no `SectionHeading` — needs custom white-text
-  styling on a colored/photo background, same reasoning as
-  `DonateBanner`.
 - **Footer** — nav links, Email List/Linktree, socials, phone,
   copyright (`new Date().getFullYear()`). Plain `<a>`, not
   `ExternalLinkCTA` (too heavy for a dense link row).
 
 **sections/**
+- **Hero** — Home's `<h1>`. `headline/tagline/ctaLabel/ctaHref`
+  (required), `subtext?`, `secondaryCtaLabel?/secondaryCtaHref?`
+  (paired), `backgroundImage?`. Real photo in use
+  (`@assets/components/hero.jpg`) with `mask-y-from-accent` legibility
+  mask, gradient fallback otherwise. `text-3xl` only, no `md:` override
+  (typography gotcha, §6). No scroll-cue arrow. Still no `SectionHeading`
+  — needs custom white-text styling on a colored/photo background,
+  same reasoning as `DonateBanner`.
 - **ImpactStats** — stat grid, 2/4 stats live from a Google Sheet.
   `stats: Stat[]`. Full-bleed sage band. No heading on Home; About wraps
-  its own `SectionHeading` ("Our Impact") with asymmetric padding.
-  Live sheet: ID `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid
-  `638911803`, range `B1:C6` (must stay scoped to the summary block —
-  widening it into the donation log below breaks Google's column-type
-  inference). Matches exact label text `"Total (lbs)"`/`"Money
-  Collected ($)"` in column B; falls back to `stats.ts` + a
-  `console.warn` if unreachable/unshared. Sheet sharing confirmed set
-  to "Anyone with the link – Viewer" by the project owner (Aug 17,
-  2026) — no longer blocked on sharing; end-to-end live-fetch
-  verification still needs a live/dev-server URL, same as
-  Responsive/Cross-browser (§9). Live homepage reports 6,180+ lbs /
-  $21,376+ / 35+ branches / 8 countries — behind `stats.ts`'s fallback
-  values; not manually synced, since the sheet is the intended source
-  of truth once shared correctly.
-- **MissionStatement** — `heading`, `body`(required), `icon?` (forwarded
-  straight to `SectionHeading`, §7). Real copy verified word-for-word
-  against the live site's "Our Mission" section — exact match.
+  its own `SectionHeading` ("Our Impact"). Live sheet: ID
+  `14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w`, gid `638911803`,
+  range `B1:C6` (must stay scoped to the summary block — widening it
+  into the donation log below breaks Google's column-type inference).
+  Matches exact label text `"Total (lbs)"`/`"Money Collected ($)"` in
+  column B; falls back to `stats.ts` + a `console.warn` if
+  unreachable/unshared. Sheet sharing confirmed "Anyone with the link –
+  Viewer" — end-to-end live-fetch verification still needs a
+  live/dev-server URL (§9).
+- **MissionStatement** — `heading`, `body`(required), `icon?`. Real
+  copy verified word-for-word against the live site's "Our Mission"
+  section. A `Divider` sits below this, before `YouTubeEmbed`.
 - **YouTubeEmbed** — `videoId`, `title` (both required). Click-to-load
   facade (thumbnail + play button) — nothing from YouTube loads until
   clicked, then swaps in a real `youtube-nocookie.com` iframe (avoids
-  setting tracking cookies until the visitor opts in). Deliberate
-  improvement over the live site's eager iframe. Wrapped in
+  setting tracking cookies until the visitor opts in). Wrapped in
   `<div id="watch-our-story">` — the scroll target for Hero's secondary
-  CTA — rather than giving `Container` an `id` prop, to keep its API
-  generic. Thumbnail renders via `ResponsiveImage`, not a plain `<img>`
-  — `hqdefault.jpg`'s real, fixed 480×360 passed explicitly (a known
-  size, not read via `getImageDimensions()`, since this is a single
-  hardcoded remote URL, not a per-item local/string choice). Requires
-  `i.ytimg.com` in `astro.config.mjs`'s `image.domains` (§4). `alt=""`
-  (decorative, inside a labeled button).
+  CTA. Thumbnail via `ResponsiveImage` — `hqdefault.jpg`'s real, fixed
+  480×360 passed explicitly. Requires `i.ytimg.com` in
+  `astro.config.mjs`'s `image.domains` (§4). `alt=""` (decorative,
+  inside a labeled button). White heading + separate full-bleed sage
+  band for the facade itself (§6 — sage is for content, and a video is
+  content, same as a screenshot/data grid/QR code).
 - **PartnersAndSupporters** — `partners`(required),
   `partnersIntro?/supportersIntro?` — presence of intro copy switches
   Home's compact badge row into About's fuller card-grid treatment.
-  Full-bleed sage band. Verified against live site: partner/supporter
-  lists match `partners.ts`. Logos render via `ResponsiveImage`, not a
-  plain `<img>` — each generated at its own real native resolution
-  (`utils/images.ts`'s `getImageDimensions()`, reading `.width`/
-  `.height` off local `ImageMetadata`; a plain-string logo, unused by
-  any real data today, falls back to a 240×80 box), displayed in a
-  fixed `h-12 w-12` (grid) / `h-10 w-10` (badge row) box with
-  `object-contain` — never crops a logo, and keeps spacing even
-  regardless of each file's real shape or resolution.
-- **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`
-  (forwarded to `SectionHeading`, §7). `href="/get-involved"`
-  hardcoded, `variant="primary"`. Home passes `lucide:handshake`,
-  distinct from `About_Team`'s `lucide:users` — see the distinct-icon
-  rule in §6.
+  Full-bleed sage band. Logos render via `ResponsiveImage`, each at its
+  own real native resolution (`utils/images.ts`'s
+  `getImageDimensions()`), displayed in a fixed `h-12 w-12` (grid) /
+  `h-10 w-10` (badge row) box with `object-contain`. Home's usage
+  precedes this with a plain white heading ("Our Partners &
+  Supporters," no subtext/icon) — added since the bare band previously
+  had no landmark (§6 accessibility).
+- **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`.
+  `href="/get-involved"` hardcoded, `variant="primary"`. Home passes
+  `lucide:handshake`, distinct from `About_Team`'s `lucide:users` (§6).
+  A `Divider` sits between this and `ContactForm` below.
 - **ContactForm** — `heading`, `subtext?`. Fields: Name*/Email*/
   Message*/optional "where'd you hear about us"/Send. No file
   attachment (spam/security surface for a small org). Collapsed behind
   "Drop Us a Line!" (same disclosure pattern as Navbar). Submits via a
   hand-written `fetch()` POST to Formspree (`Accept: application/json`
-  for a same-page JSON response instead of a redirect) — this is
-  functionally the same technique Formspree's own AJAX guide
-  recommends, just without their `@formspree/ajax` package, since the
-  custom success/error UI and focus management here already cover what
-  that package would provide. Endpoint is live and confirmed working:
-  `https://formspree.io/f/xbgravll` (§10).
+  for a same-page JSON response instead of a redirect). Endpoint live
+  and confirmed working: `https://formspree.io/f/xbgravll` (§10). A
+  `Divider` sits above this, from `GetInvolvedTeaser`.
 - **DonateBanner** — `heading/subtext/ctaLabel`(required, no defaults —
-  same prop shape as `GetInvolvedTeaser`, its closest sibling: both are
-  closing-teaser bands whose destination is hardcoded inside the
-  component, not exposed as a prop, so it can't be redirected).
-  `href="/donate"` hardcoded. `bg-primary-hover` band (not
-  `bg-primary` — matches the focus-ring color, which would be invisible
-  against a same-color background). Home only, not Donate — `QRCodeDonate`
-  already covers that page. Not a floating/sitewide widget like the live
-  site's — no floating-UI pattern exists in this codebase, and it would
-  read as pushy across every page for a young nonprofit still building
-  trust. Serves a different purpose than Hero/Navbar's donate CTAs: a
-  second ask, positioned deliberately after a full read-through, once
-  the earlier CTAs are scrolled out of view — not a redundant duplicate.
+  same prop shape as `GetInvolvedTeaser`, both closing-teaser bands).
+  `href="/donate"` hardcoded. `bg-primary-hover` band (not `bg-primary`
+  — matches the focus-ring color, which would be invisible against a
+  same-color background). Home only, not Donate — `QRCodeDonate`
+  already covers that page.
 - **PageHeader** — `title`(required), `subtext?`, `eyebrow?`.
   `bg-linear-to-l from-primary-hover/90 to-primary-hover` band (a
   subtle horizontal gradient — switched from flat `bg-primary` on Aug
@@ -581,61 +563,33 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   text, centered — the interior-page title treatment for
   About/Team/Projects/Get-Involved/Donate. Custom heading markup, not
   `SectionHeading` (same reasoning as `Hero`/`DonateBanner`). Shorter
-  than `Hero` (`py-16 md:py-20` vs `py-24 md:py-32`), no CTA row —
-  `Hero` remains the only full-height/photo treatment, reserved for
-  Home. Base tone is now `primary-hover`, the same token `DonateBanner`
-  uses — a deliberate, moodier shift from the original `primary` fill.
-  White text already verified 10.81:1 AAA against solid `primary-hover`
+  than `Hero` (`py-16 md:py-20` vs `py-24 md:py-32`), no CTA row.
+  White text verified 10.81:1 AAA against solid `primary-hover`
   (`accessibility-seo-audit.md`); the 90%-opacity end is slightly
-  lighter (blends toward the white page background) but still clears
-  AAA by estimate (~8:1) — not independently re-audited, worth a real
-  spot-check alongside the still-open Responsive/Cross-browser items
-  (§9). Replaces each page's previous hand-rolled `Container`+
-  `SectionHeading` heading block — About's was previously left-aligned;
-  now centered like the other four, a deliberate consistency change.
-  Added Aug 17, 2026.
+  lighter but still clears AAA by estimate (~8:1) — not independently
+  re-audited, worth a real spot-check alongside Responsive/Cross-browser
+  (§9). Replaced each page's previous hand-rolled heading block —
+  About's was previously left-aligned; now centered like the other
+  four. Added Aug 17, 2026.
 
 **staff/**
 - **StaffCard/StaffGrid** — `StaffMember` (`name/role` required,
   `email?/photo?`); `members: StaffMember[]`. `photo` optional — falls
   back to a placeholder avatar (`lucide:user`, 160×160) when unset.
   Ryan Nguyen has a real photo; the other 7 don't yet. Card
-  `bg="surface"`. Email renders as a visible `mailto:` link with a small
-  `lucide:mail` icon, same treatment as About's contact email and
-  Footer's phone link. Grid: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`,
-  `w-full` set on the grid itself so it fills its parent regardless of
-  the flex-column wrapper it sits inside (same fix `PartnersAndSupporters`'s
-  grid needed). Starts at 1 column, not 2 like `PartnersAndSupporters`'s
-  org-card grid — a staff card carries more content (photo+name+role+
-  email) than an org badge, so it needs the extra width on small screens.
-  Photo renders via `ResponsiveImage` at its own real native resolution
-  (`getImageDimensions()`, same as PartnersAndSupporters; a plain-string
-  photo, unused today, falls back to a 320×400 box), displayed in the
-  same 160px (`h-40 w-40`) box as the fallback icon, `object-cover` —
-  not PartnersAndSupporters' `object-contain`, since cropping a
-  headshot to fill a square avatar is the normal, desired look, unlike
-  a logo, which must never be cropped.
+  `bg="surface"`. Email renders as a visible `mailto:` link with a
+  small `lucide:mail` icon. Grid: `grid-cols-1 sm:grid-cols-2
+  lg:grid-cols-4`. Photo via `ResponsiveImage`, `object-cover` (crops
+  to fill an avatar — unlike a logo, which must never crop).
 
 **projects/**
-- **ProjectSection** — `Project`-typed props. White heading block
-  (asymmetric padding) + separate full-bleed sage band for content
-  (screenshot or `embedUrl` iframe) + CTA. Relief Route embeds
-  `reliefroute.unityprovisions.org` directly via a plain, always-loaded
-  `<iframe>` (`loading="lazy"` only) — **not** the click-to-load JS
-  facade `YouTubeEmbed` uses. This is a deliberate, project-owner-
-  approved exception to that default, not a new precedent: they
-  confirmed the original live site embeds the same tool successfully on
-  mobile. Don't assume a future third-party/self-hosted embed gets the
-  same direct treatment without asking first — `YouTubeEmbed`'s facade
-  pattern is still the fallback default for anything not explicitly
-  confirmed this way. Screenshot renders via `ResponsiveImage` at its
-  own real native resolution (`getImageDimensions()`; a plain-string
-  image falls back to an 800×500 box), not the old shared fixed
-  800×500 (which risked cropping a screenshot whose real shape wasn't
-  8:5) — displayed at `w-full h-auto`, no `object-fit`, since a single
-  prominent screenshot should scale to its wrapper at its own real
-  aspect ratio rather than fit a uniform box like the logos/photos
-  above.
+- **ProjectSection** — `Project`-typed props. White heading block +
+  separate full-bleed sage band for content (screenshot or `embedUrl`
+  iframe) + CTA. Relief Route embeds `reliefroute.unityprovisions.org`
+  directly via a plain, always-loaded `<iframe>` — **not** the
+  click-to-load facade `YouTubeEmbed` uses. A deliberate,
+  project-owner-approved exception, not a new precedent. Screenshot via
+  `ResponsiveImage` at its own real native resolution, `w-full h-auto`.
 
 **donate/**
 - **QRCodeDonate** — `heading/subtext/ctaLabel`(required). `donateUrl`
@@ -653,33 +607,33 @@ Used exactly once each; doesn't isolate a reusable concern.
 - **About_Heading** — `PageHeader` (eyebrow "Our Story", h1 "Is There
   Dinner?") + the founder story below: photo/prose. Pounds/dollars kept
   deliberately vague, pointing to `ImpactStats` below; branch/country
-  counts via `getStatValue()`. Photo: `ryanPhoto`, requested at its own
-  real native resolution (`ryanPhoto.width`/`.height`, read directly
-  off its `ImageMetadata`) — same pattern as About_BiggestEvent/
-  StaffCard/PartnersAndSupporters/ProjectSection (§6 "Images"),
-  `loading="eager"` since it's above the fold.
+  counts via `getStatValue()`. Photo: `ryanPhoto`, own real native
+  resolution, `loading="eager"` since it's above the fold. A `Divider`
+  sits below this, before `About_BiggestEvent`.
 - **About_BiggestEvent** — North Quincy branch's 1,025 lb Dec 2024
-  donation. Photo: `bigEventPhoto`, requested at its own real native
-  resolution (read directly off its `ImageMetadata`, not the old
-  hardcoded 600×400), lazy-loaded (`ResponsiveImage`'s default).
-  Display size handled entirely by its existing `max-w-[400px]`
-  wrapper + Tailwind's default `max-width:100%`/`height:auto` — no
-  separate class needed, same pattern as the founder photo's wrapper.
+  donation. Photo: `bigEventPhoto`, own real native resolution,
+  `loading="eager"` (corrected by the project owner — was previously
+  documented as lazy). Alt text corrected to drop a redundant leading
+  "Photo from" (§6). A `Divider` sits below this too, before
+  `About_Stats`.
 - **About_Stats** — `ImpactStats` (fuller) + 8-country caption (US,
-  Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England).
+  Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England). A
+  `Divider` sits below this, before `About_PartnersAndSupporters`.
 - **About_PartnersAndSupporters** — fuller `PartnersAndSupporters` with
-  intro paragraphs for both groups.
+  real, live-site-verified intro paragraphs for both groups — closes
+  the §10 "per-org descriptive paragraphs blocked on verified copy"
+  item. Partners' intro names Wang YMCA of Chinatown, Mystic Valley
+  YMCA, and Food4Philly specifically; supporters' intro carries the
+  live site's "grateful for the generous support" framing. No
+  equivalent per-org detail exists for individual supporters (Sodexo,
+  Walmart, Google, etc.) — not fabricated; still just the bare name
+  list.
 - **About_AnnualReport** — `SectionHeading` (`icon="lucide:book-open"`)
   + `ExternalLinkCTA` → FlipHTML5 flipbook
   (`https://online.fliphtml5.com/uvjxy/tupw/`), not an embedded PDF.
-  Embedded PDFs (`<iframe>`/`<object>`) are inconsistent on mobile — iOS
-  Safari and Chrome for Android often show blank space or force a
-  download, and HTTPS/header quirks or browser updates can silently
-  break the embed. A plain link avoids all of that and keeps the file
-  swappable without a redeploy. Was previously the only bare
-  heading+subtext+CTA section without an icon badge (§6) — the
-  `book-open` icon moved here from the CTA itself rather than
-  duplicating an icon in one small section.
+  Embedded PDFs are inconsistent on mobile — a plain link avoids that
+  and keeps the file swappable without a redeploy. A `Divider` sits
+  below this, before `About_Team`.
 - **About_Team** — closing section of `about.astro`. `SectionHeading`
   (`icon="lucide:users"`, "Meet the People Behind It") + `Button` →
   `/team`.
@@ -694,12 +648,12 @@ Used exactly once each; doesn't isolate a reusable concern.
 - **Get-Involved_Heading** — `PageHeader` ("Get Involved") wrapper.
 - **Get-Involved_BranchFounder** — eyebrow "Branch Founder", title
   "Build Something That Lasts", 5-item checklist, global-network
-  paragraph (counts via `getStatValue()`), Apply CTA → Google Form.
+  paragraph (counts via `getStatValue()`), Apply CTA → Google Form. A
+  `Divider` sits below this, before `Get-Involved_ContactList`.
 - **Get-Involved_ContactList** — `SectionHeading` (`icon="lucide:mail"`)
   + heading + subtext + "Join Our Email List" CTA →
   `contactListFormUrl` (same form as Footer). Renamed from "Volunteer"
-  — the form is a general contact-list signup, not volunteer-specific,
-  and the old label overpromised.
+  — the form is a general contact-list signup, not volunteer-specific.
 
 **donate/**
 - **Donate_Heading** — `PageHeader` ("Donate") wrapper.
@@ -714,15 +668,20 @@ duplicated here to avoid the two drifting apart. Ask if you want it
 mirrored in this doc as well.*
 
 ### Home (`/`) — ✅
-`Hero` → `ImpactStats` → `MissionStatement` → `YouTubeEmbed` →
-`PartnersAndSupporters` (brief) → `GetInvolvedTeaser` → `ContactForm` →
-`DonateBanner`. All `reusable/sections/` components, assembled directly
+`Hero` → `ImpactStats` → `MissionStatement` → `Divider` →
+`YouTubeEmbed` → "Our Partners & Supporters" heading →
+`PartnersAndSupporters` (brief) → `GetInvolvedTeaser` → `Divider` →
+`ContactForm` → `DonateBanner`. All `reusable/sections/` components
+plus one inline heading block and two `Divider`s, assembled directly
 in `index.astro` — no page-specific folder.
 
 ### About (`/about`) — ✅
-`About_Heading` (`PageHeader` + founder story) → `About_BiggestEvent`
-→ `About_Stats` → `About_PartnersAndSupporters` → `About_AnnualReport`
-→ `About_Team`.
+`About_Heading` (`PageHeader` + founder story) → `Divider` →
+`About_BiggestEvent` → `Divider` → `About_Stats` → `Divider` →
+`About_PartnersAndSupporters` → `About_AnnualReport` → `Divider` →
+`About_Team`. Four dividers total — every white-white seam on the page
+has one; the only seams without one are where a sage band already sits
+on at least one side.
 
 ### Team (`/team`) — ✅
 `Team_Heading` — `PageHeader` + `StaffGrid` of 8 real members.
@@ -730,10 +689,11 @@ in `index.astro` — no page-specific folder.
 ### Projects (`/projects`) — ✅
 `Projects_Heading` → `ProjectSection` ×2 (Relief Route — live `iframe`
 embed; AgriScan — screenshot) → `WhiteSpace` (AgriScan's sage band would
-otherwise run straight into Footer's sage).
+otherwise run straight into Footer's sage). No `Divider` placements on
+this page — every section alternates white heading/sage content.
 
 ### Get Involved (`/get-involved`) — ✅
-`Get-Involved_Heading` → `Get-Involved_BranchFounder` →
+`Get-Involved_Heading` → `Get-Involved_BranchFounder` → `Divider` →
 `Get-Involved_ContactList`. No `WhiteSpace` needed — last section is
 plain white.
 
@@ -748,77 +708,51 @@ pages into one (§3).
 
 ### Phase 4 — Shared Infrastructure — ✅ complete
 - [x] Design Tokens
-- [x] Global Styles & Fonts (font, radius, shadow tokens all finalized
-      — §6; palette fully redesigned across several sessions, a
-      deliberate design choice, not a live-site match)
+- [x] Global Styles & Fonts
 - [x] Utility Helpers
 - [x] UI Primitives: Button, SectionHeading, Card, ResponsiveImage,
-      Container, ExternalLinkCTA
+      Container, ExternalLinkCTA, WhiteSpace, Divider
 - [x] Navigation & Footer Data
 - [x] Navbar & Footer Components
 - [x] Layout.astro
 
 ### Phase 5 — Build Pages — ✅ complete
-- [x] **1. Home** (`index.astro`):
-    - [x] Hero
-    - [x] ImpactStats
-    - [x] MissionStatement
-    - [x] YouTubeEmbed
-    - [x] PartnersAndSupporters
-    - [x] GetInvolvedTeaser
-    - [x] ContactForm
-    - [x] DonateBanner
-    - [x] Assemble `index.astro`
-- [x] **2. About** (`about.astro`):
-    - [x] `About_Heading.astro` — founder story
-    - [x] `About_Stats.astro` — ImpactStats
-    - [x] `About_PartnersAndSupporters.astro`
-    - [x] `About_AnnualReport.astro`
-    - [x] `About_Team.astro` — Team link
-    - [x] Assemble `about.astro`
-- [x] **3. Team** (`team.astro`):
-    - [x] StaffCard
-    - [x] StaffGrid
-    - [x] Assemble `team.astro`
-- [x] **4. Projects** (`projects.astro`):
-    - [x] ProjectSection — Relief Route
-    - [x] ProjectSection — AgriScan
-    - [x] Assemble `projects.astro`
-- [x] **5. Get Involved** (`get-involved.astro`):
-    - [x] Branch Founder section
-    - [x] Stay Connected (email list) CTA
-    - [x] Assemble `get-involved.astro`
-- [x] **6. Donate** (`donate.astro`):
-    - [x] QRCodeDonate
-    - [x] DocumentEmbed
-    - [x] Assemble `donate.astro`
+- [x] **1. Home** (`index.astro`): Hero, ImpactStats, MissionStatement,
+      YouTubeEmbed, PartnersAndSupporters, GetInvolvedTeaser,
+      ContactForm, DonateBanner — assembled with real copy.
+- [x] **2. About** (`about.astro`): About_Heading, About_BiggestEvent,
+      About_Stats, About_PartnersAndSupporters, About_AnnualReport,
+      About_Team — assembled with real copy.
+- [x] **3. Team** (`team.astro`): StaffCard, StaffGrid — assembled.
+- [x] **4. Projects** (`projects.astro`): ProjectSection ×2 — assembled.
+- [x] **5. Get Involved** (`get-involved.astro`): Branch Founder + Stay
+      Connected — assembled.
+- [x] **6. Donate** (`donate.astro`): QRCodeDonate, DocumentEmbed —
+      assembled.
 
 ### Cross-Cutting (every page) — in progress
 - [x] Accessibility pass — contrast is a full systematic check (§6,
       `accessibility-seo-audit.md`). Keyboard/screen-reader walkthroughs
-      still need a live URL — not part of this item.
+      still need a live URL.
 - [x] SEO (title, meta description, OG tags, canonical URL, heading
-      hierarchy, alt text) — all in place; `Layout.astro` sets the OG
-      tags, Twitter Card tags, and canonical URL.
+      hierarchy, alt text) — all in place via `Layout.astro`.
 - [ ] Responsive check at each breakpoint — needs a live/dev-server URL
-- [ ] Performance check (image optimization, Lighthouse) — every local
-      `<img>` converted to `ResponsiveImage`/`astro:assets` this
-      session (§7), each now requesting its own real resolution with
-      display size handled separately in CSS — a real bug pattern
-      (blur, uneven spacing) worked through and fixed, not just a
-      code-read pass. Actual Lighthouse scoring still needs a
-      live/dev-server URL.
+- [ ] Performance check (image optimization, Lighthouse) — needs a
+      live/dev-server URL
 - [ ] Cross-browser spot check — needs a live/dev-server target
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
-- [x] Interior page headers unified via new `PageHeader` component
-      (`bg-primary` band, replaces per-page flat-white heading blocks)
-      — About/Team/Projects/Get-Involved/Donate all updated; Home's
-      photo `Hero` is unchanged and remains the site's only full hero
-      treatment.
+- [x] Interior page headers unified via `PageHeader` component —
+      About/Team/Projects/Get-Involved/Donate all updated; Home's
+      photo `Hero` remains the site's only full hero treatment.
 - [x] Sticky, condensing Navbar — translucent scrolled state,
       `border-interactive`-based active/hover link indicators (§7).
+- [x] Sage-consistency + divider pass — YouTubeEmbed's sage band added;
+      `Divider` placed at every white-white seam site-wide (§11);
+      Home's Partners & Supporters heading added. Still needs a real
+      visual check on a live/dev-server URL — this has been a
+      code-level pass, not a rendered one.
 
 ### Phase 6 — Deployment — not started
 - [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
@@ -858,20 +792,18 @@ pages into one (§3).
   uses the sheet's `/preview` path (the normal `/edit` share link
   blocks being framed by another site).
 
-**ImpactStats live-sheet fragility** (§7) — two known failure modes to
-watch for: (1) the live match requires exact label text `"Total (lbs)"`
-/`"Money Collected ($)"` in column B — a silent fallback to `stats.ts`
-if the wording ever changes; (2) the sheet's query range (`B1:C6`) must
-stay scoped to the summary block — widening it into the donation log
-immediately below breaks Google's column-type inference (this already
-happened once during development). Sharing confirmed set to "Anyone
-with the link – Viewer" by the project owner (Aug 17, 2026) — this is
-no longer a blocker.
+**ImpactStats live-sheet fragility** (§7) — two known failure modes:
+(1) the live match requires exact label text `"Total (lbs)"`/`"Money
+Collected ($)"` in column B — a silent fallback to `stats.ts` if the
+wording ever changes; (2) the sheet's query range (`B1:C6`) must stay
+scoped to the summary block — widening it into the donation log
+immediately below breaks Google's column-type inference. Sharing
+confirmed "Anyone with the link – Viewer" — no longer a blocker.
 
-**Live-site content audit** (all addressed unless noted): "Our Biggest
-Event Yet" ✅ · "Creating Opportunities" (8-country list) ✅ · "Our
-Partners" — per-org descriptive paragraphs still blocked on verified
-copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
+**Live-site content audit** (all addressed): "Our Biggest Event Yet" ✅
+· "Creating Opportunities" (8-country list) ✅ · "Our Partners" — real
+per-org descriptive copy added (Wang YMCA of Chinatown, Mystic Valley
+YMCA, Food4Philly) ✅ · "Grants & Funding" intro ✅ (real copy added).
 
 ---
 
@@ -879,11 +811,11 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
 
 - Tailwind v4 CSS-first; `tsconfig.json` explicit `./src/...` aliases,
   no `baseUrl`.
-- Prefer scale-based spacing utilities (h-100) over pixel arbitrary 
-  values (h-[400px]) whenever the unmodified default --spacing 
-  scale (§6) already lands on the same value — arbitrary brackets stay 
-  reserved for genuinely off-scale values (max-w-[90rem], gradient stops, 
-  mask-y-from-accent).
+- Prefer scale-based spacing utilities (`h-100`) over pixel arbitrary
+  values (`h-[400px]`) whenever the unmodified default `--spacing`
+  scale (§6) already lands on the same value — arbitrary brackets stay
+  reserved for genuinely off-scale values (`max-w-[90rem]`, gradient
+  stops, `mask-y-from-accent`).
 - `cn()` zero-dependency; add `tailwind-merge` only for a real
   class-conflict need.
 - `types.ts` = shared cross-component types; component-local types stay
@@ -919,11 +851,19 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
   exactly.
 - Cookie consent banner: decision deferred to end of project.
 - Full-bleed background bands, sage-for-content-only,
-  asymmetric-padding-for-intro-headings, icon-badge-only-for-
-  anchor-less-sections, fixed-hover-token (never opacity blend),
-  mask-image-not-gradient-overlay-for-photo-legibility, request-
-  generous-real-resolution-separate-from-display-size-for-images (§6)
-  — all established patterns.
+  icon-badge-only-for-anchor-less-sections, fixed-hover-token (never
+  opacity blend), mask-image-not-gradient-overlay-for-photo-legibility,
+  request-generous-real-resolution-separate-from-display-size-for-images,
+  heading-top-padding-by-what-precedes-it (§6) — all established
+  patterns.
+- **Divider rule** (`Divider.astro`, §7): place one at any section seam
+  where both touching edges are white, regardless of whether either
+  section contains sage elsewhere in itself — a viewer scrolling can
+  only perceive what's at the seam, not what a component contains
+  further down. Skip it wherever a color band (sage, or a gradient band
+  like `PageHeader`/`DonateBanner`/`Hero`) already sits on at least one
+  side. Placement list is under **Divider** in §7. When adding one,
+  trim the *following* section's top padding per §6.
 - Relief Route's direct `<iframe>` (ProjectSection, §7) is a confirmed,
   project-owner-approved exception to the click-to-load facade default
   — don't extend it to a future embed without asking first.
@@ -931,12 +871,13 @@ copy (not fabricated for named real orgs) · "Grants & Funding" intro ✅.
   fabricated one is worse than no embed at all. Build the component to
   accept it as an optional prop and fall back to something real and
   verifiable in the meantime, not a placeholder box or a guessed URL.
-  `ContactForm`'s Formspree endpoint followed this while pending, now
-  resolved with the real endpoint (§7/§10).
 - When something is fully derivable from data already in the project
   (e.g. a QR code from a known URL), generate it once, check it in as
   static output, and verify it round-trips — don't wait on a supplied
   asset or add a build dependency for it.
 - Local edits to files this doc tracks, made outside the session
   maintaining it, won't auto-reflect here — re-sync from the repo at
-  the start of a session before trusting this doc.
+  the start of a session before trusting this doc. A full-document
+  regeneration in this chat has already lost real detail once
+  (`PageHeader`'s §7 entry, restored) — diff any regeneration against
+  the actual repo rather than trusting it by default.

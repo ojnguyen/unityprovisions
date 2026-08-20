@@ -29,7 +29,7 @@ const STRING_PHOTO_FALLBACK = { width: 320, height: 400 };
 
 const photoDims = photo ? getImageDimensions(photo, STRING_PHOTO_FALLBACK) : null;
 ---
-<Card padding="md" bg="surface">
+<Card padding="md">
   <div class="flex flex-col items-center gap-3 text-center">
     {photo && photoDims ? (
       <ResponsiveImage
