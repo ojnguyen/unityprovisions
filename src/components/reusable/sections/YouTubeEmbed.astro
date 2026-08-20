@@ -15,7 +15,7 @@ const { videoId, title } = Astro.props as Props;
 // it's safe to pass as explicit width/height to ResponsiveImage below.
 // Requires i.ytimg.com to be allowlisted in astro.config.mjs's
 // `image.domains` — Astro's Image pipeline refuses to process any
-// remote domain that isn't explicitly listed there.
+// remote domain that isn't explicitly listed here.
 const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 ---
 <!--
@@ -30,7 +30,14 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 -->
 <div id="watch-our-story">
   <Container as="section">
-    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
+    <!--
+      pt-8/md:pt-10 (was pt-12/md:pt-16) — trimmed since index.astro
+      now puts a Divider directly above this heading (§11: MissionStatement
+      and this heading are both white at the seam). pb-4/md:pb-6 unchanged
+      — that's the separate, tight gap into this component's own sage
+      band just below, unrelated to the new divider above.
+    -->
+    <div class="flex flex-col items-center gap-2 pt-8 pb-4 text-center md:pt-10 md:pb-6">
       <SectionHeading title={title} align="center" />
     </div>
   </Container>

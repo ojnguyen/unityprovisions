@@ -7,6 +7,7 @@ import AboutStats from "@components/page-specific/about/About_Stats.astro";
 import AboutPartnersAndSupporters from "@components/page-specific/about/About_PartnersAndSupporters.astro";
 import AboutAnnualReport from "@components/page-specific/about/About_AnnualReport.astro";
 import AboutTeam from "@components/page-specific/about/About_Team.astro";
+import Divider from "@components/reusable/ui/Divider.astro";
 ---
 
 <Layout
@@ -15,30 +16,25 @@ import AboutTeam from "@components/page-specific/about/About_Team.astro";
 >
   <AboutHeading />
 
-  <!--
-    Full-bleed hairline at the founder-story / Biggest Event seam —
-    both are white sections stacked directly on each other with no
-    color-band boundary between them (§11: divider rule). border-border,
-    edge-to-edge like every other border on the site (never scoped to
-    content width) — see About_BiggestEvent's own trimmed top padding
-    for the other half of this fix.
-  -->
-  <div class="border-t border-border"></div>
+  <!-- Divider rule (§11) — AboutHeading's founder story and AboutBiggestEvent are both white at the seam. -->
+  <Divider />
 
   <AboutBiggestEvent />
 
+  <!-- Divider rule (§11) — AboutBiggestEvent and AboutStats' heading are both white at the seam. -->
+  <Divider />
+
   <AboutStats />
+
+  <!-- Divider rule (§11) — AboutStats' caption and AboutPartnersAndSupporters' heading are both white at the seam. -->
+  <Divider />
 
   <AboutPartnersAndSupporters />
 
   <AboutAnnualReport />
 
-  <!--
-    Same divider rule (§11) — AboutAnnualReport and AboutTeam are the
-    literal same wrapper (icon-badge heading + subtext + single CTA,
-    centered), back to back, with no color shift between them.
-  -->
-  <div class="border-t border-border"></div>
+  <!-- Divider rule (§11) — AboutAnnualReport and AboutTeam are both white at the seam. -->
+  <Divider />
 
   <AboutTeam />
 </Layout>

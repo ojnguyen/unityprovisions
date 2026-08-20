@@ -4,6 +4,7 @@ import Layout from "@layouts/Layout.astro";
 import GetInvolvedHeading from "@components/page-specific/get-involved/Get-Involved_Heading.astro";
 import GetInvolvedBranchFounder from "@components/page-specific/get-involved/Get-Involved_BranchFounder.astro";
 import GetInvolvedContactList from "@components/page-specific/get-involved/Get-Involved_ContactList.astro";
+import Divider from "@components/reusable/ui/Divider.astro";
 ---
 
 <Layout
@@ -13,6 +14,9 @@ import GetInvolvedContactList from "@components/page-specific/get-involved/Get-I
   <GetInvolvedHeading />
 
   <GetInvolvedBranchFounder />
+
+  <!-- Divider rule (§11) — both fully white. -->
+  <Divider />
 
   <GetInvolvedContactList />
 </Layout>

@@ -1,0 +1,14 @@
+---
+// No props — a single full-bleed hairline. Edge-to-edge, never scoped
+// to content width, matching every other border-border use on the
+// site (ImpactStats/PartnersAndSupporters/ProjectSection/QRCodeDonate/
+// DocumentEmbed all frame full-bleed bands the same way).
+//
+// Placement rule (project-roadmap.md §11): between two consecutive
+// sections whose touching edges are both white — regardless of
+// whether either section contains sage elsewhere in itself. A viewer
+// scrolling can only see what's directly at the seam, not what a
+// component contains further down, so the rule checks the seam, not
+// the whole component.
+---
+<div class="border-t border-border"></div>

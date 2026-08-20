@@ -2,6 +2,7 @@
 import Layout from '@layouts/Layout.astro';
 import Container from '@components/reusable/ui/Container.astro';
 import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
+import Divider from '@components/reusable/ui/Divider.astro';
 import Hero from '@components/reusable/sections/Hero.astro';
 import ImpactStats from '@components/reusable/sections/ImpactStats.astro';
 import MissionStatement from '@components/reusable/sections/MissionStatement.astro';
@@ -35,6 +36,9 @@ import heroImage from '@assets/components/hero.jpg'
     body="At Unity Provisions, we believe that no one should go hungry in a world of abundance. We empower young people to create and lead food collection programs in their schools and communities. Through education, collaboration, and action, we work to reduce food insecurity, challenge the stigma surrounding hunger, and turn surplus into support for those who need it. Together, we are building a future where access to food is a right, not a privilege."
   />
 
+  <!-- Divider rule (§11) — MissionStatement's ending and YouTubeEmbed's heading are both white at the seam. -->
+  <Divider />
+
   <YouTubeEmbed
     videoId="QsL7OpKv2Qg"
     title="Watch Our Story"
@@ -42,18 +46,13 @@ import heroImage from '@assets/components/hero.jpg'
 
   <!--
     Plain heading for PartnersAndSupporters' brief Home treatment —
-    previously a bare sage band with no heading, no accessible landmark
-    naming what the logos are, and (since YouTubeEmbed picked up its
-    own sage band this session) sitting directly against another sage
-    band with nothing between them. This block solves both at once, the
-    same way every other asymmetric-padding heading on the site
-    introduces its own content below it (ProjectSection, QRCodeDonate,
-    About_Stats, etc.) — so the standalone WhiteSpace buffer tried
-    earlier this session was removed as redundant once this heading
-    took over that job. No subtext/icon — matches About's fuller
-    version's title ("Our Community of Support") in spirit but stays
-    deliberately lighter, consistent with every other "brief" vs
-    "fuller" Home/About pairing (§7).
+    previously a bare sage band with no heading (§6 accessibility: no
+    landmark naming what the logo grid is) and, since YouTubeEmbed
+    has its own sage band, sitting directly against another sage band
+    with nothing between them. This block does both jobs at once, same
+    as every other asymmetric-padding heading on the site introducing
+    its own content below (ProjectSection, QRCodeDonate, About_Stats,
+    etc.).
   -->
   <Container as="section">
     <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
@@ -70,13 +69,8 @@ import heroImage from '@assets/components/hero.jpg'
     ctaLabel="Learn More"
   />
 
-  <!--
-    Divider rule (§11) — GetInvolvedTeaser and ContactForm read as the
-    same section shape (centered heading + single primary action) even
-    though ContactForm also has a small mailto line; "look alike," not
-    "byte-identical," is the bar.
-  -->
-  <div class="border-t border-border"></div>
+  <!-- Divider rule (§11) — GetInvolvedTeaser and ContactForm are both white at the seam. -->
+  <Divider />
 
   <ContactForm
     heading="Contact Us"
