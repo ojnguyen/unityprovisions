@@ -23,7 +23,8 @@
   - Title: Watch Our Story
   - Embed: YouTube video — https://www.youtube.com/watch?v=QsL7OpKv2Qg
 
-- **Partners & Supporters** *(brief version — just a row of org names/logos, no heading text on this page)*
+- **Partners & Supporters** *(brief version — logo row only, no per-org intro copy)*
+  - Title: Our Partners & Supporters
   - Partners: Wang YMCA, Mystic Valley YMCA, Food4Philly
   - Supporters: Esther R. Sanger Center for Compassion, Stephen J. Brady Stop Hunger, YMCA, Sodexo, Walmart Spark Good, Google
 
@@ -76,8 +77,8 @@
 - **Our Community of Support**
   - Title: Our Community of Support
   - Subtext: The organizations and community groups that help our branches do their work.
-  - Partners intro: Our partners help provide space, guidance, and other support that allows donation centers to serve their communities.
-  - Supporters intro: Our supporters provide grants and funding that help us sustain our programs, expand our work, and open new branches.
+  - Partners intro: Our partners help provide space, guidance, and other support that allows donation centers to serve their communities. Wang YMCA of Chinatown and Mystic Valley YMCA host our program at their branches, helping make donation centers more accessible to the people who need them. We also work with student-led organizations like Food4Philly to extend that reach into more communities.
+  - Supporters intro: We're grateful for the generous support of organizations and institutions that believe in our mission to fight food insecurity. Their support helps us sustain our current programs, launch new initiatives, and open new branches.
   - *(same partner/supporter list as Home)*
 
 - **Annual Report**

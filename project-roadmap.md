@@ -1,5 +1,5 @@
 <!--
-Synced against this Project's knowledge base on Aug 20, 2026 (the repo
+Synced against this Project's knowledge base on Aug 21, 2026 (the repo
 isn't actually live-connected — its content lives in Project Knowledge,
 reconstructed from search results, not read as one file). Diff against
 your local copy before treating this as canonical if you've made edits
@@ -46,18 +46,24 @@ built. Currently in the Cross-Cutting checklist (§9), then Phase 6
 blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
-**Continue here** *(replaced each session, not appended to):* A
-`Divider` UI primitive (§7) is now placed at every white-white section
-seam site-wide (§11) — three sections initially missed the associated
-top-padding trim (`ContactForm`, `About_Team`, `Get-Involved_ContactList`)
-and have been fixed. `PageHeader`'s §7 entry also had real detail
-restored after a prior full-document regeneration in this chat had
-dropped it — worth diffing any regeneration, including this one,
-against the actual repo rather than trusting it by default.
+**Continue here** *(replaced each session, not appended to):* Home's
+Partners & Supporters heading, previously inline markup in
+`index.astro`, is now `page-specific/home/Home_PartnersAndSupporters`
+— built by the project owner outside a tracked session, so this doc had
+drifted in four places (§5 convention line, §5 tree, §8, §9) and has
+been corrected here. `wordings.md` still describes Home's Partners
+section as having no heading — **not yet fixed, do this next.**
 
-Remaining: Responsive/Performance/Cross-browser checks and comment
-cleanup (§9) — all still need a live/dev-server URL, or for comment
-cleanup, a style example from the project owner.
+Also open: a spacing review of `Home_PartnersAndSupporters` and the
+sections around it — there's an unresolved question in a code comment
+in that file about its heading's top padding, plus a `py` mismatch
+between `PartnersAndSupporters`'s sage band (`py-12 md:py-16`) and the
+equivalent bands in `YouTubeEmbed`/`DocumentEmbed` (`py-10 md:py-14`).
+Nothing changed yet; §6's heading-top-padding rule is the reference.
+
+Remaining after that: Responsive/Performance/Cross-browser checks and
+comment cleanup (§9) — all still need a live/dev-server URL, or for
+comment cleanup, a style example from the project owner.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -154,9 +160,10 @@ cleanup, a style example from the project owner.
   single-word page, kebab-case for a multi-word one, e.g.
   `Get-Involved`). Examples: `About_Heading.astro`,
   `Get-Involved_BranchFounder.astro`.
-- Home has **no** `page-specific/home/` folder — every Home section is
-  a `reusable/sections/` component (plus one inline heading block and
-  two `Divider`s), assembled directly in `index.astro`.
+- Home is mostly `reusable/sections/` components assembled directly in
+  `index.astro`, plus two `Divider`s. `page-specific/home/` holds one
+  component, `Home_PartnersAndSupporters` — the heading block that used
+  to be inline markup in `index.astro` (§7).
 - **Assets:** dash-case filenames (e.g.
   `esther-r-sanger-center-for-compassion.jpg`), camelCase import
   identifiers (e.g. `ryanPhoto`). Organized into semantic subfolders
@@ -234,6 +241,8 @@ src/
 │   │       └── DocumentEmbed.astro         ✅
 │   │
 │   └── page-specific/
+│       ├── home/
+│       │   └── Home_PartnersAndSupporters.astro    ✅ heading block + brief PartnersAndSupporters
 │       ├── about/
 │       │   ├── About_Heading.astro                 ✅ PageHeader + founder story (photo, prose)
 │       │   ├── About_BiggestEvent.astro            ✅
@@ -547,10 +556,11 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   Full-bleed sage band. Logos render via `ResponsiveImage`, each at its
   own real native resolution (`utils/images.ts`'s
   `getImageDimensions()`), displayed in a fixed `h-12 w-12` (grid) /
-  `h-10 w-10` (badge row) box with `object-contain`. Home's usage
-  precedes this with a plain white heading ("Our Partners &
-  Supporters," no subtext/icon) — added since the bare band previously
-  had no landmark (§6 accessibility).
+  `h-10 w-10` (badge row) box with `object-contain`. This component is
+  the band only — both call sites (`Home_PartnersAndSupporters`,
+  `About_PartnersAndSupporters`) supply their own white heading block
+  above it, since the bare band has no landmark of its own (§6
+  accessibility).
 - **GetInvolvedTeaser** — `heading/subtext/ctaLabel`(required), `icon?`.
   `href="/get-involved"` hardcoded, `variant="primary"`. Home passes
   `lucide:handshake`, distinct from `About_Team`'s `lucide:users` (§6).
@@ -616,6 +626,17 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
 
 Used exactly once each; doesn't isolate a reusable concern.
 
+**home/**
+- **Home_PartnersAndSupporters** — white heading block
+  (`SectionHeading`, "Our Partners & Supporters", centered, no
+  subtext/eyebrow/icon — badge deliberately skipped, §6) + the brief
+  `PartnersAndSupporters` band, no intro props. Built by the project
+  owner; replaces markup that was previously inline in `index.astro`,
+  so Home now has a `page-specific/home/` folder (§5). Heading block is
+  currently `pt-12 pb-4 md:pt-16 md:pb-6`; an open code comment in the
+  file questions whether the top value should be trimmed — unresolved,
+  see §2.
+
 **about/**
 - **About_Heading** — `PageHeader` (eyebrow "Our Story", h1 "Is There
   Dinner?") + the founder story below: photo/prose. Pounds/dollars kept
@@ -640,7 +661,7 @@ Used exactly once each; doesn't isolate a reusable concern.
   live site's "grateful for the generous support" framing. No
   equivalent per-org detail exists for individual supporters (Sodexo,
   Walmart, Google, etc.) — not fabricated; still just the bare name
-  list.
+  list. Heading block `pt-8 md:pt-10` — a `Divider` precedes it (§6).
 - **About_AnnualReport** — `SectionHeading` (`icon="lucide:book-open"`)
   + `ExternalLinkCTA` → FlipHTML5 flipbook
   (`https://online.fliphtml5.com/uvjxy/tupw/`), not an embedded PDF.
@@ -682,11 +703,10 @@ mirrored in this doc as well.*
 
 ### Home (`/`) — ✅
 `Hero` → `ImpactStats` → `MissionStatement` → `Divider` →
-`YouTubeEmbed` → "Our Partners & Supporters" heading →
-`PartnersAndSupporters` (brief) → `GetInvolvedTeaser` → `Divider` →
-`ContactForm` → `DonateBanner`. All `reusable/sections/` components
-plus one inline heading block and two `Divider`s, assembled directly
-in `index.astro` — no page-specific folder.
+`YouTubeEmbed` → `Home_PartnersAndSupporters` → `GetInvolvedTeaser` →
+`Divider` → `ContactForm` → `DonateBanner`. All `reusable/sections/`
+components plus two `Divider`s and the one page-specific component,
+assembled directly in `index.astro`.
 
 ### About (`/about`) — ✅
 `About_Heading` (`PageHeader` + founder story) → `Divider` →
@@ -731,7 +751,7 @@ pages into one (§3).
 
 ### Phase 5 — Build Pages — ✅ complete
 - [x] **1. Home** (`index.astro`): Hero, ImpactStats, MissionStatement,
-      YouTubeEmbed, PartnersAndSupporters, GetInvolvedTeaser,
+      YouTubeEmbed, Home_PartnersAndSupporters, GetInvolvedTeaser,
       ContactForm, DonateBanner — assembled with real copy.
 - [x] **2. About** (`about.astro`): About_Heading, About_BiggestEvent,
       About_Stats, About_PartnersAndSupporters, About_AnnualReport,
@@ -756,6 +776,10 @@ pages into one (§3).
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
+- [ ] Spacing consistency review — Home's Partners & Supporters heading
+      padding (open comment in the component) and the `py` mismatch
+      between the `PartnersAndSupporters` sage band and the equivalent
+      bands in `YouTubeEmbed`/`DocumentEmbed` (§2)
 - [x] Interior page headers unified via `PageHeader` component —
       About/Team/Projects/Get-Involved/Donate all updated; Home's
       photo `Hero` remains the site's only full hero treatment.
@@ -763,9 +787,10 @@ pages into one (§3).
       `border-interactive`-based active/hover link indicators (§7).
 - [x] Sage-consistency + divider pass — YouTubeEmbed's sage band added;
       `Divider` placed at every white-white seam site-wide (§11);
-      Home's Partners & Supporters heading added. Still needs a real
-      visual check on a live/dev-server URL — this has been a
-      code-level pass, not a rendered one.
+      Home's Partners & Supporters heading added (since extracted into
+      `Home_PartnersAndSupporters`, §7). Still needs a real visual check
+      on a live/dev-server URL — this has been a code-level pass, not a
+      rendered one.
 
 ### Phase 6 — Deployment — not started
 - [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
@@ -839,6 +864,11 @@ YMCA, Food4Philly) ✅ · "Grants & Funding" intro ✅ (real copy added).
   `page-specific/{slug}/{Page}_{Component}.astro` for single-use.
   Assets: dash-case filenames, camelCase import identifiers, organized
   into semantic subfolders rather than flat.
+- A section that pairs a white heading block with a full-bleed content
+  band belongs in a page-specific wrapper component, not as inline
+  markup in the page file — `Home_PartnersAndSupporters` and
+  `About_PartnersAndSupporters` are the same shape around the same
+  reusable band (§7).
 - Confirm a component deserves its own file before building it (§2/§3)
   — check the live site and existing components/data for redundancy.
 - Real content lives in data files/page templates as already captured —
@@ -890,7 +920,9 @@ YMCA, Food4Philly) ✅ · "Grants & Funding" intro ✅ (real copy added).
   asset or add a build dependency for it.
 - Local edits to files this doc tracks, made outside the session
   maintaining it, won't auto-reflect here — re-sync from the repo at
-  the start of a session before trusting this doc. A full-document
-  regeneration in this chat has already lost real detail once
-  (`PageHeader`'s §7 entry, restored) — diff any regeneration against
-  the actual repo rather than trusting it by default.
+  the start of a session before trusting this doc. This has now caused
+  real drift twice: `PageHeader`'s §7 entry (lost to a full-document
+  regeneration, restored) and Home's Partners & Supporters heading
+  (built outside a tracked session, corrected Aug 21, 2026). Diff any
+  regeneration against the actual repo rather than trusting it by
+  default.
