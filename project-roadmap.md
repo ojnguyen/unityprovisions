@@ -162,9 +162,22 @@ cleanup, a style example from the project owner.
   identifiers (e.g. `ryanPhoto`). Organized into semantic subfolders
   under `src/assets/`, not flat.
 
+### Project Docs
+- **`project-roadmap.md'** — this file. The spec and status record.
+- **`accessibility-seo-audit.md'** — the full WCAG contrast pass and SEO checklist audit (§6/§9 reference it rather than restating it).
+- **`wordings.md'** — a plain-language mirror of every page's real user-facing copy, page by page. It's a convenience view that has to be updated by hand in the same edit whenever copy changes, or the two drift.
+
 ### File Tree
 
 ```
+project-roadmap.md          ✅ this file (§5 "Project Docs")
+accessibility-seo-audit.md  ✅ WCAG contrast pass + SEO checklist audit
+wordings.md                 ✅ copy mirror — NOT canonical, see §8
+
+public/
+├── unity-provisions.svg        ✅ favicon — referenced by literal path in Layout.astro
+└── old-unity-provisions.svg    ✅ previous logo mark, kept for reference — not referenced by any code
+
 src/
 ├── assets/
 │   ├── components/hero.jpg                                 — Hero background (index.astro)
@@ -222,7 +235,7 @@ src/
 │   │
 │   └── page-specific/
 │       ├── about/
-│       │   ├── About_Heading.astro                ✅ PageHeader + founder story (photo, prose)
+│       │   ├── About_Heading.astro                 ✅ PageHeader + founder story (photo, prose)
 │       │   ├── About_BiggestEvent.astro            ✅
 │       │   ├── About_Stats.astro                   ✅ ImpactStats + 8-country caption
 │       │   ├── About_PartnersAndSupporters.astro   ✅

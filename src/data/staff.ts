@@ -2,7 +2,8 @@ import ryanPhoto from '@assets/team/ryan-nguyen.webp';
 import type { StaffMember } from '@/types';
 
 /*
- * Add a headshot to an entry's `photo` field when one is available; StaffCard shows a placeholder otherwise.
+ * Add a headshot to an entry's `photo` field when one is available (currently only Ryan Nguyen has a photo);
+ * StaffCard shows a placeholder otherwise.
  * Most staff use Unity Provisions email addresses. Wendy uses her YMCA address because she is an external mentor.
  */
 export const staff: StaffMember[] = [
