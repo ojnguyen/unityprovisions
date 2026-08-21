@@ -10,6 +10,10 @@ interface Props {
 
 const { heading, body, icon } = Astro.props as Props;
 ---
+
+<!-- [MISSION STATEMENT]
+- Centers the mission heading, optional icon, and supporting body copy.
+-->
 <Container as="section">
   <div class="flex flex-col items-center gap-6 py-12 text-center md:py-16">
     <SectionHeading icon={icon} title={heading} align="center" />

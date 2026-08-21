@@ -6,35 +6,17 @@ import ResponsiveImage from "@components/reusable/ui/ResponsiveImage.astro";
 import bigEventPhoto from "@assets/projects-and-events/biggest-event.webp";
 ---
 
-<!--
-[ABOUT] BIGGEST EVENT
-- Highlights the North Quincy branch's December 2024 donation drive, the largest single donation by any Unity Provisions branch to date.
+<!-- [ABOUT] BIGGEST EVENT
+- Biggest event (What One Branch Can Do) section for the About page, highlighting a recent donation drive and its impact.
+- Uses a two-column layout with an image and text.
 -->
 <Container as="section">
-  <!--
-    pt-8/md:pt-10 (was symmetric py-12/md:py-16) — trimmed since
-    about.astro puts a Divider directly above this section; the old
-    symmetric padding stacked with About_Heading's own bottom padding
-    into unmarked white space. pb stays at the standard pb-12/md:pb-16
-    — About_Stats still needs the usual gap flowing into it below.
-  -->
   <div class="flex flex-col gap-6 pt-8 md:pt-10 pb-12 md:pb-16">
     <SectionHeading eyebrow="Recent Highlight" title="What One Branch Can Do" />
 
     <div class="flex flex-col gap-8 md:flex-row md:items-start">
       <div class="mx-auto w-full max-w-100 shrink-0 md:mx-0">
-        <!--
-          width/height read straight off bigEventPhoto's own real
-          ImageMetadata, not a hardcoded 600x400 — same fix as
-          About_Heading's founder photo (§7): ResponsiveImage generates
-          from the real, full native resolution so the source stays
-          sharp, while this wrapper's max-w-[400px] + Tailwind's
-          default max-width:100%/height:auto (no class override needed
-          here, same as About_Heading) handles the actual display size.
-
-          loading="eager" — corrected by the project owner (was
-          previously documented as lazy, ResponsiveImage's default).
-        -->
+        <!-- Uses the photo's real dimensions so it stays clear while the wrapper controls its display size. -->
         <ResponsiveImage
           src={bigEventPhoto}
           alt="North Quincy branch's December 2024 donation drive for the Quincy Community Action Program"

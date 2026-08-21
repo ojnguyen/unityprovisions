@@ -1,39 +1,45 @@
 ---
 import Layout from "@layouts/Layout.astro";
-
+import Divider from "@components/reusable/ui/Divider.astro";
 import AboutHeading from "@components/page-specific/about/About_Heading.astro";
 import AboutBiggestEvent from "@components/page-specific/about/About_BiggestEvent.astro";
 import AboutStats from "@components/page-specific/about/About_Stats.astro";
 import AboutPartnersAndSupporters from "@components/page-specific/about/About_PartnersAndSupporters.astro";
 import AboutAnnualReport from "@components/page-specific/about/About_AnnualReport.astro";
 import AboutTeam from "@components/page-specific/about/About_Team.astro";
-import Divider from "@components/reusable/ui/Divider.astro";
 ---
 
+<!--
+[ABOUT]
+- The About page is composed of 6 sections (not including Layout, WhiteSpace, and Divider), 
+  each implemented as its own component (shown as file names):
+  - About_Heading
+  - About_BiggestEvent
+  - About_Stats
+  - About_PartnersAndSupporters
+  - About_AnnualReport
+  - About_Team
+-->
 <Layout
   title="About — Unity Provisions"
   description="How Unity Provisions began, and the youth-led network of student leaders it has grown into."
 >
   <AboutHeading />
 
-  <!-- Divider rule (§11) — AboutHeading's founder story and AboutBiggestEvent are both white at the seam. -->
   <Divider />
 
   <AboutBiggestEvent />
 
-  <!-- Divider rule (§11) — AboutBiggestEvent and AboutStats' heading are both white at the seam. -->
   <Divider />
 
   <AboutStats />
 
-  <!-- Divider rule (§11) — AboutStats' caption and AboutPartnersAndSupporters' heading are both white at the seam. -->
   <Divider />
 
   <AboutPartnersAndSupporters />
 
   <AboutAnnualReport />
 
-  <!-- Divider rule (§11) — AboutAnnualReport and AboutTeam are both white at the seam. -->
   <Divider />
 
   <AboutTeam />

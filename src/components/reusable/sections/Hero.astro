@@ -9,20 +9,10 @@ interface Props {
   tagline: string;
   ctaLabel: string;
   ctaHref: string;
-  /** Optional supporting line under the headline — one short sentence. */
-  subtext?: string;
-  /**
-   * Optional second, lower-emphasis action. Rendered as a white
-   * ghost/outline button, not `Button`'s `secondary` variant — that
-   * variant assumes a light page background (border-primary/
-   * text-primary), which would be invisible on a photo. Same reasoning
-   * DonateBanner uses for writing its own heading markup instead of
-   * reusing SectionHeading (§7).
-   */
-  secondaryCtaLabel?: string;
-  secondaryCtaHref?: string;
-  /** Optional real photo for the hero background; falls back to a gradient. */
-  backgroundImage?: ImageMetadata;
+  subtext?: string; // Optional supporting line under the headline.
+  secondaryCtaLabel?: string; // Optional lower-emphasis action label shown beside the main CTA
+  secondaryCtaHref?: string; // Link for above
+  backgroundImage?: ImageMetadata; // Optional real photo for the hero background; falls back to a gradient
 }
 
 const {
@@ -38,6 +28,11 @@ const {
 
 const hasSecondaryCta = Boolean(secondaryCtaLabel && secondaryCtaHref);
 ---
+
+<!-- [HERO]
+- Shows the main message, optional supporting text, and primary call to action.
+- Uses a supplied photo when available and a layered color background as a fallback.
+-->
 <div class="relative isolate overflow-hidden bg-text-primary">
   {backgroundImage ? (
     <div class="absolute inset-0 -z-10">
@@ -62,13 +57,6 @@ const hasSecondaryCta = Boolean(secondaryCtaLabel && secondaryCtaHref);
       <p class="text-sm font-semibold uppercase tracking-wide text-white/80">
         {tagline}
       </p>
-      <!--
-        text-3xl only, no md: override — this design system's custom
-        --text-3xl (44px, see global.css) is already larger than
-        Tailwind's un-customized default text-4xl (36px), so a previous
-        "md:text-4xl" here was silently *shrinking* the headline on
-        desktop. Fixed by just not overriding it.
-      -->
       <h1 class="max-w-3xl text-3xl font-bold text-white">
         {headline}
       </h1>

@@ -1,34 +1,28 @@
 ---
 import Card from '@components/reusable/ui/Card.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
-import { Icon } from 'astro-icon/components';
-import { getImageDimensions } from '@utils/images';
 import type { StaffMember } from '@/types';
+import { getImageDimensions } from '@utils/images';
+import { Icon } from 'astro-icon/components';
 
 type Props = StaffMember;
 
 const { name, role, email, photo } = Astro.props as Props;
 
-// Fixed 160px (h-40/w-40) display box, whether or not a real `photo`
-// is set, so the placeholder avatar below and a real headshot occupy
-// exactly the same footprint — no layout shift when photos arrive.
-// radius="md" matches every other photo/logo on the site (founder
-// photo, partner logos) rather than a circular avatar, which would be
-// a new, one-off visual pattern nothing else here uses.
-//
-// ResponsiveImage is asked to generate the photo at its own real, full
-// native resolution — not the 160px display size — so the source
-// stays sharp. Display size is a separate, CSS-only concern (h-40 w-40
-// below), decoupled from whatever resolution was requested; see
-// PartnersAndSupporters, §7, where tying the two together (either
-// direction) caused real problems. object-cover (not PartnersAndSupporters'
-// object-contain) is deliberate here — a headshot cropping to fill a
-// square avatar is the normal, desired look, unlike a logo, which must
-// never be cropped.
+/*
+ * Keeps real photos and placeholders in the same 160px square footprint.
+ * Generates photos above display size so responsive downscaling stays sharp.
+ * Uses object-cover to crop headshots naturally within the square frame.\
+ *  Resolves dimensions for real photos while providing safe string-source defaults.
+*/
 const STRING_PHOTO_FALLBACK = { width: 320, height: 400 };
-
 const photoDims = photo ? getImageDimensions(photo, STRING_PHOTO_FALLBACK) : null;
 ---
+
+<!-- [STAFF CARD]
+- Shows a staff member's photo or placeholder, name, role, and optional email.
+- Photo dimensions are generated independently from the fixed display size.
+-->
 <Card padding="md">
   <div class="flex flex-col items-center gap-3 text-center">
     {photo && photoDims ? (

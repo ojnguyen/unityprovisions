@@ -2,24 +2,15 @@
 import Container from "@components/reusable/ui/Container.astro";
 import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
 import PartnersAndSupporters from "@components/reusable/sections/PartnersAndSupporters.astro";
-
 import { partners } from "@data/partners";
 ---
 
 <!-- [ABOUT] PARTNERS AND SUPPORTERS
-- Displays the organizations that support Unity Provisions, both through partnerships and funding.
-- 2 Sections:
-  1. Heading introducing the partners and supporters section.
-  2. The list of partners and supporters with their respective introductions.
+- Partners and Supporters section for the About page.
+- Displays the partners and supporters for Unity Provisions. (Lengthy version)
+- Has heading and list of partners and supporters, with a brief description of each.
 -->
 <Container as="section">
-  <!--
-    pt-8/md:pt-10 (was pt-12/md:pt-16) — trimmed since about.astro now
-    puts a Divider directly above this heading (§11: About_Stats'
-    caption and this heading are both white at the seam). pb-4/md:pb-6
-    unchanged — that's the separate, tight gap into PartnersAndSupporters'
-    own sage band just below, unrelated to the new divider above.
-  -->
   <div
     class="flex flex-col items-center gap-2 pt-8 pb-4 text-center md:pt-10 md:pb-6"
   >

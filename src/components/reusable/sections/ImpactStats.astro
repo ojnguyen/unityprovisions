@@ -1,7 +1,7 @@
 ---
 import Container from '@components/reusable/ui/Container.astro';
-import { Icon } from 'astro-icon/components';
 import type { Stat } from '@/types';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   stats: Stat[];
@@ -9,45 +9,28 @@ interface Props {
 
 const { stats } = Astro.props as Props;
 
-// Live source for the stats marked with `liveSheetLabel` in
-// src/data/stats.ts: the "Donations Overview" tab of a public Google
-// Sheet, read client-side via Google's own Visualization API (the same
-// mechanism Sheets uses to power charts embedded on other sites),
-// requested through a JSONP <script> tag rather than fetch() — Google's
-// gviz endpoint doesn't send Access-Control-Allow-Origin, so a plain
-// fetch() gets blocked by CORS; a <script> tag isn't subject to that
-// restriction, which is exactly what JSONP exists for.
-//
-// The query sent to Google explicitly asks for "column B, column C,
-// WHERE column B equals one of our expected labels" — this is safer
-// than fetching a row range and filtering client-side, because it
-// can't accidentally pick up unrelated tables/data living further down
-// the same tab (this sheet has a donation log starting a few rows below
-// the summary numbers, which is exactly what tripped up the first
-// version of this component).
-//
-// A stat is only updated if it has `liveSheetLabel` set AND a row in
-// the sheet has that exact text in column B — everything else (stats
-// with no `liveSheetLabel`, or a label that isn't found) stays exactly
-// as rendered from the `stats` prop below.
-//
-// Requirement on the sheet: sharing must be set to "Anyone with the
-// link – Viewer" — see project-roadmap.md §10 for current status.
+/*
+ * Live values come from the public "Donations Overview" Google Sheet.
+ * JSONP is used instead of fetch because the gviz endpoint does not allow
+ * cross-origin requests, while a script tag can load the response directly.
+ *
+ * The query selects only the expected labels from columns B and C. This keeps
+ * unrelated tables on the same tab from being mistaken for summary values.
+ * Stats without a liveSheetLabel, or without a matching sheet row, keep their
+ * original values from the stats prop.
+ *
+ * The sheet must be shared as "Anyone with the link - Viewer".
+*/
+
 const SHEET_ID = '14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w';
 const SHEET_GID = '638911803'; // the "Donations Overview" tab
 
-const TEST_SHEET_ID = '1C3PwvkF2R8WcGingK4tUvuFeBT5ZfNOsvNDsdm3K3vQ';
-const TEST_SHEET_GID = '638911803'; // the "Donations Overview" tab
-
-// IMPORTANT: scoped to just the summary block (title row + 5 stat rows).
-// The tab also has an unrelated donation log starting immediately at
-// row 7, with no buffer row in between. Google's query engine infers
-// each column's type from the MAJORITY of values it considers — if this
-// range were widened to include the log, column B would be mostly
-// dates, and the whole column (including the "Total (lbs)" / "Money
-// Collected ($)" text cells) would silently be treated as non-string,
-// causing the WHERE match below to find nothing with no error at all.
-// If rows are added/removed from the summary block, update this range.
+/*
+ * Keeps the range limited to the summary block. The tab's donation log starts
+ * at row 7, and including it can make Google's inferred column type treat the
+ * summary labels as non-strings, causing the WHERE match to return nothing.
+ * Update the range if the summary block gains or loses rows.
+*/
 const SHEET_RANGE = 'B1:C6';
 
 // LIVE_LABELS is Total (lbs) and Money Collected ($)
@@ -55,6 +38,11 @@ const LIVE_LABELS = stats
   .map((stat) => stat.liveSheetLabel)
   .filter((label): label is string => typeof label === 'string' && label.length > 0);
 ---
+
+<!-- [IMPACT STATS]
+- Shows the impact numbers in a simple responsive grid.
+- Numbers linked to the sheet are updated after the page loads.
+-->
 <div class="border-y border-border bg-surface">
   <Container as="section">
     <dl class="grid grid-cols-2 gap-8 py-10 text-center md:grid-cols-4 md:py-14">
@@ -72,18 +60,30 @@ const LIVE_LABELS = stats
 </div>
 
 <script define:vars={{ SHEET_ID, SHEET_GID, SHEET_RANGE, LIVE_LABELS }}>
-  
-  // liveEls is a NodeList of all the <div> elements in the stat grid that have a `data-live-label` attribute.
-  // Each of those elements corresponds to a stat that should be updated with live data from the Google Sheet.
-  // If there are no such elements, or if LIVE_LABELS is empty, we don't need to do anything.
+  /*
+   * A NodeList of all the <div> elements in the stat grid that have a 'data-live-label' attribute.
+   * Each of those elements corresponds to a stat that should be update with live data from the Google Sheet.
+   * If no elements or LIVE_LABELS empty, do nothing.
+  */
   const liveEls = document.querySelectorAll('[data-live-label]');
 
   if (liveEls.length > 0 && LIVE_LABELS.length > 0) {
     loadLiveStats();
   }
 
-  // Loads a Google Sheets gviz URL via JSONP (a <script> tag, not fetch),
-  // since gviz doesn't support cross-origin fetch()/XHR requests.
+  /*
+   * Google Sheets' gviz endpoint does not allow the cross-origin fetch or XHR
+   * request we would normally use here. Loading the URL as a script gets around
+   * that browser restriction because script elements are allowed to load remote
+   * resources. The endpoint then calls the named global function with the sheet
+   * response, which is the JSONP part of this helper.
+   *
+   * The callback removes itself and the temporary script as soon as the response
+   * arrives. If the script fails to load, the same cleanup runs before rejecting
+   * the promise so a failed request does not leave a global callback or unused
+   * script element behind. The caller can then keep the fallback values already
+   * rendered into the page.
+  */
   function fetchGvizJsonp(url) {
     return new Promise((resolve, reject) => {
       const callbackName = '__unityImpactStatsCallback';
@@ -108,14 +108,12 @@ const LIVE_LABELS = stats
     });
   }
 
-  // Escapes a string for safe use inside a single-quoted Google
-  // Visualization Query Language literal.
+  // Escapes a string for a single-quoted Google Visualization query literal.
   function escapeForQuery(str) {
     return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   }
 
-  // Normalizes a string for comparison: trims whitespace, collapses
-  // internal whitespace, and lowercases. Used to match sheet labels.
+  // Normalizes labels before comparing values from the sheet and the DOM.
   function normalize(str) {
     return String(str ?? '')
       .replace(/\s+/g, ' ')
@@ -123,14 +121,16 @@ const LIVE_LABELS = stats
       .toLowerCase();
   }
 
-  // Loads live stats from the Google Sheet and updates the DOM elements with the corresponding data.
+  // Queries the sheet and updates each matching stat value in place.
   async function loadLiveStats() {
     // Equivalent SQL Query: SELECT B, C WHERE B = 'Total (lbs)' OR B = 'Money Collected ($)'
     const whereClause = LIVE_LABELS.map((label) => `B = '${escapeForQuery(label)}'`).join(' OR ');
     const query = `SELECT B, C WHERE ${whereClause}`;
 
-    // The URL for the Google Sheets gviz endpoint, with the query and range parameters.
-    // Source: https://developers.google.com/chart/interactive/docs/querylanguage#sending-queries-to-the-server
+    /*
+     * Builds the gviz URL with the sheet tab, narrow range, query, and JSONP
+     * callback. The range is intentionally kept separate from the query.
+    */
     const url =
       `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq` + // The base URL for the Google Sheets gviz endpoint, with the sheet ID.
       `?gid=${SHEET_GID}` + // The GID of the sheet tab to query.
@@ -148,8 +148,7 @@ const LIVE_LABELS = stats
         );
       }
 
-      // Build a normalized-label -> formatted value lookup from the
-      // (small, pre-filtered) set of rows Google's query returned.
+      // Builds a normalized-label to formatted-value lookup from the filtered rows.
       const sheetValues = new Map(); // Map where the key is the normalized label from column B, and the value is the corresponding value from column C.
       for (const row of response.table.rows) {
         const labelCell = row.c && row.c[0]; // The first cell in the response row, which contains the label (column B). NOTE: Google's gviz API returns the columns in the order they were requested in the query, so column B is the first cell in the row.
@@ -159,7 +158,7 @@ const LIVE_LABELS = stats
         if (rawLabel) sheetValues.set(normalize(rawLabel), value);  // Store the normalized label and its corresponding value in the map.
       }
 
-      // Replace the text content of each live stat element with the corresponding value from the sheet, if found.
+      // Replace each opted-in stat value when a matching sheet row exists.
       liveEls.forEach((el) => {
         const key = el.dataset.liveLabel; // The normalized label for this stat, as specified in the `data-live-label` attribute. e.g. "Total (lbs)" or "Money Collected ($)"
         const liveValue = sheetValues.get(normalize(key)); // The value from the sheet corresponding to this normalized label, if found.
@@ -174,8 +173,7 @@ const LIVE_LABELS = stats
         }
       });
     } catch (error) {
-      // Sheet unreachable, not yet public, or an unexpected shape — the
-      // build-time fallback values rendered above stay untouched.
+      // Keep the server-rendered fallback values when the sheet cannot be read.
       console.error('ImpactStats: could not load live stats.', error);
     }
   }

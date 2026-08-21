@@ -10,33 +10,16 @@ interface Props {
 
 const { videoId, title } = Astro.props as Props;
 
-// URL from YouTube's public thumbnail service. hqdefault.jpg is always
-// exactly 480x360 for any video — a real, fixed size, not a guess — so
-// it's safe to pass as explicit width/height to ResponsiveImage below.
-// Requires i.ytimg.com to be allowlisted in astro.config.mjs's
-// `image.domains` — Astro's Image pipeline refuses to process any
-// remote domain that isn't explicitly listed here.
+// Uses YouTube's fixed-size public thumbnail and Astro's remote image pipeline.
 const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 ---
-<!--
-  id="watch-our-story" is the scroll target for Hero's optional
-  secondary CTA / scroll-cue (see Hero.astro) — added here rather than
-  giving Container an id prop, so Container's API stays generic (§7).
 
-  White heading block (asymmetric padding) + separate full-bleed sage
-  band for the actual content — same pattern as ProjectSection/
-  QRCodeDonate/DocumentEmbed: sage is reserved for a section's actual
-  "content" (here, the video facade), never the heading alone (§6/§11).
+<!-- [YOUTUBE EMBED]
+- Shows a titled video section with a thumbnail facade and click-to-load player.
+- The facade keeps external video resources unloaded until the visitor chooses to play.
 -->
 <div id="watch-our-story">
   <Container as="section">
-    <!--
-      pt-8/md:pt-10 (was pt-12/md:pt-16) — trimmed since index.astro
-      now puts a Divider directly above this heading (§11: MissionStatement
-      and this heading are both white at the seam). pb-4/md:pb-6 unchanged
-      — that's the separate, tight gap into this component's own sage
-      band just below, unrelated to the new divider above.
-    -->
     <div class="flex flex-col items-center gap-2 pt-8 pb-4 text-center md:pt-10 md:pb-6">
       <SectionHeading title={title} align="center" />
     </div>
@@ -78,10 +61,7 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 </div>
 
 <script>
-  // Click-to-load facade: nothing from YouTube (iframe, player JS) loads
-  // until the visitor actually clicks play. querySelectorAll (not
-  // getElementById) so this stays correct if the component is ever used
-  // more than once on the same page.
+  // Loads the YouTube player only after an explicit play action.
   document.querySelectorAll('[data-youtube-facade]').forEach((facade) => {
     const button = facade.querySelector('button');
 
@@ -90,7 +70,7 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
       const title = facade.getAttribute('data-title') ?? 'YouTube video player';
 
       const iframe = document.createElement('iframe');
-      // youtube-nocookie.com avoids setting tracking cookies until the visitor opts in by clicking play.
+      // YouTube's privacy-enhanced host for the embedded player.
       iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
       iframe.title = title;
       iframe.className = 'absolute inset-0 h-full w-full';
@@ -98,7 +78,7 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
         'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
       iframe.allowFullscreen = true;
 
-      // Replace the facade with the iframe, which will start loading and playing the video.
+      // Replaces the facade so the iframe can load and start playback.
       facade.replaceChildren(iframe);
     });
   });

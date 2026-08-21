@@ -2,23 +2,17 @@
 import Container from '@components/reusable/ui/Container.astro';
 
 interface Props {
-  /** Page h1. */
   title: string;
-  /** Optional supporting line under the title. */
   subtext?: string;
-  /** Optional small label above the title (e.g. "Our Story"). */
   eyebrow?: string;
 }
 
 const { title, subtext, eyebrow } = Astro.props as Props;
 ---
-<!--
-  Variant: vertical gradient, primary -> primary-hover. Deliberately
-  top-to-bottom (not Hero's diagonal from-primary via-primary
-  to-primary-hover + blur blobs) and no decoration, so this doesn't
-  read as "Hero without a photo" on interior pages (§6/§7). The two
-  stops are close in value (~1.45:1 contrast between them) — this
-  reads as gentle depth, not a strong visible transition.
+
+<!-- [PAGE HEADER]
+- Renders an interior page heading with optional eyebrow and supporting text.
+- Keeps the header simple with a gentle shift between the primary colors.
 -->
 <div class="bg-linear-to-l from-primary-hover/90 to-primary-hover">
   <Container as="section">

@@ -1,50 +1,47 @@
 ---
-import Container from '@components/reusable/ui/Container.astro';
-import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
+import Container from "@components/reusable/ui/Container.astro";
+import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
 
 interface Props {
   heading: string;
   subtext: string;
 }
 
-// Required, no defaults — same "page supplies real copy" convention as
-// every other section component (project-roadmap.md §7).
 const { heading, subtext } = Astro.props as Props;
 
-// Fixed destination, not a prop — same reasoning as QRCodeDonate's
-// donateUrl (§7): always the org's real Donations tracking sheet.
-//
-// This is the exact same sheet ImpactStats.astro reads from (same ID)
-// — resolves §10's open "what does the live site's Donation Tracker
-// actually embed?" question: it's this sheet, not a separate
-// third-party service.
-//
-// /preview (not the /edit link the sheet is normally shared as) is
-// Google's actual embeddable view — the interactive /edit UI blocks
-// being framed by another site outright. /preview is built for exactly
-// this and just needs the same "Anyone with the link – Viewer" sharing
-// ImpactStats already requires on this same sheet (§10).
+/*
+ * This is the same public sheet used by ImpactStats. The /preview URL is
+ * designed for embedding. The sheet still needs link sharing
+ * enabled for viewers to see it.
+ */
 const sheetEmbedUrl =
-  'https://docs.google.com/spreadsheets/d/14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w/preview';
+  "https://docs.google.com/spreadsheets/d/14C4v_A39CNRhI9oQ-i7GHagwggTS3jptgRGuu5UD6_w/preview";
 ---
 
+<!-- [DOCUMENT EMBED]
+- Introduces the donation tracker and displays the shared sheet below it.
+- Uses Google's preview view so the tracker can load inside this page.
+-->
 <Container as="section">
-  <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
+  <div
+    class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6"
+  >
     <SectionHeading title={heading} subtext={subtext} align="center" />
   </div>
 </Container>
 
-<!-- Same bordered-frame-inside-a-sage-band pattern as ProjectSection's embed (§7/§11). -->
+<!-- The tracker sits in a bordered frame within the full-width content band. -->
 <div class="border-y border-border bg-surface">
   <Container as="section">
     <div class="flex flex-col items-center gap-6 py-10 md:py-14">
-      <div class="w-full max-w-3xl overflow-hidden rounded-md border border-border bg-bg">
+      <div
+        class="w-full max-w-3xl overflow-hidden rounded-md border border-border bg-bg"
+      >
         <iframe
           src={sheetEmbedUrl}
           title="Unity Provisions Donation Tracker"
           loading="lazy"
-          class="h-100 w-full sm:h-125 md:h-150"
-        />
+          class="h-100 w-full sm:h-125 md:h-150"></iframe>
       </div>
     </div>
   </Container>

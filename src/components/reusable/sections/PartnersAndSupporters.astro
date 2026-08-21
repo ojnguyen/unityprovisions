@@ -2,60 +2,43 @@
 import Container from '@components/reusable/ui/Container.astro';
 import Card from '@components/reusable/ui/Card.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
-import { Icon } from 'astro-icon/components';
-import { getImageDimensions } from '@utils/images';
 import type { Partner } from '@/types';
+import { getImageDimensions } from '@utils/images';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   partners: Partner[];
-  /**
-   * Optional framing paragraph shown under each group's heading.
-   * Supplying either prop switches that group from Home's compact
-   * badge row into a fuller, more detailed card-grid treatment (used
-   * by About) — presence of real intro copy is the signal, rather
-   * than a separate boolean flag.
-   */
+  // Intro text switches its group to the detailed card-grid layout.
   partnersIntro?: string;
   supportersIntro?: string;
 }
 
 const { partners, partnersIntro, supportersIntro } = Astro.props as Props;
 
-// An entry with no `type` set is treated as a partner by default.
+// Treats entries without a type as partners by default.
 const partnerOrgs = partners.filter((org) => org.type !== 'supporter');
 const supporterOrgs = partners.filter((org) => org.type === 'supporter');
 
-// Grouped into one array so the markup below only needs to loop once,
-// instead of repeating the same badge/logo rendering twice. A group is
-// skipped entirely if the page passed in zero orgs of that type (e.g.
-// a "brief" Home version that only supplies partners).
+// Builds one renderable list and skips groups with no organizations.
 const groups = [
   { label: 'Partners', orgs: partnerOrgs, intro: partnersIntro },
   { label: 'Supporters', orgs: supporterOrgs, intro: supportersIntro },
 ].filter((group) => group.orgs.length > 0);
 
-// Logos render through ResponsiveImage (astro:assets), each generated
-// at its own real, full native resolution — not a shared guessed size
-// — so the source Astro works from is always sharp. A local
-// `src/assets/...` import already carries its full real width/height
-// on the ImageMetadata object itself, so this reads `.width`/`.height`
-// straight off it.
-//
-// Display size is a completely separate concern, handled in CSS below
-// via a FIXED width+height (h-12/w-24, h-10/w-20) + object-contain —
-// not just a fixed height with width left to size itself. A logo's
-// real, un-guessed proportions are still fully preserved (object-
-// contain never stretches; a logo narrower or wider than the box just
-// gets letterboxed within it), but the box itself is now identical for
-// every logo, so spacing between them is even and predictable
-// regardless of each source file's real resolution or aspect ratio —
-// leaving that to auto-size (relying on the browser's un-forced "auto"
-// width) is what produced the widely uneven spacing this replaces.
+// Generates logos at source dimensions while CSS controls their fixed display boxes.
 const STRING_LOGO_FALLBACK = { width: 240, height: 80 };
 ---
+
+<!-- [PARTNERS AND SUPPORTERS]
+- Separates organizations into partner and supporter groups.
+- Intro text selects a detailed card grid; without it, the group uses a compact logo row.
+-->
+<!-- Full-bleed surface band containing the grouped organization listings. -->
 <div class="border-y border-border bg-surface">
   <Container as="section">
     <div class="flex flex-col gap-10 py-12 md:py-16">
+      <!-- Each populated organization group gets its own heading and listing. -->
+      <!-- Intro text selects detailed cards; otherwise the group uses a compact logo row. -->
       {groups.map((group) => (
         <div class="flex flex-col items-center gap-4 text-center">
           <h3 class="text-sm font-semibold uppercase tracking-wide text-primary">

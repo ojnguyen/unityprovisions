@@ -3,8 +3,8 @@ import Container from '@components/reusable/ui/Container.astro';
 import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
 import ResponsiveImage from '@components/reusable/ui/ResponsiveImage.astro';
 import ExternalLinkCTA from '@components/reusable/ui/ExternalLinkCTA.astro';
-import { getImageDimensions } from '@utils/images';
 import type { Project } from '@/types';
+import { getImageDimensions } from '@utils/images';
 
 type Props = Project;
 
@@ -22,35 +22,20 @@ const {
 
 const hasContent = Boolean(image || embedUrl || (ctaLabel && ctaHref));
 
-// ResponsiveImage is asked to generate the screenshot at its own real,
-// full native resolution — not the old shared fixed 800x500 — so the
-// source stays sharp, and a screenshot whose real shape isn't 8:5
-// never gets silently cropped to force that ratio (Astro's default
-// fit crops when width+height don't match the source).
-//
-// Display size is a separate, CSS-only concern, and a different shape
-// of fix than PartnersAndSupporters/StaffCard (§7): there's no
-// uniform-grid box to hit here, just one large screenshot that should
-// scale to fill its wrapper (w-full max-w-3xl, below) at its own real
-// aspect ratio — so w-full h-auto on the image itself, no object-fit,
-// no fixed height. Forcing a fixed box here would crop or letterbox
-// the screenshot, which is the wrong call for a single prominent image
-// (unlike a row of logos or an avatar grid, where a uniform box was
-// the actual goal).
+/*
+ * Generate each screenshot at its own source dimensions so it stays sharp
+ * and keeps its original aspect ratio. The image fills a single large wrapper,
+ * so w-full h-auto is a better fit than a fixed box with object-fit: a fixed
+ * box could crop or letterbox the screenshot instead of simply scaling it.
+*/
 const STRING_IMAGE_FALLBACK = { width: 800, height: 500 };
 
 const imageDims = image ? getImageDimensions(image, STRING_IMAGE_FALLBACK) : null;
 ---
-<!--
-  Two sibling blocks, not one wrapped section — same shape as About's
-  ImpactStats/PartnersAndSupporters headings (project-roadmap.md §11):
-  a plain white heading block (title + description) with asymmetric
-  padding so it visually attaches to the sage band directly below it,
-  then a separate full-bleed sage band for the actual project "data"
-  (the screenshot or the live embed) and its CTA. Sage is reserved for
-  that data, same as ImpactStats/PartnersAndSupporters — always sage,
-  never alternated — and the heading above it is always white, never
-  the other way around.
+
+<!-- [PROJECT SECTION]
+- Shows the project title and description, followed by its optional image, embed, and CTA.
+- The content band appears only when at least one project detail is available.
 -->
 <Container as="section">
   <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">

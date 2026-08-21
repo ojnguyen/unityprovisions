@@ -1,12 +1,19 @@
 ---
 import Layout from "@layouts/Layout.astro";
-
+import Divider from "@components/reusable/ui/Divider.astro";
 import GetInvolvedHeading from "@components/page-specific/get-involved/Get-Involved_Heading.astro";
 import GetInvolvedBranchFounder from "@components/page-specific/get-involved/Get-Involved_BranchFounder.astro";
 import GetInvolvedContactList from "@components/page-specific/get-involved/Get-Involved_ContactList.astro";
-import Divider from "@components/reusable/ui/Divider.astro";
 ---
 
+<!--
+[GET INVOLVED]
+- The Get Involved page is composed of 3 sections (not including Layout, WhiteSpace, and Divider), 
+  each implemented as its own component (shown as file names):
+  - Get-Involved_Heading
+  - Get-Involved_BranchFounder
+  - Get-Involved_ContactList
+-->
 <Layout
   title="Get Involved — Unity Provisions"
   description="Become a Branch Founder or join our email list — the ways to get involved with Unity Provisions."
@@ -15,7 +22,6 @@ import Divider from "@components/reusable/ui/Divider.astro";
 
   <GetInvolvedBranchFounder />
 
-  <!-- Divider rule (§11) — both fully white. -->
   <Divider />
 
   <GetInvolvedContactList />

@@ -8,6 +8,11 @@ interface Props {
 
 const { members } = Astro.props as Props;
 ---
+
+<!-- [STAFF GRID]
+- Displays staff cards in a responsive one-to-four-column grid.
+- Each member is passed directly to the shared StaffCard component.
+-->
 <div class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
   {members.map((member) => (
     <StaffCard {...member} />

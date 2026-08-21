@@ -2,12 +2,16 @@
 import Layout from "@layouts/Layout.astro";
 import ProjectSection from "@components/reusable/projects/ProjectSection.astro";
 import WhiteSpace from "@components/reusable/ui/WhiteSpace.astro";
-
 import ProjectsHeading from "@components/page-specific/projects/Projects_Heading.astro";
-
 import { projects } from "@data/projects";
 ---
 
+<!-- [PROJECTS]
+- The Projects page is composed of 2 sections (not including Layout, WhiteSpace, and Divider), 
+  each implemented as its own component (shown as file names):
+  - Projects_Heading
+  - ProjectSection x2
+-->
 <Layout
   title="Projects — Unity Provisions"
   description="Relief Route and AgriScan — the tools Unity Provisions is building to make food more accessible."

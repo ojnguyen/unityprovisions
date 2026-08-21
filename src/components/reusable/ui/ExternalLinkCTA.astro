@@ -1,12 +1,18 @@
 ---
 import Button from '@components/reusable/ui/Button.astro';
-import { Icon } from 'astro-icon/components';
 import type { ExternalLink } from '@/types';
+import { Icon } from 'astro-icon/components';
 
+// Reuses the shared button styling for links that leave the site.
 type Props = ExternalLink;
 
 const { label, href, icon } = Astro.props as Props;
 ---
+
+<!-- [EXTERNAL LINK CTA]
+- Renders a button-styled link that opens the destination in a new tab.
+- An icon is included only when the link data provides one.
+-->
 <Button href={href} target="_blank" rel="noopener noreferrer">
   {label}
   {icon && <Icon name={icon} class="w-4 h-4 ml-2" />}

@@ -1,21 +1,31 @@
 ---
-import Layout from '@layouts/Layout.astro';
-import Container from '@components/reusable/ui/Container.astro';
-import SectionHeading from '@components/reusable/ui/SectionHeading.astro';
-import Divider from '@components/reusable/ui/Divider.astro';
-import Hero from '@components/reusable/sections/Hero.astro';
-import ImpactStats from '@components/reusable/sections/ImpactStats.astro';
-import MissionStatement from '@components/reusable/sections/MissionStatement.astro';
-import YouTubeEmbed from '@components/reusable/sections/YouTubeEmbed.astro';
-import PartnersAndSupporters from '@components/reusable/sections/PartnersAndSupporters.astro';
-import GetInvolvedTeaser from '@components/reusable/sections/GetInvolvedTeaser.astro';
-import ContactForm from '@components/reusable/sections/ContactForm.astro';
-import DonateBanner from '@components/reusable/sections/DonateBanner.astro';
-import { stats } from '@data/stats';
-import { partners } from '@data/partners';
-import heroImage from '@assets/components/hero.jpg'
+import Layout from "@layouts/Layout.astro";
+import Divider from "@components/reusable/ui/Divider.astro";
+import Hero from "@components/reusable/sections/Hero.astro";
+import ImpactStats from "@components/reusable/sections/ImpactStats.astro";
+import MissionStatement from "@components/reusable/sections/MissionStatement.astro";
+import YouTubeEmbed from "@components/reusable/sections/YouTubeEmbed.astro";
+import HomePartnersAndSupporters from "@components/page-specific/home/Home_PartnersAndSupporters.astro";
+import GetInvolvedTeaser from "@components/reusable/sections/GetInvolvedTeaser.astro";
+import ContactForm from "@components/reusable/sections/ContactForm.astro";
+import DonateBanner from "@components/reusable/sections/DonateBanner.astro";
+import { stats } from "@data/stats";
+import heroImage from "@assets/components/hero.jpg";
 ---
 
+<!--
+[INDEX]
+- The Index page is composed of 8 sections (not including Layout, WhiteSpace, and Divider), 
+  each implemented as its own component (shown as file names):
+  - Hero
+  - ImpactStats
+  - MissionStatement
+  - YouTubeEmbed
+  - Home_PartnersAndSupporters
+  - GetInvolvedTeaser
+  - ContactForm
+  - DonateBanner
+-->
 <Layout>
   <Hero
     headline="Students Ending Hunger"
@@ -36,31 +46,11 @@ import heroImage from '@assets/components/hero.jpg'
     body="At Unity Provisions, we believe that no one should go hungry in a world of abundance. We empower young people to create and lead food collection programs in their schools and communities. Through education, collaboration, and action, we work to reduce food insecurity, challenge the stigma surrounding hunger, and turn surplus into support for those who need it. Together, we are building a future where access to food is a right, not a privilege."
   />
 
-  <!-- Divider rule (§11) — MissionStatement's ending and YouTubeEmbed's heading are both white at the seam. -->
   <Divider />
 
-  <YouTubeEmbed
-    videoId="QsL7OpKv2Qg"
-    title="Watch Our Story"
-  />
+  <YouTubeEmbed videoId="QsL7OpKv2Qg" title="Watch Our Story" />
 
-  <!--
-    Plain heading for PartnersAndSupporters' brief Home treatment —
-    previously a bare sage band with no heading (§6 accessibility: no
-    landmark naming what the logo grid is) and, since YouTubeEmbed
-    has its own sage band, sitting directly against another sage band
-    with nothing between them. This block does both jobs at once, same
-    as every other asymmetric-padding heading on the site introducing
-    its own content below (ProjectSection, QRCodeDonate, About_Stats,
-    etc.).
-  -->
-  <Container as="section">
-    <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
-      <SectionHeading title="Our Partners & Supporters" align="center" />
-    </div>
-  </Container>
-
-  <PartnersAndSupporters partners={partners} />
+  <HomePartnersAndSupporters />
 
   <GetInvolvedTeaser
     heading="Get Involved"
@@ -69,7 +59,6 @@ import heroImage from '@assets/components/hero.jpg'
     ctaLabel="Learn More"
   />
 
-  <!-- Divider rule (§11) — GetInvolvedTeaser and ContactForm are both white at the seam. -->
   <Divider />
 
   <ContactForm

@@ -11,31 +11,25 @@ interface Props {
   subtext?: string;
 }
 
-// Required, no defaults — same pattern as every other Home section
-// component. Real copy is supplied by index.astro at assembly time.
 const { heading, subtext } = Astro.props as Props;
 
-// border-border-interactive (not border-border) + bg-bg (not bg-surface):
-// --color-border only clears ~1.2-1.35:1 against bg/surface, well under
-// WCAG 1.4.11's 3:1 minimum for interactive-element boundaries, and a
-// bg-surface input inside this panel's bg-surface Card had no fill
-// contrast against its own container either. See global.css and
-// project-roadmap.md §6/§9 for the audit that found this.
+/*
+ * These fields use the interactive border and page background tokens rather
+ * than the softer defaults. The stronger boundary improves contrast against
+ * the card and makes each input easier to identify as an interactive control.
+*/
 const inputClasses = cn(
   'w-full rounded-sm border border-border-interactive bg-bg px-3 py-2 text-base text-text-primary'
 );
 
 const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primary';
 ---
+
+<!-- [CONTACT FORM]
+- Shows the contact details first and keeps the form collapsed until requested.
+- Submits through Formspree and swaps the form for a success message when complete.
+-->
 <Container as="section">
-  <!--
-    pt-8/md:pt-10 (was symmetric py-12/md:py-16) — trimmed since
-    index.astro now puts a Divider directly above this section (§11:
-    GetInvolvedTeaser and this are both white at the seam). pb stays
-    at the standard pb-12/md:pb-16 — DonateBanner is a colored band
-    right after, not another white section, so no divider/trim applies
-    on that side.
-  -->
   <div class="flex flex-col items-center gap-6 pt-8 pb-12 md:pt-10 md:pb-16">
     <SectionHeading title={heading} subtext={subtext} align="center" />
     <a href="mailto:contact@unityprovisions.org" class="inline-flex items-center gap-2 text-primary hover:text-primary-hover">
@@ -43,7 +37,7 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
       contact@unityprovisions.org
     </a>
 
-    <!-- Collapsed state: only this button shows until a visitor opts in. -->
+    <!-- Collapsed state: only this button shows while the form is closed. -->
     <div id="contact-trigger-wrapper">
       <Button type="button" variant="primary" size="lg">Drop Us a Line!</Button>
     </div>
@@ -52,7 +46,7 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     <div id="contact-panel" hidden class="w-full max-w-xl">
       <Card padding="lg">
         <form id="contact-form" class="flex flex-col gap-5">
-          <!-- Formspree special field: sets the notification email's subject line. -->
+          <!-- Formspree uses this field for the notification email subject. -->
           <input type="hidden" name="_subject" value="New message from Unity Provisions website contact form" />
 
           <label class={labelClasses} for="contact-name">
@@ -101,7 +95,7 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
             />
           </label>
 
-          <!-- Shown only if the fetch() below fails or errors. role="alert" announces it to screen readers immediately. -->
+          <!-- Revealed after a failed submission and announced immediately to screen readers. -->
           <p id="contact-error" hidden role="alert" class="text-sm text-error">
             Something went wrong sending your message. Please try again, or email us directly at contact@unityprovisions.org.
           </p>
@@ -114,12 +108,7 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
           </div>
         </form>
 
-        <!--
-          Success state: swaps in for the form itself once Formspree
-          confirms the submission. Lives in the same Card, as a sibling
-          of <form> rather than inside it, so it's never picked up by
-          FormData(form) and never renders while the form is in use.
-        -->
+        <!-- The success state replaces the form with a "Thanks for reaching out" text after Formspree confirms delivery. -->
         <div id="contact-success" hidden tabindex="-1" class="flex flex-col items-center gap-3 py-4 text-center">
           <Icon name="lucide:check-circle-2" aria-hidden="true" class="h-8 w-8 text-primary" />
           <p class="text-text-primary">Thanks for reaching out — we'll get back to you soon.</p>
@@ -133,25 +122,18 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
 </Container>
 
 <script>
-  // Progressive disclosure: the form stays collapsed behind a single
-  // "Drop Us a Line!" button until a visitor actually wants to use it —
-  // matching the live site's real behavior, and reusing the same
-  // accessible disclosure pattern already used for Navbar's mobile menu
-  // (aria-expanded/aria-controls on the trigger, focus moves into the
-  // panel on open and back to the trigger on close, Escape closes).
   const triggerWrapper = document.getElementById('contact-trigger-wrapper');
-  const triggerButton = triggerWrapper?.querySelector('button');
+  const triggerButton = triggerWrapper?.querySelector('button'); // Drop Us a Line! button
   const panel = document.getElementById('contact-panel');
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const errorMessage = document.getElementById('contact-error');
   const successMessage = document.getElementById('contact-success');
 
-  // Button.astro doesn't accept an id prop (see project-roadmap.md §7),
-  // so aria-expanded/aria-controls, and every button below, are found/
-  // targeted via querySelector instead of by id.
+  // Sets the initial ARIA state for the trigger button and panel.
   triggerButton?.setAttribute('aria-expanded', 'false');
   triggerButton?.setAttribute('aria-controls', 'contact-panel');
 
+  // Opens the form panel and focuses the first input field. Hides the trigger button.
   function openForm() {
     panel?.removeAttribute('hidden');
     triggerWrapper?.setAttribute('hidden', '');
@@ -159,6 +141,7 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     panel?.querySelector<HTMLInputElement | HTMLTextAreaElement>('input, textarea')?.focus();
   }
 
+  // Closes the form panel, resets the form, and returns focus to the trigger button. Hides the success or error messages.
   function closeForm() {
     panel?.setAttribute('hidden', '');
     triggerWrapper?.removeAttribute('hidden');
@@ -170,30 +153,28 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     triggerButton?.focus();
   }
 
+  // Listens for click on the trigger button that opens the form panel.
   triggerButton?.addEventListener('click', openForm);
 
-  // Cancel is the only type="button" inside <form> itself, so this
-  // finds it without Button.astro needing an id prop — same workaround
-  // used throughout this component (see project-roadmap.md §7).
+  // Listens for click on the cancel button that closes the form panel.
   const cancelButton = form?.querySelector('button[type="button"]');
   cancelButton?.addEventListener('click', closeForm);
 
-  // The success state's "Close" button lives outside <form> (see markup
-  // comment above), so it needs its own wrapper-id lookup rather than
-  // the form?.querySelector used for Cancel above.
+  // The success state close button
+  // Listens for click on the success state close button that closes the success panel after a successful submission.
   const successCloseButton = document
     .getElementById('contact-success-close-wrapper')
     ?.querySelector('button');
   successCloseButton?.addEventListener('click', closeForm);
 
+  // Listens for the Escape key to close the form panel.
   panel?.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       closeForm();
     }
   });
 
-  // Formspree endpoint (from the form's Integration tab) — live as of
-  // project-roadmap.md §7/§10.
+  // Formspree endpoint used for the AJAX submission.
   const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xbgravll';
 
   const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -209,9 +190,10 @@ const labelClasses = 'flex flex-col gap-1.5 text-sm font-medium text-text-primar
     }
 
     try {
-      // Accept: application/json makes Formspree respond with JSON
-      // instead of redirecting to its own hosted thank-you page —
-      // required for a same-page AJAX success/error flow.
+      /*
+       * Asking for JSON keeps Formspree from redirecting to its hosted thank-you
+       * page, so this component can show success or failure in place.
+       */
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
         body: new FormData(form),

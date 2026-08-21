@@ -2,7 +2,6 @@
 import Container from "@components/reusable/ui/Container.astro";
 import PageHeader from "@components/reusable/sections/PageHeader.astro";
 import ResponsiveImage from "@components/reusable/ui/ResponsiveImage.astro";
-
 import { getStatValue } from "@utils/stats";
 import ryanPhoto from "@assets/team/ryan-nguyen.webp";
 
@@ -13,9 +12,7 @@ const countryCount = getStatValue("countries"); // "8+"
 
 <!--
 [ABOUT] HEADING
-- The founder story section: PageHeader (§7) carries the title band, photo +
-  prose follow in their own white section below, unchanged in content from
-  before this used PageHeader — only the top band and alignment changed.
+- Heading for the About page, including a page header and a two-column layout with an image and text.
 -->
 <PageHeader eyebrow="Our Story" title="Is There Dinner?" />
 

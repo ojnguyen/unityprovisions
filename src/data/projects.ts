@@ -1,28 +1,13 @@
-import type { Project } from '@/types';
 import agriscanImage from '@assets/projects-and-events/agriscan.webp';
+import type { Project } from '@/types';
 
-// Real Unity Provisions projects. Copy is paraphrased from the live
-// site's dedicated Relief Route / AgriScan pages, not transcribed
-// verbatim — project-roadmap.md §3: preserve the substance, not a
-// word-for-word copy.
-//
-// Relief Route embeds the live tool directly via ProjectSection's
-// `embedUrl` (§7) — a deliberate call to use a plain always-loaded
-// iframe, not the click-to-load facade YouTubeEmbed uses. Its CTA
-// originally pointed at a separate "add a center" request page, but
-// that page turned out not to do anything beyond showing the map
-// again (Relief Route's own copy already says it's still being
-// built) — so the CTA became a mailto "help us build this" ask
-// instead, same shape as AgriScan's.
-//
-// AgriScan's live "We're Hiring!" section (an embedded resume-upload
-// form) was replaced with a plain mailto CTA for the same reason
-// ContactForm's file attachment was removed — an upload endpoint is a
-// real spam/security surface for a small volunteer-run org (§7).
-//
-// Both mailto CTAs carry a `?subject=` so the org can tell the two
-// asks apart in their inbox without relying on the sender to explain
-// why they're emailing.
+/*
+ * These descriptions are paraphrased from the live project pages.
+ * Relief Route loads its interactive map directly in the project section.
+ * Both projects use email links for help requests instead of file-upload forms,
+ * so the site does not need to handle uploaded files.
+ * The email subjects make it clear which project someone wants to help with.
+ */
 export const projects: Project[] = [
   {
     title: 'Relief Route',

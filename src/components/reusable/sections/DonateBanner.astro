@@ -8,13 +8,13 @@ interface Props {
   ctaLabel: string;
 }
 
-// All required, no defaults — matches GetInvolvedTeaser's exact prop
-// shape, this component's closest sibling: both are closing-teaser
-// bands (heading + subtext + one CTA button) whose destination is
-// hardcoded inside the component, not exposed as a prop, so it can't be
-// misused to point somewhere else.
 const { heading, subtext, ctaLabel } = Astro.props as Props;
 ---
+
+<!-- [DONATE BANNER]
+- Ends a section with a short donation message and a prominent CTA.
+- The CTA always leads to the site's donation page.
+-->
 <div class="bg-primary-hover">
   <Container as="section">
     <div class="flex flex-col items-center gap-6 py-16 text-center md:py-20">

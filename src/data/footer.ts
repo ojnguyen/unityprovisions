@@ -1,26 +1,23 @@
 import type { ExternalLink } from '@/types';
 import { navigation, orgName } from './navigation';
 
-// Reuses navigation.ts rather than duplicating the list — the footer's
-// nav column and the Navbar always stay in sync automatically.
+// The footer reuses the main navigation list so it and the Navbar stay in sync.
 export const footerNav = navigation;
 
-// Re-exported so Footer.astro can import everything it needs (nav,
-// external links, social, phone, org name) from this one file, rather
-// than also reaching into navigation.ts directly for just this one value.
+// Re-exports the organization name so Footer.astro can get its data from one module.
 export { orgName };
 
-// The Google Form behind this URL is a general contact-list signup
-// (name/email/phone/state) with no volunteer-specific question — see
-// roadmap §10. Exported by name, not just inlined below, since the
-// Get Involved page's Volunteer CTA likely reuses this same form.
+// This general contact-list form collects a name, email, phone number, and state.
+// Keep the URL named because the Get Involved page also links to the same form.
 export const contactListFormUrl = 'https://forms.gle/7JFDkKPdzYv1LfCP6';
 
+// Links shown in the footer's external-links section.
 export const externalLinks: ExternalLink[] = [
   { label: 'Email List', href: contactListFormUrl },
   { label: 'Linktree', href: 'https://linktr.ee/UnityProvisions' },
 ];
 
+// Social profiles shown in the footer.
 export const socialLinks: ExternalLink[] = [
   {
     label: 'Instagram',
@@ -34,6 +31,7 @@ export const socialLinks: ExternalLink[] = [
   },
 ];
 
+// Main phone contact shown in the footer.
 export const phone: ExternalLink = {
   label: '(857) 777-8811',
   href: 'tel:8577778811',

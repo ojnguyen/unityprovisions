@@ -1,6 +1,6 @@
 ---
-import { cn } from '@utils/cn';
 import { Icon } from 'astro-icon/components';
+import { cn } from '@utils/cn';
 
 interface Props {
   as?: 'h1' | 'h2' | 'h3';
@@ -11,7 +11,6 @@ interface Props {
   align?: 'left' | 'center';
 }
 
-// as: HeadingTag renames the "as" prop to "HeadingTag" for clarity; <HeadingTag> will be used in the JSX below to render the appropriate heading level.
 const {
     as: HeadingTag = 'h2',
     icon,
@@ -21,33 +20,30 @@ const {
     align = 'left'
 } = Astro.props as Props;
 
+// Maps each supported heading level to its display size.
 const headingSizes: Record<'h1' | 'h2' | 'h3', string> = {
   h1: 'text-3xl',
   h2: 'text-2xl',
   h3: 'text-xl',
 };
 
-// Shared between both wrapper levels below so the icon badge and the
-// eyebrow/title/subtext text both align the same way — matches how
-// every icon-badge section already behaved before this was centralized
-// here (see project-roadmap.md §7).
+// Keeps the icon badge and text group aligned consistently.
 const alignClasses = align === 'center' ? 'items-center text-center' : 'items-start text-left';
 
-// Outer wrapper: icon badge (if any) sits above the text group, with a
-// bigger gap (gap-6) than the tight gap-2 within the text group itself
-// — same two-tier spacing every icon-badge section already used before
-// this moved here. When icon is omitted, this wrapper has exactly one
-// child (the text group div below), so gap-6 has nothing to apply
-// between and produces no visible spacing — output is unchanged for
-// every pre-existing non-icon caller of this component.
+// Separates the optional icon badge from the text group.
 const wrapperClasses = cn('flex flex-col gap-6', alignClasses);
 
-// Inner wrapper: the original eyebrow/title/subtext group, functionally
-// unchanged from before this component had icon support.
+// Keeps the eyebrow, title, and subtext in a compact group.
 const textGroupClasses = cn('flex flex-col gap-2', alignClasses);
 
+// Applies the shared heading color and the selected heading size.
 const headingClasses = cn('font-bold text-text-primary', headingSizes[HeadingTag]);
 ---
+
+<!-- [SECTION HEADING]
+- Renders an optional icon, eyebrow, title, and supporting text as one heading block.
+- Alignment and heading level are controlled through component props.
+-->
 <div class={wrapperClasses}>
   {icon && (
     <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">

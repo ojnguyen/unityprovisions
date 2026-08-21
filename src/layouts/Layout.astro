@@ -2,14 +2,13 @@
 import "@styles/global.css";
 import Navbar from '@components/reusable/layout/Navbar.astro';
 import Footer from '@components/reusable/layout/Footer.astro';
-import type { ImageMetadata } from 'astro';
 import defaultOgImage from '@assets/components/hero.jpg';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   title?: string;
   description?: string;
-  /** Optional per-page social-share image; falls back to the Hero photo. */
-  image?: ImageMetadata;
+  image?: ImageMetadata; // Optional page-specific image for social sharing.
 }
 
 const {
@@ -18,7 +17,8 @@ const {
   image = defaultOgImage,
 } = Astro.props as Props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site); // Construct the canonical URL for the current page.
+// Use an absolute URL so search engines can identify the canonical page.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(image.src, Astro.site);
 ---
 

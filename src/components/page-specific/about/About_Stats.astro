@@ -2,26 +2,14 @@
 import Container from "@components/reusable/ui/Container.astro";
 import SectionHeading from "@components/reusable/ui/SectionHeading.astro";
 import ImpactStats from "@components/reusable/sections/ImpactStats.astro";
-
 import { stats } from "@data/stats";
 ---
 
 <!--
 [ABOUT] STATS
-- Displays the key statistics for Unity Provisions, showing the impact of the organization across its branches worldwide.
-- 3 Sections: 
-  1. Heading introducing the statistics section.
-  2. The impact statistics themselves.
-  3. A caption listing the countries where Unity Provisions is active.
+- Stats section for the About page, including a heading, stats, and a note about the organization's global presence.
 -->
 <Container as="section">
-  <!--
-    pt-8/md:pt-10 (was pt-12/md:pt-16) — trimmed since about.astro now
-    puts a Divider directly above this heading (§11: About_BiggestEvent
-    and this heading are both white at the seam). pb-4/md:pb-6
-    unchanged — that's the separate, tight gap into ImpactStats' own
-    sage band just below, unrelated to the new divider above.
-  -->
   <div
     class="flex flex-col items-center gap-2 pt-8 pb-4 text-center md:pt-10 md:pb-6"
   >
@@ -33,6 +21,7 @@ import { stats } from "@data/stats";
   </div>
 </Container>
 
+<!-- Stats pulled from @data/stats (static stats) and google sheet (live stats) -->
 <ImpactStats stats={stats} />
 
 <Container as="section">

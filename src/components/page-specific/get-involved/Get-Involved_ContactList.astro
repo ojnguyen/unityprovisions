@@ -7,17 +7,9 @@ import { contactListFormUrl } from "@data/footer";
 
 <!--
 [GET-INVOLVED] CONTACT LIST
-- Renders the Contact List section for the Get Involved page, including the heading, subtext, and CTA for joining the email list.
+- Contact List section for the Get Involved page, including the heading, subtext, and CTA for joining the email list.
 -->
 <Container as="section">
-  <!--
-    pt-8/md:pt-10 (was symmetric py-12/md:py-16) — trimmed since
-    get-involved.astro now puts a Divider directly above this section
-    (§11: Get-Involved_BranchFounder and this are both white at the
-    seam). pb stays at the standard pb-12/md:pb-16 — Footer is sage
-    right after, not another white section, so no divider/trim applies
-    on that side.
-  -->
   <div class="flex flex-col items-center gap-6 pt-8 pb-12 text-center md:pt-10 md:pb-16">
     <SectionHeading
       icon="lucide:mail"

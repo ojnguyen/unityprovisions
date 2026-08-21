@@ -10,22 +10,16 @@ interface Props {
   ctaLabel: string;
 }
 
-// Required, no defaults — same pattern as every other Home/page section
-// component (project-roadmap.md §7): real copy is supplied by the page.
 const { heading, subtext, ctaLabel } = Astro.props as Props;
 
-// Fixed destination, not a prop — same reasoning DonateBanner and
-// GetInvolvedTeaser use for their hardcoded hrefs (§7): this is always
-// the org's real Zeffy campaign, never something a page author should
-// be able to point elsewhere.
+// Keeps the QR code and button tied to the organization's donation campaign.
 const donateUrl = 'https://www.zeffy.com/fundraising/ending-hunger-through-youth-leadership';
 ---
 
-<!--
-  Heading gets its own white block with asymmetric padding (§11) since
-  a full-bleed sage band follows immediately — same pattern as
-  ProjectSection and DocumentEmbed: sage is reserved for the section's
-  actual "content" (here, the QR code + CTA), never the heading.
+<!-- [QR CODE DONATE]
+- Introduces the donation campaign and provides a button and a scannable QR code.
+- The button and QR code both lead to the same fixed donation campaign.
+- The 
 -->
 <Container as="section">
   <div class="flex flex-col items-center gap-2 pt-12 pb-4 text-center md:pt-16 md:pb-6">
@@ -36,23 +30,7 @@ const donateUrl = 'https://www.zeffy.com/fundraising/ending-hunger-through-youth
 <div class="border-y border-border bg-surface">
   <Container as="section">
     <div class="flex flex-col items-center gap-8 py-10 md:py-14">
-      <!--
-        A real QR code, not a placeholder box — generated once at
-        authoring time by encoding donateUrl above with a standard QR
-        library (Python's `qrcode`, SVG output), then pasted in as static
-        markup. Kept static rather than a build-time dependency, since a
-        nonprofit's Zeffy campaign URL essentially never changes; if
-        donateUrl above is ever updated, regenerate with any QR encoder
-        and swap the <path> below.
-
-        bg="bg" (white), not Card's usual sage default — this Card
-        already needed white for scan contrast regardless of what's
-        behind the whole section (§7 Card) — now it's also the thing
-        that visually pops against the sage band around it.
-        fill uses --color-text-primary (near-black, #1a1a1a) rather than
-        pure black — plenty dark enough to scan, while still drawing from
-        the design system's real tokens.
-      -->
+      <!-- QR Generated from the donation URL and embedded as a static SVG -->
       <div class="w-full max-w-55">
         <Card padding="lg" bg="bg">
           <svg

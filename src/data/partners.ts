@@ -1,18 +1,16 @@
-import type { Partner } from '@/types';
 import sodexo from '@assets/partners-and-supporters/sodexo.jpg';
 import ymca from '@assets/partners-and-supporters/ymca.jpg';
 import food4philly from '@assets/partners-and-supporters/food4philly.jpg';
 import estherRSangerCenterForCompassion from '@assets/partners-and-supporters/esther-r-sanger-center-for-compassion.jpg';
 import walmart from '@assets/partners-and-supporters/walmart.jpg';
 import google from '@assets/partners-and-supporters/google.jpg';
+import type { Partner } from '@/types';
 
-// Real partner and supporter organizations for Unity Provisions — see
-// project-roadmap.md §7 for source. Real logos are now in place for
-// every org except Stephen J. Brady Stop Hunger (see §5's assets/
-// tree) — that entry still renders as a text badge in
-// PartnersAndSupporters.astro until one is supplied. The three
-// YMCA-affiliated entries (Wang YMCA, Mystic Valley YMCA, YMCA) all
-// share the same generic `ymca` logo import.
+/*
+ * The partners array lists the organizations that support Unity Provisions as partners or supporters.
+ * Stephen J. Brady Stop Hunger has no logo, so its entry renders as a text badge.
+ * The Wang YMCA, Mystic Valley YMCA, and YMCA entries share the generic YMCA logo.
+ */
 export const partners: Partner[] = [
   { name: 'Wang YMCA', type: 'partner', logo: ymca },
   { name: 'Mystic Valley YMCA', type: 'partner', logo: ymca },

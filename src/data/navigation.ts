@@ -1,10 +1,9 @@
 import type { NavItem } from '@/types';
 
-// Site-wide branding name — lives here rather than footer.ts, since both
-// Navbar (site name/logo text) and Footer (copyright line) need it, and
-// navigation.ts is the more central of the two data files.
+// Shared by the Navbar and Footer so the site's name stays consistent in both places.
 export const orgName = 'Unity Provisions';
 
+// Main links shown in the site's navigation.
 export const navigation: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },

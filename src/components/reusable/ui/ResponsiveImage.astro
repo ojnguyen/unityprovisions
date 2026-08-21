@@ -1,7 +1,7 @@
 ---
+import { cn } from '@utils/cn';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { cn } from '@utils/cn';
 
 interface Props {
   src: ImageMetadata | string;
@@ -10,18 +10,11 @@ interface Props {
   height: number;
   radius?: 'sm' | 'md' | 'lg' | 'none';
   loading?: 'eager' | 'lazy';
-  /** Extra classes merged in after the radius class — e.g. positioning/sizing/object-fit. */
+  /** Extra classes for positioning, sizing, or object-fit behavior. */
   class?: string;
 }
 
-// width/height are the pixel dimensions Astro actually generates the
-// output file at — not necessarily the CSS display size. Pass numbers
-// comfortably larger than the biggest size this image will ever be
-// shown at (its layout box, at any breakpoint, on any screen density),
-// not a tight match to it: browsers downscale a larger source cleanly,
-// but upscale a too-small one into visible blur (hit this with
-// About_Heading's founder photo and PartnersAndSupporters' logos,
-// §7 — both fixed by sizing generously rather than exactly).
+// Use dimensions larger than the display size so responsive downscaling stays sharp.
 const {
   src,
   alt,
@@ -32,6 +25,7 @@ const {
   class: className,
 } = Astro.props as Props;
 
+// Maps the radius option to the site's standard corner classes.
 const radiusSizes: Record<'sm' | 'md' | 'lg' | 'none', string> = {
   sm: 'rounded-sm',
   md: 'rounded-md',
@@ -39,11 +33,14 @@ const radiusSizes: Record<'sm' | 'md' | 'lg' | 'none', string> = {
   none: '',
 };
 
+// Preserves caller-supplied classes alongside the selected radius.
 const classes = cn(radiusSizes[radius], className);
-
-// Below, the duplicated-looking JSX in each branch is intentional and not actually redundant:
-// TypeScript treats them as two separate call sites, each satisfying a different half of <Image />'s union type.
 ---
+
+<!-- [RESPONSIVE IMAGE]
+- Renders an optimized image with explicit dimensions, loading behavior, and alt text.
+- Supports both imported image metadata and string-based image sources.
+-->
 {typeof src === 'string' ? (
   <Image src={src} alt={alt} width={width} height={height} loading={loading} class={classes} />
 ) : (

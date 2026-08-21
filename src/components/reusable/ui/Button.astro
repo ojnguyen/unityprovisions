@@ -1,6 +1,6 @@
 ---
-import { cn } from '@utils/cn';
 import type { ButtonVariant, ButtonSize } from '@/types';
+import { cn } from '@utils/cn';
 
 interface Props {
   variant?: ButtonVariant;
@@ -20,23 +20,31 @@ const {
     rel
 } = Astro.props as Props;
 
+// Shared geometry and transition styles for every button option.
 const base = 'inline-flex items-center justify-center font-medium rounded-sm transition-colors duration-150';
 
+// Visual emphasis and interaction states for each button variant.
 const variants: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-white hover:bg-primary-hover',
   secondary: 'border border-primary text-primary bg-transparent hover:border-primary-hover hover:bg-primary-hover hover:text-white',
   accent: 'bg-accent text-white hover:bg-accent-hover',
 };
 
+// Size options adjust the touch target and label scale.
 const sizes: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5 text-sm',
   md: 'px-4 py-2 text-base',
   lg: 'px-6 py-3 text-lg',
 };
 
-// Falsy filtering (good practice but not strictly necessary here)
+// cn combines the shared styles with the requested variant and size classes.
 const classes = cn(base, variants[variant], sizes[size]);
 ---
+
+<!-- [BUTTON]
+- Renders a styled link when href is provided and a native button otherwise.
+- The slot supplies the visible label or nested button content.
+-->
 {href ? (
   <a href={href} class={classes} target={target} rel={rel}>
     <slot />

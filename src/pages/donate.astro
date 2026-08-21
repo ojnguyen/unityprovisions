@@ -3,10 +3,17 @@ import Layout from "@layouts/Layout.astro";
 import QRCodeDonate from "@components/reusable/donate/QRCodeDonate.astro";
 import DocumentEmbed from "@components/reusable/donate/DocumentEmbed.astro";
 import WhiteSpace from "@components/reusable/ui/WhiteSpace.astro";
-
 import DonateHeading from "@components/page-specific/donate/Donate_Heading.astro";
 ---
 
+<!--
+[DONATE]
+- The Donate page is composed of 3 sections (not including Layout, WhiteSpace, and Divider), 
+  each implemented as its own component (shown as file names):
+  - Donate_Heading
+  - QRCodeDonate
+  - DocumentEmbed
+-->
 <Layout
   title="Donate — Unity Provisions"
   description="Support Unity Provisions and see exactly where your gift goes."
