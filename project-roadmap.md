@@ -54,12 +54,19 @@ drifted in four places (§5 convention line, §5 tree, §8, §9) and has
 been corrected here. `wordings.md` still describes Home's Partners
 section as having no heading — **not yet fixed, do this next.**
 
-Also open: a spacing review of `Home_PartnersAndSupporters` and the
-sections around it — there's an unresolved question in a code comment
-in that file about its heading's top padding, plus a `py` mismatch
-between `PartnersAndSupporters`'s sage band (`py-12 md:py-16`) and the
-equivalent bands in `YouTubeEmbed`/`DocumentEmbed` (`py-10 md:py-14`).
-Nothing changed yet; §6's heading-top-padding rule is the reference.
+A site-wide spacing audit followed, in two passes. The first was a code
+audit and found three internal inconsistencies. The second was a
+design-level audit measuring the rendered rhythm in pixels, and it
+overturned the rule itself: keying a section's top padding to what
+*precedes* it (`Divider` vs color band) was followed correctly
+everywhere and still left four band-section headings floating
+equidistant between their own band and the section above. §6's rhythm
+rule is now written around section *type* — band section vs white
+section — and a section's padding no longer depends on its neighbor at
+all. Nine components updated; §11's Divider rule corrected to match.
+Still a code-level pass, not a rendered one — the two-tier rhythm this
+produces (band sections open at 72px, white sections at 96px on mobile)
+is the judgment call most worth a real look on a dev server.
 
 Remaining after that: Responsive/Performance/Cross-browser checks and
 comment cleanup (§9) — all still need a live/dev-server URL, or for
@@ -360,15 +367,56 @@ values (`max-w-[90rem]`, gradient stops, `mask-y-from-accent`).
 - **Sage (`bg-surface`)** is reserved for a section's actual **content**
   (a data grid, screenshot, embed, QR code) — never a heading block
   alone. The heading stays in its own white block above it.
-- **Heading top padding:** `pt-12 md:pt-16` when preceded by a
-  color-band transition (a sage band or gradient band like `PageHeader`/
-  `Hero` ending); trimmed to `pt-8 md:pt-10` when preceded by a
-  `Divider` (§11) instead, so the hairline reads as attached to what
-  follows rather than floating in the gap. Bottom padding is unaffected
-  either way — only the section *after* a boundary ever gets its top
-  trimmed. A symmetric `py-12 md:py-16` section becomes `pt-8 pb-12
-  md:pt-10 md:pb-16` if it later needs the trim; an already-asymmetric
-  `pt-12 pb-4 md:pt-16 md:pb-6` one just changes its `pt`/`md:pt` values.
+- **Vertical rhythm — a section's padding is a property of the section,
+  never of its neighbor.** Nothing above a section changes its padding:
+  not a `Divider`, not a sage edge, not a gradient band. Revised
+  Aug 21, 2026 after a pixel-level audit (the previous
+  neighbor-triggered rule is described at the end of this bullet).
+
+  Two section types cover every content section on the site:
+
+  | Block | Padding |
+  |---|---|
+  | Photo hero (`Hero`) | `py-24 md:py-32` |
+  | Full-bleed color band (`PageHeader`, `DonateBanner`) | `py-16 md:py-20` |
+  | **Band section** — its white heading block | `pt-8 pb-4 md:pt-10 md:pb-6` |
+  | **Band section** — its full-bleed sage band | `py-10 md:py-14` |
+  | **White section** — self-contained, heading + prose/CTA | `py-12 md:py-16` |
+  | Caption attached to the block above it | `pt-6 md:pt-8`, then the section's normal bottom |
+  | `WhiteSpace` filler | `py-12 md:py-16` |
+
+  **Band section** = a small white heading block that opens into a
+  full-bleed content band (`YouTubeEmbed`, `Home_PartnersAndSupporters`,
+  `About_Stats`, `About_PartnersAndSupporters`, `ProjectSection`,
+  `QRCodeDonate`, `DocumentEmbed`). Its heading is a *label* belonging
+  to the band, so it always opens at `pt-8 md:pt-10` — the fixed 56px
+  between heading and band content means anything larger makes the
+  heading float equidistant between its own band and the section above,
+  which is a proximity failure regardless of what that section is.
+
+  **White section** = a self-contained block that breathes equally at
+  both ends (`MissionStatement`, `GetInvolvedTeaser`, `ContactForm`,
+  `About_Heading`'s story, `About_BiggestEvent`, `About_AnnualReport`,
+  `About_Team`, `Get-Involved_BranchFounder`,
+  `Get-Involved_ContactList`).
+
+  A band's `border-y` belongs to the band, not to the seam. A `Divider`
+  is a rule drawn at the end of the preceding section's own closing gap
+  — it separates, it doesn't reposition (§11).
+
+  *Superseded:* until Aug 21, 2026 the rule keyed top padding to what
+  preceded a section (`pt-8 md:pt-10` after a `Divider`, `pt-12
+  md:pt-16` after a color band). It was followed correctly in all 13
+  places it applied and still produced four floating headings, because
+  the trigger was the wrong variable. Don't reintroduce it.
+- **Internal gaps:** `gap-2` for a heading block; `gap-6` for a white
+  section's heading + CTA and for a band's contents; `gap-8` only where
+  a list or grid sits between heading and CTA
+  (`Get-Involved_BranchFounder`); `gap-10` only in
+  `PartnersAndSupporters`, which separates two org *groups* rather than
+  sibling elements.
+- **Class order:** base utilities first, then `md:` —
+  `pt-8 pb-4 md:pt-10 md:pb-6`, never interleaved.
 - **Interior page titles (`bg-linear-to-l from-primary-hover/90 to-primary-hover`)**
   — every page except Home uses `PageHeader` (§7) for its title band: a
   subtle horizontal gradient, white text, centered, `py-16 md:py-20`.
@@ -556,7 +604,9 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   Full-bleed sage band. Logos render via `ResponsiveImage`, each at its
   own real native resolution (`utils/images.ts`'s
   `getImageDimensions()`), displayed in a fixed `h-12 w-12` (grid) /
-  `h-10 w-10` (badge row) box with `object-contain`. This component is
+  `h-10 w-10` (badge row) box with `object-contain`. Band is
+  `py-10 md:py-14` — was `py-12 md:py-16`, the only content band on the
+  site off the shared rhythm; corrected Aug 21, 2026 (§6). This component is
   the band only — both call sites (`Home_PartnersAndSupporters`,
   `About_PartnersAndSupporters`) supply their own white heading block
   above it, since the bare band has no landmark of its own (§6
@@ -632,10 +682,10 @@ Used exactly once each; doesn't isolate a reusable concern.
   subtext/eyebrow/icon — badge deliberately skipped, §6) + the brief
   `PartnersAndSupporters` band, no intro props. Built by the project
   owner; replaces markup that was previously inline in `index.astro`,
-  so Home now has a `page-specific/home/` folder (§5). Heading block is
-  currently `pt-12 pb-4 md:pt-16 md:pb-6`; an open code comment in the
-  file questions whether the top value should be trimmed — unresolved,
-  see §2.
+  so Home now has a `page-specific/home/` folder (§5). A band section
+  (§6) — heading `pt-8 pb-4 md:pt-10 md:pb-6`. A code comment here
+  originally questioned the then-`pt-12` value; the question was right
+  and drove the Aug 21, 2026 rewrite of §6's rhythm rule.
 
 **about/**
 - **About_Heading** — `PageHeader` (eyebrow "Our Story", h1 "Is There
@@ -651,8 +701,11 @@ Used exactly once each; doesn't isolate a reusable concern.
   "Photo from" (§6). A `Divider` sits below this too, before
   `About_Stats`.
 - **About_Stats** — `ImpactStats` (fuller) + 8-country caption (US,
-  Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England). A
-  `Divider` sits below this, before `About_PartnersAndSupporters`.
+  Canada, India, UAE, Puerto Rico, Pakistan, Morocco, England). A band
+  section (§6), plus the caption below the band at `pt-6 pb-12 md:pt-8
+  md:pb-16` — tight top to stay attached to the stats, normal section
+  bottom. The site's only caption block; §6's caption row exists for it.
+  A `Divider` sits below this, before `About_PartnersAndSupporters`.
 - **About_PartnersAndSupporters** — fuller `PartnersAndSupporters` with
   real, live-site-verified intro paragraphs for both groups — closes
   the §10 "per-org descriptive paragraphs blocked on verified copy"
@@ -776,10 +829,20 @@ pages into one (§3).
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
-- [ ] Spacing consistency review — Home's Partners & Supporters heading
-      padding (open comment in the component) and the `py` mismatch
-      between the `PartnersAndSupporters` sage band and the equivalent
-      bands in `YouTubeEmbed`/`DocumentEmbed` (§2)
+- [x] Spacing consistency pass — site-wide code audit; found three
+      internal inconsistencies (`PartnersAndSupporters` band rhythm,
+      `About_Stats` caption bottom, `About_BiggestEvent` class order).
+- [x] Design-level spacing audit — measured the rendered rhythm in
+      pixels rather than checking rule compliance. The old
+      neighbor-triggered rule was followed everywhere and still left
+      four band-section headings floating equidistant between their own
+      band and the section above. §6's rhythm rule was rewritten around
+      section *type* instead; nine components updated. Code-level
+      still — wants a rendered check (§2).
+- [ ] Home's `ImpactStats` has no heading above it — the only content
+      band on the site without one, and the exact case §6's
+      accessibility note warns about. A headingless proof-bar under the
+      hero is a defensible design choice; needs a decision either way.
 - [x] Interior page headers unified via `PageHeader` component —
       About/Team/Projects/Get-Involved/Donate all updated; Home's
       photo `Hero` remains the site's only full hero treatment.
@@ -905,8 +968,9 @@ YMCA, Food4Philly) ✅ · "Grants & Funding" intro ✅ (real copy added).
   only perceive what's at the seam, not what a component contains
   further down. Skip it wherever a color band (sage, or a gradient band
   like `PageHeader`/`DonateBanner`/`Hero`) already sits on at least one
-  side. Placement list is under **Divider** in §7. When adding one,
-  trim the *following* section's top padding per §6.
+  side. Placement list is under **Divider** in §7. A `Divider` does
+  **not** change the padding of anything around it — it's drawn in the
+  gap the two sections' own constants already create (§6).
 - Relief Route's direct `<iframe>` (ProjectSection, §7) is a confirmed,
   project-owner-approved exception to the click-to-load facade default
   — don't extend it to a future embed without asking first.
