@@ -38,39 +38,42 @@ Participation and giving happen via clearly labeled external links
 
 ## 2. How to Resume This Project
 
-**Current phase:** Phase 5 (Build Pages) is complete — all six pages
-built. Currently in the Cross-Cutting checklist (§9), then Phase 6
-(Deployment). Phase 4 (Shared Infrastructure) is complete.
+**Current phase:** Phases 4 and 5 are complete. The site is deployed and
+live on Netlify at `unity-provisions-site.netlify.app`; Phase 6's
+remaining step is the DNS cutover. Two Cross-Cutting items are still
+open (§9).
 
 **Status source of truth:** §5's file tree (✅ Built / 📋 Planned / 🔶
 blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
-**Continue here** *(replaced each session, not appended to):* Home's
-Partners & Supporters heading, previously inline markup in
-`index.astro`, is now `page-specific/home/Home_PartnersAndSupporters`
-— built by the project owner outside a tracked session, so this doc had
-drifted in four places (§5 convention line, §5 tree, §8, §9) and has
-been corrected here. `wordings.md` still describes Home's Partners
-section as having no heading — **not yet fixed, do this next.**
+**Continue here** *(replaced each session, not appended to):* The site
+is deployed and verified. `bun run build` passes, Netlify auto-publishes
+from `main`, and a browser pass on the live URL confirmed all six pages,
+responsive breakpoints, cross-browser, images (Sharp is working), and —
+finally tested end-to-end — the `ImpactStats` live Google Sheet fetch.
 
-A site-wide spacing audit followed, in two passes. The first was a code
-audit and found three internal inconsistencies. The second was a
-design-level audit measuring the rendered rhythm in pixels, and it
-overturned the rule itself: keying a section's top padding to what
-*precedes* it (`Divider` vs color band) was followed correctly
-everywhere and still left four band-section headings floating
-equidistant between their own band and the section above. §6's rhythm
-rule is now written around section *type* — band section vs white
-section — and a section's padding no longer depends on its neighbor at
-all. Nine components updated; §11's Divider rule corrected to match.
-Still a code-level pass, not a rendered one — the two-tier rhythm this
-produces (band sections open at 72px, white sections at 96px on mobile)
-is the judgment call most worth a real look on a dev server.
+That pass found one real bug: `ImpactStats` overflowed horizontally on
+Home and About, because 44px unbreakable values like `$22,376.00` were
+sitting in grid columns narrower than the text. Fixed by moving the
+4-column layout to `xl` and adding `min-w-0`; the general rule is now in
+§6, since it will apply to any future grid holding long tokens. Notably
+this was *not* a failure of the spacing rhythm, which held up under a
+real rendered check.
 
-Remaining after that: Responsive/Performance/Cross-browser checks and
-comment cleanup (§9) — all still need a live/dev-server URL, or for
-comment cleanup, a style example from the project owner.
+Three things still open:
+1. **DNS cutover** — the last Phase 6 step. Two records, detailed there.
+2. **Lighthouse / performance** — being run manually by the project owner.
+3. **`wordings.md`** still describes Home's Partners section as having no
+   heading. **Still not fixed — do this.** Three targeted replacements
+   were identified: the Home heading line, plus the About partners and
+   supporters intros, both of which are stale against the components.
+
+Also unresolved and worth asking the org about: `hours.unityprovisions.org`
+points to a DigitalOcean server (`67.205.5.81`) running an hours-tracking
+login for `@unityprovisions.org` accounts. It appears nowhere in this
+project, isn't linked from any page, and nobody has identified who
+administers or pays for it.
 
 **Per-component process:**
 1. Confirm it deserves its own file — genuinely reused, or genuinely
@@ -415,6 +418,16 @@ values (`max-w-[90rem]`, gradient stops, `mask-y-from-accent`).
   (`Get-Involved_BranchFounder`); `gap-10` only in
   `PartnersAndSupporters`, which separates two org *groups* rather than
   sibling elements.
+- **Grid column counts are set by the widest unbreakable token the cell
+  can hold, not by how many items look balanced.** Long numbers, prices,
+  and long single words can't wrap, so a column narrower than the token
+  doesn't clip — it pushes the whole page wide and creates horizontal
+  scroll. Check the narrowest viewport at every column count, not just
+  the smallest one: `ImpactStats` overflowed below `sm` *and* again
+  between `md` and `lg`, because 4 columns at 768px is tighter than 2
+  columns at 640px. Pair a responsive column count with `min-w-0` on the
+  items, and never paper over it with `overflow-x-hidden`, which hides
+  the scrollbar and leaves the content unreachable off-screen.
 - **Class order:** base utilities first, then `md:` —
   `pt-8 pb-4 md:pt-10 md:pb-6`, never interleaved.
 - **Interior page titles (`bg-linear-to-l from-primary-hover/90 to-primary-hover`)**
@@ -582,8 +595,13 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   Matches exact label text `"Total (lbs)"`/`"Money Collected ($)"` in
   column B; falls back to `stats.ts` + a `console.warn` if
   unreachable/unshared. Sheet sharing confirmed "Anyone with the link –
-  Viewer" — end-to-end live-fetch verification still needs a
-  live/dev-server URL (§9).
+  Viewer"; live fetch verified end-to-end in a browser Aug 23, 2026.
+  Grid is `grid-cols-1 sm:grid-cols-2 xl:grid-cols-4`, with `min-w-0` on
+  each item and `tabular-nums` on the value. Four columns only at `xl`
+  because the live values are long unbreakable tokens — `$22,376.00` at
+  `text-3xl` needs ~210px, so narrower columns overflowed and gave Home
+  and About horizontal scroll (below `sm`, and again between `md` and
+  `lg`). The sheet values only grow, so don't tighten these breakpoints.
 - **MissionStatement** — `heading`, `body`(required), `icon?`. Real
   copy verified word-for-word against the live site's "Our Mission"
   section. A `Divider` sits below this, before `YouTubeEmbed`.
@@ -822,10 +840,12 @@ pages into one (§3).
       still need a live URL.
 - [x] SEO (title, meta description, OG tags, canonical URL, heading
       hierarchy, alt text) — all in place via `Layout.astro`.
-- [ ] Responsive check at each breakpoint — needs a live/dev-server URL
-- [ ] Performance check (image optimization, Lighthouse) — needs a
-      live/dev-server URL
-- [ ] Cross-browser spot check — needs a live/dev-server target
+- [x] Responsive check at each breakpoint — verified in a browser on the
+      Netlify URL, Aug 23, 2026. Found one bug: `ImpactStats` overflowed
+      horizontally on Home and About. Not a spacing-rule failure — a grid
+      column-count issue; fixed and the rule recorded in §6.
+- [ ] Performance check (image optimization, Lighthouse)
+- [x] Cross-browser spot check — verified Aug 23, 2026.
 - [ ] Comment cleanup — replace long AI-style comment blocks with short
       human-written ones (blocked on a style example from the project
       owner)
@@ -837,8 +857,9 @@ pages into one (§3).
       neighbor-triggered rule was followed everywhere and still left
       four band-section headings floating equidistant between their own
       band and the section above. §6's rhythm rule was rewritten around
-      section *type* instead; nine components updated. Code-level
-      still — wants a rendered check (§2).
+      section *type* instead; nine components updated. Rendered check
+      done Aug 23, 2026 — the rhythm held up; the only issue found was
+      the unrelated `ImpactStats` overflow above.
 - [ ] Home's `ImpactStats` has no heading above it — the only content
       band on the site without one, and the exact case §6's
       accessibility note warns about. A headingless proof-bar under the
@@ -851,14 +872,38 @@ pages into one (§3).
 - [x] Sage-consistency + divider pass — YouTubeEmbed's sage band added;
       `Divider` placed at every white-white seam site-wide (§11);
       Home's Partners & Supporters heading added (since extracted into
-      `Home_PartnersAndSupporters`, §7). Still needs a real visual check
-      on a live/dev-server URL — this has been a code-level pass, not a
-      rendered one.
+      `Home_PartnersAndSupporters`, §7). Verified on the rendered site
+      Aug 23, 2026.
 
-### Phase 6 — Deployment — not started
-- [ ] Compare Cloudflare Pages / Netlify / Vercel / GitHub Pages
-- [ ] Recommend + set up hosting
-- [ ] Domain migration considerations from GoDaddy
+### Phase 6 — Deployment — in progress
+- [x] Compared Cloudflare Workers / Netlify / Vercel / GitHub Pages.
+      (Cloudflare *Pages* is being absorbed into Workers — Workers is the
+      correct target for a new project, not Pages.) Chose **Netlify**:
+      Cloudflare is the better host on the merits, but it requires its own
+      nameservers, so the whole 22-record zone — including five Google
+      MX records — would have to be recreated. Netlify accepts pointing
+      from any DNS provider, so the cutover is two records and mail is
+      never touched. Netlify's bandwidth cap was the argument against it
+      and turned out to be moot: the live site serves ~228 visitors/month
+      against a 100GB tier. Relief Route is already on Netlify.
+- [x] Set up hosting — deployed Aug 23, 2026 to
+      `unity-provisions-site.netlify.app` from `main`, auto-publish on.
+      Build via Bun: `netlify.toml` pins `bun run build`, `dist`,
+      `NODE_VERSION 22`, `BUN_VERSION 1.3.14`, plus immutable caching for
+      `/_astro/*` and conservative security headers (deliberately no CSP —
+      it would break the Relief Route, Sheets, and YouTube embeds).
+      No adapter: the site is fully static.
+- [ ] Domain migration from GoDaddy — planned, not executed. DNS stays at
+      GoDaddy (`ns17`/`ns18.domaincontrol.com`). Two records change:
+      `CNAME www` → the Netlify subdomain, and `A @` → `75.2.60.5`
+      (apex can't be a CNAME — it holds NS, SOA, 5 MX, and 3 TXT records).
+      `www` becomes the primary domain. Everything else is left alone.
+      Note: the current `A @` value is GoDaddy's `WebsiteBuilder Site`
+      placeholder, which fails their own validator — delete the row and
+      recreate rather than editing it. Check the Forwarding tab too; it
+      overrides DNS. Cut over only after verification, then turn off
+      auto-renew on Websites + Marketing ($22/mo) rather than cancelling
+      outright, to keep the old site as a fallback for the paid term.
 
 ---
 
