@@ -38,6 +38,9 @@ from `global.css`'s `@theme` block.
 | Hero tagline, `text-white/80` on `primary` | 5.48:1 | AA |
 | Hero subtext, `text-white/85` on `primary` | 5.94:1 | AA |
 | DonateBanner subtext, `text-white/80` on `primary-hover` | 7.61:1 | AAA |
+| Navbar text, `white` on `primary` → `primary-hover` gradient (Oct 2026) | 7.46–10.81:1 | AAA |
+| Navbar scrolled (85% opacity) over a white section, `white` text | 5.12–6.91:1 | AA |
+| Navbar active pill, `white` on `bg-black/20`, worst case (scrolled, over white) | 7.19:1 | AAA |
 
 Every real text combination in the design system clears WCAG AA (most
 clear AAA). The `--color-success` (`#2f7d4f`) token isn't used as text
@@ -53,6 +56,9 @@ for text.
 | Combination | Ratio | Result |
 |---|---|---|
 | Hero secondary-CTA border, `border-white/70` on `primary` | 4.62:1 | OK |
+| Default focus ring (`primary`) on Navbar / DonateBanner (`primary-hover`) | 1.45:1 | **FAIL** → `focus-ring-light` makes it white (Oct 2026) |
+| Focus ring, white, on Navbar / Hero photo / DonateBanner (measured) | 5.19–13.97:1 | OK |
+| Focus ring, `primary`, on `bg` / `surface` (measured) | 7.46 / 6.62:1 | OK |
 | `--color-border` (`#d7e1d1`) vs `bg` (`#ffffff`) | 1.35:1 | **FAIL** |
 | `--color-border` (`#d7e1d1`) vs `surface` (`#eef3ea`) | 1.20:1 | **FAIL** |
 
@@ -102,7 +108,7 @@ Verified directly against the actual component code:
 - **Heading hierarchy:** exactly one `<h1>` per page, confirmed across
   all six pages (each page-specific `*_Heading` component is the only
   one using `as="h1"`).
-- **Focus indicator:** global `:focus-visible` (2px solid `primary`,
+- **Focus indicator:** global `:focus-visible` (2px solid `primary`, white inside dark bands via `focus-ring-light` — see table above;
   2px offset) — clears 3:1 against every background it appears on.
 
 ### Not verifiable from code alone

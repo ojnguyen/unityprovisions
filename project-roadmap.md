@@ -47,27 +47,26 @@ open (§9).
 blocked-or-partial). Trust that over any summary, including this one,
 if they ever disagree.
 
-**Continue here** *(replaced each session, not appended to):* The site
-is deployed and verified. `bun run build` passes, Netlify auto-publishes
-from `main`, and a browser pass on the live URL confirmed all six pages,
-responsive breakpoints, cross-browser, images (Sharp is working), and —
-finally tested end-to-end — the `ImpactStats` live Google Sheet fetch.
+**Continue here** *(replaced each session, not appended to):* Oct 12,
+2026 — two founder requests after a ~7-week pause:
+1. **Navbar restyle** — done (§7 Navbar): green gradient, white
+   text/logo, translucent-on-scroll kept (85% floor), white focus ring.
+   Also fixed focus rings site-wide (§6 Accessibility).
+2. **Favicon** — Google results show the placeholder "U" favicon
+   (`public/unity-provisions.svg`). Replace with the round UP badge:
+   `favicon.ico` (16/32/48), `favicon-192x192.png`,
+   `apple-touch-icon.png` (180, white background — iOS fills
+   transparency black) in `public/`, link tags in `Layout.astro`, then
+   request indexing of `/` in Search Console. Not yet done.
 
-That pass found one real bug: `ImpactStats` overflowed horizontally on
-Home and About, because 44px unbreakable values like `$22,376.00` were
-sitting in grid columns narrower than the text. Fixed by moving the
-4-column layout to `xl` and adding `min-w-0`; the general rule is now in
-§6, since it will apply to any future grid holding long tokens. Notably
-this was *not* a failure of the spacing rhythm, which held up under a
-real rendered check.
-
-Three things still open:
-1. **DNS cutover** — the last Phase 6 step. Two records, detailed there.
-2. **Lighthouse / performance** — being run manually by the project owner.
-3. **`wordings.md`** still describes Home's Partners section as having no
-   heading. **Still not fixed — do this.** Three targeted replacements
-   were identified: the Home heading line, plus the About partners and
-   supporters intros, both of which are stale against the components.
+Still open:
+- **DNS cutover** — unityprovisions.org was serving the Astro site on
+  Oct 12, 2026, so this looks done; confirm and update Phase 6.
+- **Lighthouse / performance** — being run manually by the project owner.
+- **`wordings.md`** — the Partners heading item appears fixed; the
+  Projects subtext is now stale against `Projects_Heading`.
+- Local `bun run build` fails in sandboxes without network access
+  (YouTubeEmbed's remote thumbnail fetch) — environmental, not a code bug.
 
 Also unresolved and worth asking the org about: `hours.unityprovisions.org`
 points to a DigitalOcean server (`67.205.5.81`) running an hours-tracking
@@ -198,7 +197,8 @@ public/
 src/
 ├── assets/
 │   ├── components/hero.jpg                                 — Hero background (index.astro)
-│   ├── icons/logo.webp                                     — Navbar logo mark (§7)
+│   ├── icons/logo.webp                                     — logo mark, green (unused since the Oct 2026 Navbar restyle)
+│   ├── icons/logo-white.webp                               — Navbar logo mark, white (§7)
 │   │
 │   ├── team/ryan-nguyen.webp                                — Ryan Nguyen headshot (About + Team)
 │   ├── projects-and-events/
@@ -312,7 +312,7 @@ Defined once in `global.css`'s `@theme` block.
 | Token | Value | Note |
 |---|---|---|
 | `--color-bg` | `#ffffff` | Page base — deliberately independent of the live site |
-| `--color-surface` | `#eef3ea` | Soft sage — alternating bands, Navbar/Footer, Card |
+| `--color-surface` | `#eef3ea` | Soft sage — alternating bands, Footer, Card |
 | `--color-text-primary` | `#1a1a1a` | |
 | `--color-text-secondary` | `#5c5c5c` | |
 | `--color-primary` | `#355e3b` | Deep forest green, ~7:1 vs white text |
@@ -320,7 +320,7 @@ Defined once in `global.css`'s `@theme` block.
 | `--color-accent` | `#a8592b` | Deep terracotta, ~5:1 vs white text |
 | `--color-accent-hover` | `#79401f` | ~8:1 vs white text |
 | `--color-border` | `#d7e1d1` | |
-| `--color-border-interactive` | `#729266` | Muted sage-green — interactive-element boundaries + Navbar active/hover fills (§7) |
+| `--color-border-interactive` | `#729266` | Muted sage-green — interactive-element boundaries |
 | `--color-success` | `#2f7d4f` | Unreviewed |
 | `--color-error` | `#b3413b` | Unreviewed |
 
@@ -469,7 +469,17 @@ values (`max-w-[90rem]`, gradient stops, `mask-y-from-accent`).
   image that should scale to its container.
 
 ### Accessibility
-- `:focus-visible` — 2px solid primary, 2px offset, global.
+- **Focus ring** (`global.css`): 2px solid, 2px offset, color
+  `var(--focus-ring, primary)` set on *every element at rest*, so focus
+  only switches the outline on. If the color were set only on
+  `:focus-visible`, `transition-colors` (Button, Hero CTA) would fade it
+  in from the text color — a white→green flash, fixed Oct 12, 2026.
+  Any dark band adds the `focus-ring-light` utility (sets
+  `--focus-ring: #fff` for everything inside): Navbar, Hero,
+  DonateBanner. A focusable inside an `overflow-hidden` box gets its ring
+  clipped — draw it on the box via `has-[:focus-visible]:outline-2`
+  (YouTubeEmbed). Swept all 100 focus stops Oct 12, 2026: no flashes,
+  every ring ≥5:1 against its background.
 - One `<h1>` per page. Real `alt` text (decorative image nested inside
   an already-labeled control excepted, e.g. Hero's background,
   YouTubeEmbed's thumbnail, Navbar's logo mark). All decorative icons
@@ -546,33 +556,39 @@ Status: ✅ Built · 🔶 Built but incomplete/blocked · 📋 Planned
   so it doesn't get active-page styling. No "Email List" nav item (the
   live site has one) — reachable via Footer and Get Involved's Stay
   Connected only. Logo mark (`astro:assets` `<Image>`,
-  `@assets/icons/logo.webp`) sits inside the same `/` link as
+  `@assets/icons/logo-white.webp`) sits inside the same `/` link as
   `orgName`, `alt=""` (decorative — the link's accessible name already
   comes from the visible org-name text, §6). Real Unity Provisions
-  logo — a sketched spoon-and-branches illustration, supplied as white
-  line art on transparent and recolored here to `--color-primary`
-  (only the fill color changed; linework is the original supplied
-  artwork). Kept as `.webp` (lossless, alpha preserved). Displayed at
+  logo — a sketched spoon-and-branches illustration. `logo-white.webp`
+  is generated from `logo.webp` (fill set to white, alpha untouched),
+  which restores the artwork's original supplied color. Displayed at
   `h-14` (203×170 real size).
 
+  **Restyled Oct 12, 2026 (founder request):** green gradient bar
+  (`bg-linear-to-r from-primary to-primary-hover`, `shadow-md`) with
+  white text, logo, and toggle icon. White text is 7.46:1 → 10.81:1
+  across the gradient (AAA).
+
   Sticky (`position: sticky; top-0; z-50`). A single `data-scrolled`
-  attribute on the `<header>` drives every visual change via
+  attribute on the `<header>` drives the scroll changes via
   `group-data-[scrolled=true]:` Tailwind variants, flipped by an
   rAF-throttled scroll listener using pixel hysteresis (50px to enter
   "scrolled", 10px to exit) to avoid flicker at the threshold. On
-  scroll: padding `py-4`→`py-2`, logo `h-14`→`h-10`, background
-  `bg-surface`→`bg-text-secondary/30` + `backdrop-blur-sm`. `shadow-sm`
-  stays on in both states — that's what keeps the nav/content boundary
-  visible regardless of what's scrolling underneath, not the tint color
-  itself. `--color-text-secondary` is used for the tint because it's a
-  neutral hue distinct from the site's own sage/white content bands.
+  scroll: padding `py-4`→`py-2`, logo `h-14`→`h-10`, gradient stops
+  → 85% opacity + `backdrop-blur-md` (`transition-colors` animates the
+  stops). **85% is the floor:** over a white section, white text on the
+  `primary` end is 5.12:1 at 85% but 4.54:1 at 80%. `shadow-md` stays
+  on in both states to keep the nav/content boundary visible.
 
-  Active nav link: `bg-border-interactive/40` pill (`rounded-full`
-  desktop, `rounded-md` mobile), plain `text-text-primary`. Inactive
-  links: `hover:bg-border-interactive/10`. Both are fills, not text
-  color changes, so they stay legible regardless of what's behind the
-  translucent header. Not `bg-accent/30` — `--color-accent` is reserved
-  for CTA semantics (the Donate button).
+  Active nav link: `bg-black/20` pill (`rounded-full` desktop,
+  `rounded-md` mobile), `text-white`. Inactive links:
+  `hover:bg-black/10`. Pills darken rather than lighten — a `white/15`
+  pill drops to 3.76:1 in the translucent state; `black/20` keeps
+  ≥7.19:1. Donate stays the accent `Button` — `--color-accent` is
+  reserved for CTA semantics.
+
+  Focus: `focus-ring-light` on the `<header>` (§6 Accessibility) — the
+  default green ring is 1.45:1 on this bar.
 - **Footer** — nav links, Email List/Linktree, socials, phone,
   copyright (`new Date().getFullYear()`). Plain `<a>`, not
   `ExternalLinkCTA` (too heavy for a dense link row).
@@ -867,8 +883,13 @@ pages into one (§3).
 - [x] Interior page headers unified via `PageHeader` component —
       About/Team/Projects/Get-Involved/Donate all updated; Home's
       photo `Hero` remains the site's only full hero treatment.
-- [x] Sticky, condensing Navbar — translucent scrolled state,
-      `border-interactive`-based active/hover link indicators (§7).
+- [x] Sticky, condensing Navbar (§7).
+- [x] Navbar restyle (Oct 12, 2026) — green gradient, white text/logo,
+      85%-translucent scrolled state, white focus ring; verified rendered
+      on Home, About (incl. scrolled), and mobile menu.
+- [x] Focus-ring fix (Oct 12, 2026) — removed the white→green flash on
+      every `Button`; made rings visible on Hero, DonateBanner, and the
+      YouTube play button (§6 Accessibility).
 - [x] Sage-consistency + divider pass — YouTubeEmbed's sage band added;
       `Divider` placed at every white-white seam site-wide (§11);
       Home's Partners & Supporters heading added (since extracted into

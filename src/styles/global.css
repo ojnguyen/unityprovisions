@@ -72,8 +72,18 @@
     color: var(--color-primary-hover);
   }
 
+  *, ::before, ::after {
+    outline-color: var(--focus-ring, var(--color-primary));
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline-style: solid;
+    outline-width: 2px;
     outline-offset: 2px;
   }
+}
+
+/* Put on any dark band (Navbar, Hero, DonateBanner) so focus rings inside it are white. */
+@utility focus-ring-light {
+  --focus-ring: #ffffff;
 }

@@ -29,14 +29,14 @@ const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
     <Container as="section">
       <div class="flex flex-col items-center gap-6 py-10 md:py-14">
         <div
-          class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black"
+          class="relative aspect-video w-full max-w-3xl overflow-hidden rounded-md bg-black has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2"
           data-youtube-facade
           data-video-id={videoId}
           data-title={title}
         >
           <button
             type="button"
-            class="group absolute inset-0 flex h-full w-full items-center justify-center"
+            class="group absolute inset-0 flex h-full w-full items-center justify-center focus-visible:outline-none"
             aria-label={`Play video: ${title}`}
           >
             <ResponsiveImage
